@@ -8,9 +8,14 @@ global:
   - PGPORT=5432
 
 install:
-- pip install -r requirements.txt
+#- pip install -r requirements.txt , Se comenta esta línea a esperas de generar un requirements.txt correcto
+- pip install codacy-coverage
+
 script:
 - cd groomeet_backend
+- coverage run --branch --source=. ./manage.py test --keepdb
+- coverage xml
+- python-codacy-coverage -r coverage.xml
 
 branches:
    only:
