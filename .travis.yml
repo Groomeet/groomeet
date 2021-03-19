@@ -12,7 +12,7 @@ install:
 - pip install codacy-coverage
 
 script:
-- coverage run --source='.' manage.py test
+- coverage3 run --source='.' manage.py test
 - coverage xml
 - python-codacy-coverage -r coverage.xml
 
