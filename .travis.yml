@@ -1,0 +1,19 @@
+language: python
+python:
+- "3.8"
+env:
+- DJANGO=2.0 DB=sqlite3
+
+global:
+  - PGPORT=5432
+
+install:
+- pip install -r requirements.txt
+script:
+- cd groomeet_backend
+
+branches:
+   only:
+     - master
+
+
