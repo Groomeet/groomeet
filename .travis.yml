@@ -8,8 +8,7 @@ global:
   - PGPORT=5432
 
 install:
-#- pip install -r requirements.txt , Se comenta esta línea a esperas de generar un requirements.txt correcto
-- pip install coverage
+- pip install -r requirements.txt
 - pip install codacy-coverage
 
 script:
