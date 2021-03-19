@@ -13,8 +13,7 @@ install:
 - pip install codacy-coverage
 
 script:
-- cd groomeet_backend
-- coverage run --branch --source=. ./manage.py test --keepdb
+- coverage run --branch --source=. manage.py test --keepdb
 - coverage xml
 - python-codacy-coverage -r coverage.xml
 
