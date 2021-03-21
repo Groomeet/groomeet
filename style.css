@@ -6,7 +6,7 @@
 	font-family: 'Roboto', sans-serif;
 }
 
-.offer__title, .form__title, .form__button {
+.offer__title, .form__title, .form__button, .team__title {
 	font-family: 'Open Sans', sans-serif;
 	font-weight: bold;
 	line-height: 1.12;
@@ -37,7 +37,7 @@ body {
 }
 
 .offer__image {
-	max-height: 40px;
+	max-height: 100px;
 	margin-bottom: 10px;
 }
 
@@ -111,4 +111,50 @@ body {
 
 .form__button:active {
 	opacity: 0.8;
+}
+
+.team {
+	max-width: 968px;
+	margin: 20px auto;
+}
+
+.team__title {
+	color: var(--tertiary-color, #333333);
+}
+
+.team__title--position {
+	margin: 20px;
+}
+
+.subteam {
+	display: block;
+	max-width: 968px;
+	margin: 20px auto;
+	align-items: center;
+}
+.subteam__title{	
+	color: var(--secondary-color, #fafafa);
+}
+.subteam__title--position {
+	margin: 10px 50px;
+}
+
+.member {
+	display: inline-block;
+	margin: 20px 20px;
+	padding: 10px 10px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: var(--secondary-color, #fafafa);
+	border-radius: 5px;
+}
+
+.member__img {
+	height: 140px;
+	display: block;
+	margin: auto;
+}
+
+.member__name {
+	color: var(--tertiary-color, #333333);
 }
