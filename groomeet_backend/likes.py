@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from groomeet_backend.models import Musico
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def postLike(request, pk):
     musico = get_object_or_404(Musico, id=pk)
     usuario = request.user
@@ -17,6 +19,7 @@ def postLike(request, pk):
             print(f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
     return redirect("/listado")
 
+@login_required
 def postNoLike(request, pk):
     musico = get_object_or_404(Musico, id=pk)
     usuario = request.user

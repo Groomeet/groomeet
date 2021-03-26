@@ -18,3 +18,11 @@ def listadoMusicos(request):
         'usuario': usuario,
     }
     return render(request, "../templates/listado.html", context)
+
+def listadoMisBandas(request):
+    misBandas = Banda.objects.all().filter(administrador=request.user.pk).order_by('-nombre')
+    return render(request, "misBandas.html", {'misBandas': misBandas})
+
+def listadoMiembrosNoRegistrados(request):
+    misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
+    return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
