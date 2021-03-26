@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from groomeet_backend import views, likes
+from groomeet_backend import views, likes, bandas
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -25,4 +25,9 @@ urlpatterns = [
     path('listado/',views.listadoMusicos),
     path("like/<int:pk>/", likes.postLike, name="like"),
     path("noLike/<int:pk>/", likes.postNoLike, name="noLike"),
+    path('createBanda/',bandas.bandaCreate),
+    path('createMiembroNoRegistrado/<int:pk>',bandas.miembroNoRegistradoCreate),
+    path('misBandas/',views.listadoMisBandas),
+    path('updateBanda/<int:id>', bandas.bandaUpdate, name='updateBanda'),
+     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
 ]

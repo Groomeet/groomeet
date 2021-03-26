@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 from datetime import date
 from dateutil.relativedelta import relativedelta
+
 # Create your models here.
 
 class Genero(models.Model):
@@ -12,6 +13,8 @@ class Genero(models.Model):
 
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
+    familia = models.CharField(max_length=50,blank=True)
+
     def __str__(self):
         return self.nombre
 
@@ -38,7 +41,20 @@ class Musico(models.Model):
 class Banda(models.Model):
     nombre = models.CharField(max_length=50)
     administrador = models.ForeignKey(Musico, on_delete = models.DO_NOTHING, related_name="bandasAdministradas") #Si desaparece el administrador, la banda puede seguir creada
-    miembros = models.ManyToManyField(Musico, through='MiembroDe')
+    miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
+    generos = models.ManyToManyField(Genero, blank=True)
+    instrumentos = models.ManyToManyField(Instrumento, blank=True)
+
+    def __str__(self):
+        return self.nombre
+
+class MiembroNoRegistrado(models.Model):
+    banda = models.ForeignKey(Banda, on_delete = models.CASCADE, related_name="miembrosNoRegistrados")
+    nombre = models.CharField(max_length=500)
+    descripcion = models.CharField(max_length=500)
+    instrumentos = models.ManyToManyField(Instrumento, blank=True)
+    #foto?
+
     def __str__(self):
         return self.nombre
 
