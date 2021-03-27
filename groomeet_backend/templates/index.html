@@ -1,6 +1,31 @@
 <html>
     <head></head>
     <body>
-        <h1>Groomeet</h1>
-    </body>
+        <h1>Groomeet, ¿Hacemos música?</h1>
+    </body><br>
+    {% if request.user.is_authenticated %}
+
+    <h2>Bienvenido/a, {{request.user.username}}</h2>
+    <a href="/logout" >
+        <span class="nav__name">Cerrar Sesión</span>
+    </a><br><br>
+
+    <ul>
+        <li>
+            <a href="/misBandas" >Mis Bandas</a><br>
+        </li><br>
+        <li>
+            <a href="/listado" >Buscar Músicos</a><br>
+        </li><br>
+        <li>
+            <a href="/listadoBandas" >Buscar Bandas</a><br>
+        </li>
+    </ul>
+    {% else %}
+    <h2>Bienvenido/a</h2>
+    <a href="/login" >
+        <span class="nav__name">Iniciar Sesión</span>
+    </a><br><br>
+
+    {% endif %}
 <html></html>
