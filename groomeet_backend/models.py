@@ -24,8 +24,12 @@ class Musico(models.Model):
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero)
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
+    #Sección de likes de Músico a Músico
     likesRecibidos = models.ManyToManyField(User, related_name="likesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado like
     noLikesRecibidos = models.ManyToManyField(User, related_name="noLikesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado "no me gusta"
+    #Sección de likes de Músico a Banda
+    likesRecibidosBanda = models.ManyToManyField('Banda', related_name="likesDadosMusico", blank=True)
+    noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosMusico", blank=True)
 
     def __str__(self):
         return self.usuario.username
@@ -44,6 +48,12 @@ class Banda(models.Model):
     miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
     generos = models.ManyToManyField(Genero, blank=True)
     instrumentos = models.ManyToManyField(Instrumento, blank=True)
+    #Sección de likes de Banda a Músico
+    likesRecibidosMusico = models.ManyToManyField(User, related_name="likesDadosBanda", blank=True)
+    noLikesRecibidosMusico = models.ManyToManyField(User, related_name="noLikesDadosBanda", blank=True)
+    #Sección de likes de Banda a Banda
+    likesRecibidosBanda = models.ManyToManyField('Banda', related_name="likesDadosBanda", blank=True)
+    noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosBanda", blank=True)
 
     def __str__(self):
         return self.nombre
