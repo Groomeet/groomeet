@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'groomeet_backend',
+    'channels'
 ]
 AUTH_USER_MODEL = 'groomeet_backend.Musico'
 MIDDLEWARE = [
@@ -68,6 +70,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'groomeet_backend.asgi.application'
 WSGI_APPLICATION = 'groomeet.wsgi.application'
 
 
@@ -77,7 +80,7 @@ WSGI_APPLICATION = 'groomeet.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(os.path.join(BASE_DIR, "db.sqlite3")),
     }
 }
 
@@ -108,7 +111,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = True 
 
 USE_L10N = True
 
@@ -119,3 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
