@@ -39,5 +39,7 @@ urlpatterns = [
     path('createMiembroNoRegistrado/<int:pk>',bandas.miembroNoRegistradoCreate),
     path('misBandas/',views.listadoMisBandas),
     path('updateBanda/<int:id>', bandas.bandaUpdate, name='updateBanda'),
-     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
+    path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
+    path('invitacionBanda/<int:receptor_id>/<int:banda_id>/', bandas.enviarInvitacionBanda),
+    path('aceptarInvitacion/<int:banda_id>/', bandas.aceptarInvitacionBanda),
 ]
