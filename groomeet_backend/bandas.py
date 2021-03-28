@@ -2,6 +2,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from groomeet_backend.form import *
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 @login_required
 def bandaCreate(request):
@@ -59,3 +60,56 @@ def miembroNoRegistradoCreate(request, pk):
     else:
         formulario = MiembroNoRegistradoForm()
     return render(request, 'createMiembroNoRegistrado.html', {'formulario': formulario})
+
+@login_required
+def enviarInvitacionBanda(request, receptor_id, banda_id):
+    emisor = get_object_or_404(Musico, usuario=request.user)
+    receptor = get_object_or_404(Musico, id=receptor_id)
+    banda = get_object_or_404(Banda, id=banda_id)
+    estado = EstadoInvitacion.Pendiente
+
+    #Comprobando que el usuario no pertenece ya a la banda
+    try:
+        invitacion_aceptada = Invitacion.objects.get(receptor = receptor, 
+                                            banda = banda, estado = EstadoInvitacion.Aceptada)
+        messages.error = (request, f"El usuario {receptor.usuario.username} ya pertenece a la banda {banda.nombre}")
+    except:
+        invitacion_aceptada = None
+
+    #Comprobando que el usuario no tiene ya una invitación pendiente para esa banda
+    try:
+        invitacion_pendiente = Invitacion.objects.get(receptor = receptor, 
+                                            banda = banda, estado = EstadoInvitacion.Pendiente)
+        messages.error = (request, f"El usuario {receptor.usuario.username} ya tiene una invitación pendiente para la banda {banda.nombre}")
+    except:
+        invitacion_pendiente = None
+
+    #Creando la invitacion
+    if invitacion_aceptada == None and invitacion_pendiente == None:
+        try:
+            invitacion = Invitacion.objects.create(emisor = emisor, receptor = receptor, 
+                                                banda = banda, estado = estado)
+            messages.success = (request, f"¡La invitación a {receptor.usuario.username} para la banda {banda.nombre} fue enviada!")
+        except:
+            messages.error = (request, f"La invitación no se pudo enviar")
+        
+    return redirect("/listado")
+
+@login_required
+def aceptarInvitacionBanda(request, banda_id):
+    usuario = request.user
+    receptor = get_object_or_404(Musico, usuario=usuario)
+    banda = get_object_or_404(Banda, id=banda_id)
+    try:
+        invitacion = Invitacion.objects.get(receptor = receptor, banda = banda, estado = EstadoInvitacion.Pendiente)
+    except:
+        invitacion = None
+        messages.error = (request, f"La invitación no existe")
+
+    if invitacion != None:
+        nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
+        invitacion.estado = EstadoInvitacion.Aceptada
+        invitacion.save()
+        messages.success = (request, f"¡Te has unido a la banda {banda.nombre}!")
+
+    return redirect("/listado")

@@ -9,6 +9,7 @@
                 <th scope="col">Generos</th>
                 <th scope="col">Instrumentos</th>
                 <th scope="col">Miembros no registrados</th>
+                <th scope="col">Miembros registrados</th>
                 <th scope="col">Acciones</th>
             </tr>
         </thead>
@@ -24,6 +25,9 @@
 			    {% endfor %}</td>
                 <td>{% for miembro in row.miembrosNoRegistrados.all %}
                     - {{ miembro.nombre }}
+                {% endfor %}</td>
+                <td>{% for miembro in row.miembros.all %}
+                    - {{ miembro.usuario.username }}
                 {% endfor %}</td>
                 <td>
                     <a href="/updateBanda/{{ row.id }}" >Editar</a>
