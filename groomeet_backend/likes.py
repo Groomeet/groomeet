@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 #Sección de likes y no likes entre músicos
 @login_required
 def postLikeMusicoMusico(request, pk):
+    print(pk)
     musico = get_object_or_404(Musico, id=pk)
     usuario = request.user
     if musico.usuario.id is usuario.id:

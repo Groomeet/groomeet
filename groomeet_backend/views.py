@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from groomeet_backend.models import *
 from django.contrib.auth import login, logout,authenticate
@@ -5,11 +6,29 @@ from django.contrib.auth import login, logout,authenticate
 # Create your views here.
 
 def index(request):
-    return render(request, '../templates/index.html')
+    context = listadoMusicos(request)
+    return render(request, '../templates/index.html', context)
 
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+def getMusico(request, id):
+    musico = Musico.objects.get(id=id)
+    nombre = musico.usuario.username + ";"
+    fechaNac = str(musico.fechaNacimiento) + ";"
+    id = str(musico.id)
+
+    response = nombre + fechaNac + id
+    return HttpResponse(response)
+
+def getBanda(request, id):
+    banda = Banda.objects.get(id=id)
+    nombre = banda.nombre + ";"
+    id = str(banda.id)
+
+    response = nombre + id
+    return HttpResponse(response)
 
 
 def listadoMusicos(request):
@@ -23,7 +42,7 @@ def listadoMusicos(request):
         'musicos': result,
         'usuario': usuario,
     }
-    return render(request, "../templates/listado.html", context)
+    return context
 
 def listadoBandas(request):
     bandas = Banda.objects.all()
@@ -36,7 +55,7 @@ def listadoBandas(request):
         'bandas': result,
         'usuario': usuario,
     }
-    return render(request, "../templates/listadoBandas.html", context)
+    return context
 
 def listadoBandasMusicos(request, pkBanda):
     musicos = Musico.objects.all()
