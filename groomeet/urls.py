@@ -15,14 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from groomeet_backend import views, likes
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('',views.index, name='index'),
-    path('listado/',views.listadoMusicos),
-    path("like/<int:pk>/", likes.postLike, name="like"),
-    path("noLike/<int:pk>/", likes.postNoLike, name="noLike"),
 ]
