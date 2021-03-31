@@ -42,13 +42,9 @@ VALUES ("Electrónica");
 INSERT INTO groomeet_backend_genero (nombre)
 VALUES ("Rock");
 INSERT INTO groomeet_backend_genero (nombre)
-VALUES ("Punk");
-INSERT INTO groomeet_backend_genero (nombre)
 VALUES ("Blues");
 INSERT INTO groomeet_backend_genero (nombre)
 VALUES ("Grunge");
-INSERT INTO groomeet_backend_genero (nombre)
-VALUES ("Indie");
 INSERT INTO groomeet_backend_genero (nombre)
 VALUES ("Cofrade");
 INSERT INTO groomeet_backend_genero (nombre)

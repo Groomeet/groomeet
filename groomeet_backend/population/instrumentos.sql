@@ -87,8 +87,6 @@ VALUES ("Violín","Cuerda");
 INSERT INTO groomeet_backend_instrumento (nombre,familia)
 VALUES ("Viola","Cuerda");
 INSERT INTO groomeet_backend_instrumento (nombre,familia)
-VALUES ("Violonchelo","Cuerda");
-INSERT INTO groomeet_backend_instrumento (nombre,familia)
 VALUES ("Ukelele","Cuerda");
 INSERT INTO groomeet_backend_instrumento (nombre,familia)
 VALUES ("Sitar","Cuerda");
@@ -99,10 +97,6 @@ INSERT INTO groomeet_backend_instrumento (nombre,familia)
 VALUES ("Bongó","Percusión");
 INSERT INTO groomeet_backend_instrumento (nombre,familia)
 VALUES ("Caja flamenca","Percusión");
-INSERT INTO groomeet_backend_instrumento (nombre,familia)
-VALUES ("Platillos","Percusión");
-INSERT INTO groomeet_backend_instrumento (nombre,familia)
-VALUES ("Batería","Percusión");
 INSERT INTO groomeet_backend_instrumento (nombre,familia)
 VALUES ("Ghatam","Percusión");
 INSERT INTO groomeet_backend_instrumento (nombre,familia)
