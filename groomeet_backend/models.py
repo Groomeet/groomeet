@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from enum import Enum
+
 # Create your models here.
 
 class Genero(models.Model):
@@ -13,6 +15,7 @@ class Genero(models.Model):
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
     familia = models.CharField(max_length=50,blank=True,null=True)
+
     def __str__(self):
         return self.nombre
 
@@ -22,8 +25,12 @@ class Musico(models.Model):
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero)
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
+    #Sección de likes de Músico a Músico
     likesRecibidos = models.ManyToManyField(User, related_name="likesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado like
     noLikesRecibidos = models.ManyToManyField(User, related_name="noLikesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado "no me gusta"
+    #Sección de likes de Músico a Banda
+    likesRecibidosBanda = models.ManyToManyField('Banda', related_name="likesDadosMusico", blank=True)
+    noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosMusico", blank=True)
 
     def __str__(self):
         return self.usuario.username
@@ -39,7 +46,26 @@ class Musico(models.Model):
 class Banda(models.Model):
     nombre = models.CharField(max_length=50)
     administrador = models.ForeignKey(Musico, on_delete = models.DO_NOTHING, related_name="bandasAdministradas") #Si desaparece el administrador, la banda puede seguir creada
-    miembros = models.ManyToManyField(Musico, through='MiembroDe')
+    miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
+    generos = models.ManyToManyField(Genero, blank=True)
+    instrumentos = models.ManyToManyField(Instrumento, blank=True)
+    #Sección de likes de Banda a Músico
+    likesRecibidosMusico = models.ManyToManyField(User, related_name="likesDadosBanda", blank=True)
+    noLikesRecibidosMusico = models.ManyToManyField(User, related_name="noLikesDadosBanda", blank=True)
+    #Sección de likes de Banda a Banda
+    likesRecibidosBanda = models.ManyToManyField('Banda', related_name="likesDadosBanda", blank=True)
+    noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosBanda", blank=True)
+
+    def __str__(self):
+        return self.nombre
+
+class MiembroNoRegistrado(models.Model):
+    banda = models.ForeignKey(Banda, on_delete = models.CASCADE, related_name="miembrosNoRegistrados")
+    nombre = models.CharField(max_length=500)
+    descripcion = models.CharField(max_length=500)
+    instrumentos = models.ManyToManyField(Instrumento, blank=True)
+    #foto?
+
     def __str__(self):
         return self.nombre
 
@@ -69,7 +95,17 @@ class Mensaje(TimeStampedModel, SoftDeletableModel):
     def __str__(self):
         return self.autor.usuario.username + "(" + self.created + ") - '" + self.cuerpo + "'"
 
+#Estado de las invitaciones a una banda
+class EstadoInvitacion(Enum):
+    Rechazada = "Rechazada"
+    Pendiente = "Pendiente"
+    Aceptada = "Aceptada"
+
 class Invitacion(TimeStampedModel):
     emisor = models.ForeignKey(Musico, on_delete=models.CASCADE, related_name="invitacionesEnviadas")
     receptor = models.ForeignKey(Musico, on_delete=models.CASCADE, related_name="invitacionesRecibidas")
-    estado = models.BooleanField(default=False)
+    banda = models.ForeignKey(Banda, on_delete=models.CASCADE)
+    estado = models.CharField(
+        max_length=9,
+        choices=[(estado, estado.value) for estado in EstadoInvitacion]
+    )
