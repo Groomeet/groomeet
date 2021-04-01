@@ -20,7 +20,6 @@ from groomeet_backend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('chat/', include('groomeet_backend.urls')),
-    path('chat/<str:room_name>/', views.room, name='room'),
+    path('chat/', views.base, name='base'),
+    path(r'', include('groomeet_backend.urls')),
 ]

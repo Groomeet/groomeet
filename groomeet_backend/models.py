@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser
 from model_utils.models import TimeStampedModel, SoftDeletableModel
+from django.db.models import Q
+from typing import Optional, Any
 
 # Create your models here.
 
@@ -49,6 +52,20 @@ class Chat(TimeStampedModel, SoftDeletableModel):
 
     def __str__(self):
         return "Chat de " + self.participante1.username + " con " + self.participante2.username
+
+    @staticmethod
+    def dialog_exists(u1: AbstractBaseUser, u2: AbstractBaseUser) -> Optional[Any]:
+        return Chat.objects.filter(Q(user1=u1, user2=u2) | Q(user1=u2, user2=u1)).first()
+
+    @staticmethod
+    def create_if_not_exists(u1: AbstractBaseUser, u2: AbstractBaseUser):
+        res = Chat.dialog_exists(u1, u2)
+        if not res:
+            Chat.objects.create(user1=u1, user2=u2)
+
+    @staticmethod
+    def chat_usuario(user: AbstractBaseUser):
+        return Chat.objects.filter(Q(user1=user) | Q(user2=user)).values_list('user1__pk', 'user2__pk')
 
 
 class Mensaje(TimeStampedModel, SoftDeletableModel):

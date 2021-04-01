@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_private_chat2.apps.DjangoPrivateChat2Config',
+    # 3rd party
+    'channels',
 
 ]
 
@@ -87,24 +90,20 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = []
-
-# {
-#     'NAME':
-#  'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-# },
-# {
-#     'NAME':
-# 'django.contrib.auth.password_validation.MinimumLengthValidator',
-# },
-# {
-#     'NAME':
-# 'django.contrib.auth.password_validation.CommonPasswordValidator',
-# },
-# {
-#     'NAME':
-# 'django.contrib.auth.password_validation.NumericPasswordValidator',
-# },
+AUTH_PASSWORD_VALIDATORS = [
+    {  
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {    
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -142,14 +141,14 @@ MEDIA_URL = '/media/'
 
 # look for static assets here
 STATICFILES_DIRS = [
-    join(PROJECT_ROOT, 'static'),
+    join(PROJECT_ROOT, 'groomeet_backend, static'),
 ]
 
 STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/admin'
+LOGIN_URL = '/admin/login/'
 
 ALLOWED_HOSTS = ['*']
 
@@ -165,4 +164,26 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    },
+    # Uncomment this to view django_private_chat2's logs
+
+    # 'root': {
+    #     'handlers': ['console'],
+    #     'level': 'INFO',
+    # },
 }
