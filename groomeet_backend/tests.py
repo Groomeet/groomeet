@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
+from django.db.models import base
 from django.http import request
+from django.contrib.messages.storage.fallback import FallbackStorage
 from groomeet_backend.models import Musico,Instrumento, Genero
-from groomeet_backend.likes import postLikeMusicoMusico
+from groomeet_backend.likes import postLikeMusicoMusico, postNoLikeMusicoMusico
 from django.test import RequestFactory, TestCase
 
 # Create your tests here.
-class UsersTestCase(TestCase):
+class LikesTestCase(TestCase):
 
     def setUp(self):
 
@@ -43,4 +45,32 @@ class UsersTestCase(TestCase):
         postLikeMusicoMusico(request, musico1.id)
         self.assertEqual(musico1.numLikes,1)
 
+    def testNoLikeMusicoMusico(self):
+        user0= User.objects.get(username="musico0")
 
+        request = self.factory.get("/listado")
+        request.user = user0
+
+        user1= User.objects.get(username="musico1")
+        musico1 = Musico.objects.get(usuario = user1)
+        postNoLikeMusicoMusico(request, musico1.id)
+        self.assertEqual(musico1.noLikesRecibidos.all().count(),1)
+
+    def testMatchMusicoMusico(self):
+        user0= User.objects.get(username="musico0")
+        user1= User.objects.get(username="musico1")
+        musico0 = Musico.objects.get(usuario = user0)
+        musico1 = Musico.objects.get(usuario = user1)
+
+        request = self.factory.get("/listado")
+        request.user = user0
+
+        postLikeMusicoMusico(request, musico1.id)
+        request.user = user1
+        request.session = {}
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        postLikeMusicoMusico(request, musico0.id)
+        self.assertEqual(musico0.numLikes,1)
+        self.assertEqual(musico1.numLikes,1)
