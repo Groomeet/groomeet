@@ -37,3 +37,17 @@ INSERT INTO groomeet_backend_genero (nombre)
 VALUES ("Gospel");
 INSERT INTO groomeet_backend_genero (nombre)
 VALUES ("Hip-Hop");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Electrónica");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Rock");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Blues");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Grunge");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Cofrade");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Medieval");
+INSERT INTO groomeet_backend_genero (nombre)
+VALUES ("Celta");
