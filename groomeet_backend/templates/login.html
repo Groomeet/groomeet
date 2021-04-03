@@ -1,22 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang='es'>
 
-{% block titulo %}
+  <head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"/>
+    <title>Login</title>
+  </head>
 
-{% endblock %}
-
-{% block contenido %}
-
-
-<body class="text-center"><br><br>
-    <form style="margin-left: 50px; margin-right: 50px;" id="formulario" method="post" action='' class="form-signin">{% csrf_token %}
-      <h1 class="h3 mb-3 font-weight-normal">Por favor, inicie sesión para continuar</h1>
-      <label for="username" class="sr-only">Username</label><br><br>
-      <input name="username" id="username" class="form-control" placeholder="Usuario" required autofocus>
-      <label for="password" class="sr-only">Contraseña</label><br>
-      <input name="password" type="password" id="password" class="form-control" placeholder="Contraseña" required><br><br>
-      
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesión</button>
-       
-    </form>
-    <a href="/signup">¿Aún no tienes cuenta? Regístrate Aquí</a>
+  <body class="text-center">
+    <div class="container">
+      <div class="row">
+          <div class="col-md-6">
+              <div class="card">
+                <form id="formulario" method="POST" action='/login/' class="box">{% csrf_token %}
+                  <img class="logo" src="{% static 'img/logo_negativo_para_fondo_negro.png' %}" alt="Groomeet">
+                  {% if form.errors %}
+                    <p class="text-danger">El nombre o la contraseña introducido/a no es correcto/a. Por favor, inténtelo de nuevo.</p>
+                  {% else %}
+                    <p class="text-muted"> Por favor, introduzca su nombre de usuario y contraseña</p>
+                  {% endif %}
+                  <input type="text" name="username" id="username" placeholder="Usuario" required>
+                  <input type="password"name="password" id="password" placeholder="Contraseña" required>
+                  <input type="submit" value="Iniciar sesión">
+                  <!-- Descomentar la linea de abajo cuando se implemente esta funcionalidad en el sprint 2 y borrar esta -->
+                  <!-- <a href="/signup">¿Aún no tienes cuenta? ¡Regístrate aquí!</a> -->            
+                </form>
+              </div>
+            </div>
+        </div>
+    </div>
   </body>
-{% endblock %}
+
+</html>
