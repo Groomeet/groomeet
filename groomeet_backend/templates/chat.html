@@ -1,18 +1,10 @@
-<!DOCTYPE HTML>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link href="{% static "css/main.css" %}" rel="stylesheet" type="text/css" media="all">
-        <title>{% block title %}Django Private Chat2 example{% endblock %}</title>
-        {% block css %}{% endblock %}
-    </head>
+{% block title %} - Chat{% endblock %}
+{% block body %}
 
-    <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
         <script src="{% static 'js/main.js' %}"></script>
-        {% block extra_js %}{% endblock %}
-    </body>
 
-</html>
+{% endblock %}
