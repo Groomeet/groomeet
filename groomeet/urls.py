@@ -47,7 +47,7 @@ urlpatterns = [
     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
     path('invitacionBanda/<int:receptor_id>/<int:banda_id>/', bandas.enviarInvitacionBanda),
     path('aceptarInvitacion/<int:banda_id>/', bandas.aceptarInvitacionBanda),
-    path('chat/', views.base, name='base'),
+    path('chat/', views.chat, name='chat'),
     path('messages/', django_private_chat2.views.MessagesModelList.as_view(), name='all_messages_list'),
     path('messages/<dialog_with>/', django_private_chat2.views.MessagesModelList.as_view(), name='messages_list'),
     path('dialogs/', django_private_chat2.views.DialogsModelList.as_view(), name='dialogs_list'),
