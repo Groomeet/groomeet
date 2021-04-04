@@ -96,20 +96,29 @@ def enviarInvitacionBanda(request, receptor_id, banda_id):
     return redirect("/listado")
 
 @login_required
-def aceptarInvitacionBanda(request, banda_id):
+def aceptarInvitacionBanda(request, invitacion_id):
     usuario = request.user
     receptor = get_object_or_404(Musico, usuario=usuario)
-    banda = get_object_or_404(Banda, id=banda_id)
-    try:
-        invitacion = Invitacion.objects.get(receptor = receptor, banda = banda, estado = EstadoInvitacion.Pendiente)
-    except:
-        invitacion = None
-        messages.error = (request, f"La invitación no existe")
+    invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
 
-    if invitacion != None:
-        nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
-        invitacion.estado = EstadoInvitacion.Aceptada
-        invitacion.save()
-        messages.success = (request, f"¡Te has unido a la banda {banda.nombre}!")
+    banda = invitacion.banda
+    nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
+    invitacion.estado = EstadoInvitacion.Aceptada
+    invitacion.save()
+    messages.success = (request, f"¡Te has unido a la banda {banda.nombre}!")
+
+    return redirect("/listado")
+
+@login_required
+def rechazarInvitacionBanda(request, invitacion_id):
+    usuario = request.user
+    receptor = get_object_or_404(Musico, usuario=usuario)
+    invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
+
+    banda = invitacion.banda
+    nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
+    invitacion.estado = EstadoInvitacion.Rechazada
+    invitacion.save()
+    messages.success = (request, f"¡Has rechazado la invitación a la banda {banda.nombre}!")
 
     return redirect("/listado")

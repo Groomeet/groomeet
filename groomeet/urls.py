@@ -31,5 +31,6 @@ urlpatterns = [
     path('updateBanda/<int:id>', bandas.bandaUpdate, name='updateBanda'),
     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
     path('invitacionBanda/<int:receptor_id>/<int:banda_id>/', bandas.enviarInvitacionBanda),
-    path('aceptarInvitacion/<int:banda_id>/', bandas.aceptarInvitacionBanda),
+    path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
+    path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
 ]
