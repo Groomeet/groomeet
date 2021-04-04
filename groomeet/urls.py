@@ -17,6 +17,11 @@ from django.contrib import admin
 from django.urls import path
 from groomeet_backend import views, likes, bandas
 from django.contrib.auth import views as auth_views
+from django.urls import path, include
+
+from groomeet_backend import views
+import django_private_chat2.views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +46,12 @@ urlpatterns = [
     path('updateBanda/<int:id>', bandas.bandaUpdate, name='updateBanda'),
     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
     path('invitacionBanda/<int:receptor_id>/<int:banda_id>/', bandas.enviarInvitacionBanda),
-    path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
+    path('aceptarInvitacion/<int:banda_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
+    path('chat/', views.base, name='base'),
+    path('messages/', django_private_chat2.views.MessagesModelList.as_view(), name='all_messages_list'),
+    path('messages/<dialog_with>/', django_private_chat2.views.MessagesModelList.as_view(), name='messages_list'),
+    path('dialogs/', django_private_chat2.views.DialogsModelList.as_view(), name='dialogs_list'),
+    path('self/', django_private_chat2.views.SelfInfoView.as_view(), name='self_info'),
+    
 ]

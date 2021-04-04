@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 from datetime import date
-from dateutil.relativedelta import relativedelta
+#from dateutil.relativedelta import relativedelta
 from enum import Enum
 
 # Create your models here.
@@ -38,9 +38,9 @@ class Musico(models.Model):
     @property
     def numLikes(self):
         return self.likesRecibidos.all().count()
-    @property
-    def edad(self):
-        return relativedelta(date.today(), self.fechaNacimiento).years
+    # @property
+    # def edad(self):
+    #     return relativedelta(date.today(), self.fechaNacimiento).years
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):

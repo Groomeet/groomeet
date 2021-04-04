@@ -3,6 +3,11 @@ from groomeet_backend.models import *
 from django.contrib.auth import login, logout,authenticate
 
 # Create your views here.
+from django.shortcuts import render
+
+
+def base(request):
+    return render(request, 'base.html')
 
 def index(request):
     return render(request, '../templates/index.html')
