@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from groomeet_backend.models import Musico, Banda
 from django.contrib.auth.decorators import login_required
+from django_private_chat2.models import DialogsModel, MessageModel
 
 #Sección de likes y no likes entre músicos
 @login_required
@@ -17,6 +18,9 @@ def postLikeMusicoMusico(request, pk):
         if musico.usuario in usuario.musico.likesRecibidos.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
+            DialogsModel.create_if_not_exists(usuario, musico.usuario)
+            MessageModel.objects.create(text="¡Hemos hecho match! ¿Hacemos música?", sender=usuario, recipient=musico.usuario)
+            MessageModel.objects.create(text="¡Hemos hecho match! ¿Hacemos música?", sender=musico.usuario, recipient=usuario)
             print(f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
     return redirect("/listado")
 

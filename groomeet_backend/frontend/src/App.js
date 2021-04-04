@@ -157,7 +157,7 @@ export class App extends Component {
         };
 
         socket.onopen = function (e) {
-            toast.success("Connected!", toastOptions)
+            toast.success("Conectado!!", toastOptions)
             that.setState({socketConnectionState: socket.readyState});
         }
         socket.onmessage = function (e) {
@@ -176,7 +176,7 @@ export class App extends Component {
             }
         };
         socket.onclose = function (e) {
-            toast.info("Disconnected...", toastOptions)
+            toast.info("Desconectado...", toastOptions)
             that.setState({socketConnectionState: socket.readyState});
             console.log("websocket closed")
         }
@@ -195,13 +195,13 @@ export class App extends Component {
 
     getSocketState() {
         if (this.state.socket.readyState === 0) {
-            return "Connecting..."
+            return "Conectando..."
         } else if (this.state.socket.readyState === 1) {
-            return "Connected"
+            return "Conectado"
         } else if (this.state.socket.readyState === 2) {
-            return "Disconnecting..."
+            return "Desconectando..."
         } else if (this.state.socket.readyState === 3) {
-            return "Disconnected"
+            return "Desconectado"
         }
     }
 
@@ -380,7 +380,7 @@ export class App extends Component {
                         top={
                             <span className='chat-list'>
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Buscar..."
                                     ref={this.setSearchInputRef}
                                     onKeyPress={(e) => {
                                         if (e.charCode !== 13) {
@@ -425,7 +425,7 @@ export class App extends Component {
                         }
                         bottom={
                             <Button type='transparent' color='black' disabled={true}
-                                    text={"Connection state: " + this.getSocketState()}/>
+                                    text={"Estado: " + this.getSocketState()}/>
                         }/>
                 </div>
                 <div
@@ -511,7 +511,7 @@ export class App extends Component {
                         dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}/>
 
                     <Input
-                        placeholder="Type here to send a message."
+                        placeholder="Escriba aquí para enviar un mensaje."
                         defaultValue=""
                         ref={this.setTextInputRef}
                         multiline={true}
@@ -536,7 +536,7 @@ export class App extends Component {
                         }}
                         rightButtons={
                             <Button
-                                text='Send'
+                                text='Enviar'
                                 disabled={this.state.socket.readyState !== 1}
                                 onClick={() => this.performSendingMessage()}/>
                         }/>

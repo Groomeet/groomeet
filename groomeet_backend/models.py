@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 from datetime import date
-from dateutil.relativedelta import relativedelta
+#from dateutil.relativedelta import relativedelta
 from enum import Enum
 
 # Create your models here.
@@ -38,9 +38,9 @@ class Musico(models.Model):
     @property
     def numLikes(self):
         return self.likesRecibidos.all().count()
-    @property
-    def edad(self):
-        return relativedelta(date.today(), self.fechaNacimiento).years
+    # @property
+    # def edad(self):
+    #     return relativedelta(date.today(), self.fechaNacimiento).years
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):
@@ -84,20 +84,6 @@ class Chat(TimeStampedModel, SoftDeletableModel):
 
     def __str__(self):
         return "Chat de " + self.participante1.usuario.username + " con " + self.participante2.usuario.username
-
-    @staticmethod
-    def dialog_exists(u1: AbstractBaseUser, u2: AbstractBaseUser) -> Optional[Any]:
-        return Chat.objects.filter(Q(user1=u1, user2=u2) | Q(user1=u2, user2=u1)).first()
-
-    @staticmethod
-    def create_if_not_exists(u1: AbstractBaseUser, u2: AbstractBaseUser):
-        res = Chat.dialog_exists(u1, u2)
-        if not res:
-            Chat.objects.create(user1=u1, user2=u2)
-
-    @staticmethod
-    def chat_usuario(user: AbstractBaseUser):
-        return Chat.objects.filter(Q(user1=user) | Q(user2=user)).values_list('user1__pk', 'user2__pk')
 
 
 class Mensaje(TimeStampedModel, SoftDeletableModel):
