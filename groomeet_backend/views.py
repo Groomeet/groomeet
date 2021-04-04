@@ -99,3 +99,9 @@ def listadoMisBandas(request):
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
     return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
+
+def listadoGeneros(request):
+    currentUser = Musico.objects.get(id=request.user.pk)
+    generos = Genero.objects.all()
+    context = {'generos': generos}
+    return render(request, '../templates/generos.html', context)
