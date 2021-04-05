@@ -2,22 +2,27 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def base(request):
     return render(request, 'base.html')
 
+@login_required(login_url='/login/')
 def index(request):
     context = listadoMusicos(request)
     return render(request, '../templates/index.html', context)
 
+@login_required(login_url='/login/')
 def logout_view(request):
     logout(request)
     return redirect('/')
 
+@login_required(login_url='/login/')
 def chat(request):
     return render(request, 'chat.html')
 
+@login_required(login_url='/login/')
 def getMusico(request, id):
 #    musico = Musico.objects.get(id=id)
 #    nombre = musico.usuario.username + ";"
@@ -40,6 +45,7 @@ def getMusico(request, id):
     response = nombre + fechaNac + id
     return HttpResponse(response)
 
+@login_required(login_url='/login/')
 def getBanda(request, id):
     banda = Banda.objects.get(id=id)
     nombre = banda.nombre + ";"
@@ -48,7 +54,7 @@ def getBanda(request, id):
     response = nombre + id
     return HttpResponse(response)
 
-
+@login_required(login_url='/login/')
 def listadoMusicos(request):
     musicos = Musico.objects.all()
     result = []
@@ -62,6 +68,7 @@ def listadoMusicos(request):
     }
     return context
 
+@login_required(login_url='/login/')
 def listadoBandas(request):
     bandas = Banda.objects.all()
     result = []
@@ -73,8 +80,9 @@ def listadoBandas(request):
         'bandas': result,
         'usuario': usuario,
     }
-    return context
+    return render(request, "../templates/listadoBandas.html", context)
 
+@login_required(login_url='/login/')
 def listadoBandasMusicos(request, pkBanda):
     musicos = Musico.objects.all()
     banda = get_object_or_404(Banda, id=pkBanda)
@@ -90,6 +98,7 @@ def listadoBandasMusicos(request, pkBanda):
     }
     return render(request, "../templates/listadoBandasMusicos.html", context)
 
+@login_required(login_url='/login/')
 def listadoBandasBandas(request, pkBanda):
     bandas = Banda.objects.all()
     banda = get_object_or_404(Banda, id=pkBanda)
@@ -105,21 +114,24 @@ def listadoBandasBandas(request, pkBanda):
     }
     return render(request, "../templates/listadoBandasBandas.html", context)
 
-
+@login_required(login_url='/login/')
 def listadoMisBandas(request):
     misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
     return render(request, "misBandas.html", {'misBandas': misBandas})
 
+@login_required(login_url='/login/')
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
     return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
 
+@login_required(login_url='/login/')
 def listadoGeneros(request):
     currentUser = Musico.objects.get(id=request.user.pk)
     generos = Genero.objects.all()
     context = {'generos': generos}
     return render(request, '../templates/generos.html', context)
 
+@login_required(login_url='/login/')
 def listadoMisInvitaciones(request):
     misInvitaciones = Invitacion.objects.all().filter(receptor=request.user.musico)
     return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
