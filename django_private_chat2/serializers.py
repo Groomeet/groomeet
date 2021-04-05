@@ -1,7 +1,6 @@
 from .models import MessageModel, DialogsModel, UserModel
 from datetime import datetime
-from typing import Callable, Optional
-from django.contrib.auth.models import AbstractBaseUser
+from typing import Optional
 import json
 
 

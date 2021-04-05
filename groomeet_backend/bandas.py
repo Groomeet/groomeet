@@ -102,7 +102,7 @@ def aceptarInvitacionBanda(request, invitacion_id):
     invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
 
     banda = invitacion.banda
-    MiembroDe.objects.create(musico = receptor, banda = banda)
+    nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
     invitacion.estado = EstadoInvitacion.Aceptada
     invitacion.save()
     messages.success = (request, f"¡Te has unido a la banda {banda.nombre}!")
