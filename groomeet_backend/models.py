@@ -105,6 +105,6 @@ class Invitacion(TimeStampedModel):
     receptor = models.ForeignKey(Musico, on_delete=models.CASCADE, related_name="invitacionesRecibidas")
     banda = models.ForeignKey(Banda, on_delete=models.CASCADE)
     estado = models.CharField(
-        max_length=9,
+        max_length=40,
         choices=[(estado, estado.value) for estado in EstadoInvitacion]
     )
