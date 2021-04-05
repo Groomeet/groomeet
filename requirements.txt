@@ -3,3 +3,5 @@ dj_database_url==0.5.0
 asgiref==3.3.1
 Django==3.1.7
 django_model_utils==4.1.1
+django-heroku
+gunicorn
