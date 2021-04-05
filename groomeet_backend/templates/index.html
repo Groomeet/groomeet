@@ -4,18 +4,22 @@
 {% block body %}
 <div class="container-fluid">
     {% if request.user.is_authenticated %}
-
+    <h2>Bienvenido/a, {{request.user.username}}</h2>
     <div class="row">
       <div class="col-xs-1 col-sm-3 col-lg-1 offset-xs-3 offset-sm-3 offset-md-3 offset-lg-0">
           Home
       </div>
 
       <div class="col-xs-1 col-sm-3 col-lg-1">
-          Chats
+        <a href="/chat">Chats</a><br>
       </div>
 
       <div class="col-xs-1 col-sm-3 col-lg-1">
-          Settings
+        <a href="/misBandas">Mis Bandas</a><br>
+      </div>
+
+      <div class="col-xs-1 col-sm-3 col-lg-1">
+        <a href="/listadoBandas">Buscar Bandas</a><br>
       </div>
     </div>
 

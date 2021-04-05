@@ -132,6 +132,7 @@ STATICFILES_DIRS = ( os.path.join('static'), )
 #  Add configuration for static files storage using whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 CHANNEL_LAYERS = {
