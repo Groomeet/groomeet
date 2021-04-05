@@ -1,6 +1,19 @@
+/* Sustituido por .table-cabecera y .der
 h1 {
     background-image: linear-gradient(to right, var(--primary-color), #fff);
 }
+*/
+
+.table-cabecera {
+    width: 100%;
+    background-image: linear-gradient(to right, var(--primary-color), #fff);
+}
+
+.der {
+    text-align: right;
+    padding-right: 10px;
+}
+
 
 .row {
     flex-wrap: initial;

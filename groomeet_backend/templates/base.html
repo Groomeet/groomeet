@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="{% static 'css/genero.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"/>
     <link href="{% static "css/main.css" %}" rel="stylesheet" type="text/css" media="all">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -29,8 +30,15 @@
 <body>
     <header>
         <div>
-            <h1>Groomeet</h1>
+            <table class="table-cabecera">
+              <tr>
+                <td><h1>Groomeet</h1></td>
+                <td class=der><a href="/logout">Desconectar</a></td>
+              </tr>
+            </table>
         </div>
+
+            {% block menu %}{% endblock %}
     </header>
 
     {% block body %}{% endblock %}

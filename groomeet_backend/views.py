@@ -19,10 +19,23 @@ def chat(request):
     return render(request, 'chat.html')
 
 def getMusico(request, id):
-    musico = Musico.objects.get(id=id)
+#    musico = Musico.objects.get(id=id)
+#    nombre = musico.usuario.username + ";"
+#    fechaNac = str(musico.fechaNacimiento) + ";"
+#    id = str(musico.id)
+
+    musicos = Musico.objects.all()
+    result = []
+    usuario = request.user
+    for musico in musicos:
+        if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
+            result.append(musico)
+
+    musico = result[id]
     nombre = musico.usuario.username + ";"
     fechaNac = str(musico.fechaNacimiento) + ";"
     id = str(musico.id)
+
 
     response = nombre + fechaNac + id
     return HttpResponse(response)
