@@ -62,6 +62,69 @@ def miembroNoRegistradoCreate(request, pk):
     return render(request, 'createMiembroNoRegistrado.html', {'formulario': formulario})
 
 @login_required
+def enviarInvitacionBanda(request, banda_id):
+    if request.method == "POST":
+        formulario = InvitarBandaForm(request.POST)
+        if formulario.is_valid():
+            estado = EstadoInvitacion.Pendiente
+            usuario = get_object_or_404(User, username=formulario.cleaned_data['receptor'])
+            banda = get_object_or_404(Banda, id=banda_id)
+
+            #Comprobando que el usuario no pertenece ya a la banda
+            try:
+                invitacion_aceptada = Invitacion.objects.get(receptor = receptor, 
+                                                    banda = banda, estado = EstadoInvitacion.Aceptada)
+                messages.error = (request, f"El usuario {usuario.username} ya pertenece a la banda {banda.nombre}")
+            except:
+                invitacion_aceptada = None
+
+            #Comprobando que el usuario no tiene ya una invitación pendiente para esa banda
+            try:
+                invitacion_pendiente = Invitacion.objects.get(receptor = receptor, 
+                                                    banda = banda, estado = EstadoInvitacion.Pendiente)
+                messages.error = (request, f"El usuario {usuario.username} ya tiene una invitación pendiente para la banda {banda.nombre}")
+            except:
+                invitacion_pendiente = None
+
+            if invitacion_aceptada == None and invitacion_pendiente == None:
+                invitacion = Invitacion.objects.create(receptor = get_object_or_404(Musico,usuario=usuario), emisor=get_object_or_404(Musico,usuario = request.user),
+                                                banda=banda, estado=estado)
+                messages.success = (request, f"¡La invitación a {usuario.username} para la banda {banda.nombre} fue enviada!")
+            return HttpResponseRedirect('/misBandas')
+    else:
+        formulario = InvitarBandaForm()
+    return render(request, 'invitarBanda.html', {'formulario': formulario})
+
+
+@login_required
+def aceptarInvitacionBanda(request, invitacion_id):
+    usuario = request.user
+    receptor = get_object_or_404(Musico, usuario=usuario)
+    invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
+
+    banda = invitacion.banda
+    nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
+    invitacion.estado = EstadoInvitacion.Aceptada
+    invitacion.save()
+    messages.success = (request, f"¡Te has unido a la banda {banda.nombre}!")
+
+    return redirect("/misInvitaciones")
+
+@login_required
+def rechazarInvitacionBanda(request, invitacion_id):
+    usuario = request.user
+    receptor = get_object_or_404(Musico, usuario=usuario)
+    invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
+
+    invitacion.estado = EstadoInvitacion.Rechazada
+    invitacion.save()
+    messages.success = (request, f"¡Has rechazado la invitación a la banda {invitacion.banda.nombre}!")
+
+    return redirect("/misInvitaciones")
+
+#Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
+'''
+@login_required
 def enviarInvitacionBanda(request, receptor_id, banda_id):
     emisor = get_object_or_404(Musico, usuario=request.user)
     receptor = get_object_or_404(Musico, id=receptor_id)
@@ -94,31 +157,4 @@ def enviarInvitacionBanda(request, receptor_id, banda_id):
             messages.error = (request, f"La invitación no se pudo enviar")
         
     return redirect("/listado")
-
-@login_required
-def aceptarInvitacionBanda(request, invitacion_id):
-    usuario = request.user
-    receptor = get_object_or_404(Musico, usuario=usuario)
-    invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
-
-    banda = invitacion.banda
-    nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
-    invitacion.estado = EstadoInvitacion.Aceptada
-    invitacion.save()
-    messages.success = (request, f"¡Te has unido a la banda {banda.nombre}!")
-
-    return redirect("/listado")
-
-@login_required
-def rechazarInvitacionBanda(request, invitacion_id):
-    usuario = request.user
-    receptor = get_object_or_404(Musico, usuario=usuario)
-    invitacion = get_object_or_404(Invitacion, id=invitacion_id, receptor = receptor, estado = EstadoInvitacion.Pendiente)
-
-    banda = invitacion.banda
-    nuevo_miembro = MiembroDe.objects.create(musico = receptor, banda = banda)
-    invitacion.estado = EstadoInvitacion.Rechazada
-    invitacion.save()
-    messages.success = (request, f"¡Has rechazado la invitación a la banda {banda.nombre}!")
-
-    return redirect("/listado")
+'''

@@ -1,0 +1,19 @@
+{% block content %}
+        
+
+    
+        <h2 >Escriba el nombre del usuario que quiere invitar a la banda</h2><br>
+            <form method="POST" class="post-form">{% csrf_token %}
+                {{ formulario }}
+     
+                <button type="submit" class="btn btn-success">Invitar</button>
+            </form>
+
+          </div>
+        
+
+        
+{% endblock %}
+
+</body>
+</html>
