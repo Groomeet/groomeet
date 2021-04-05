@@ -15,6 +15,9 @@ def logout_view(request):
     logout(request)
     return redirect('/')
 
+def chat(request):
+    return render(request, 'chat.html')
+
 def getMusico(request, id):
     musico = Musico.objects.get(id=id)
     nombre = musico.usuario.username + ";"
@@ -80,7 +83,7 @@ def listadoBandasBandas(request, pkBanda):
     result = []
     usuario = request.user
     for b in bandas:
-        if usuario.id is not b.administrador.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
+        if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
             result.append(b)
     context = {
         'bandas': result,
@@ -91,9 +94,15 @@ def listadoBandasBandas(request, pkBanda):
 
 
 def listadoMisBandas(request):
-    misBandas = Banda.objects.all().filter(administrador=request.user.pk).order_by('-nombre')
+    misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
     return render(request, "misBandas.html", {'misBandas': misBandas})
 
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
     return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
+
+def listadoGeneros(request):
+    currentUser = Musico.objects.get(id=request.user.pk)
+    generos = Genero.objects.all()
+    context = {'generos': generos}
+    return render(request, '../templates/generos.html', context)

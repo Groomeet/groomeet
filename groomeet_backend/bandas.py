@@ -9,7 +9,7 @@ def bandaCreate(request):
     if request.method == "POST":
         formulario = BandaForm(request.POST)
         if formulario.is_valid():
-            banda = Banda.objects.create(nombre = formulario.cleaned_data['nombre'], administrador=Musico(request.user.pk))
+            banda = Banda.objects.create(nombre = formulario.cleaned_data['nombre'], administrador=get_object_or_404(Musico,usuario = request.user))
             banda.generos.set(request.POST.getlist('generos'))
             banda.instrumentos.set(request.POST.getlist('instrumentos'))
             
@@ -47,7 +47,7 @@ def bandaDelete(request, id):
 @login_required
 def miembroNoRegistradoCreate(request, pk):
     banda = get_object_or_404(Banda, id=pk)
-    if banda.administrador.id != request.user.id:
+    if banda.administrador.usuario.id != request.user.id:
         return HttpResponseRedirect('/misBandas')
     if request.method == "POST":
         formulario = MiembroNoRegistradoForm(request.POST)
