@@ -13,7 +13,6 @@ from django_private_chat2 import urls
 import os
 
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
 application = ProtocolTypeRouter({
