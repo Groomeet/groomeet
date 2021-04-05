@@ -2,7 +2,7 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require("webpack");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const { ESBuildPlugin, ESBuildMinifyPlugin } = require('esbuild-loader')
+const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
 module.exports = function(_env, argv) {
   const isProduction = argv.mode === "production";
@@ -20,11 +20,11 @@ module.exports = function(_env, argv) {
       rules: [
           {
          test: /\.js$/,
-         loader: 'esbuild-loader',
+         loader: "esbuild-loader",
          exclude: /node_modules/,
          options: {
-           loader: 'jsx', // Remove this if you're not using JSX
-           target: 'es2015', // Syntax to compile to (see options below for possible values),
+           loader: "jsx", // Remove this if you're not using JSX
+           target: "es2015", // Syntax to compile to (see options below for possible values),
          }
        },
         {
@@ -76,31 +76,9 @@ module.exports = function(_env, argv) {
     optimization: {
       minimize: isProduction,
       minimizer: [
-        new ESBuildMinifyPlugin({target: 'es2015', minify:isProduction}),
+        new ESBuildMinifyPlugin({target: "es2015", minify:isProduction}),
         new OptimizeCssAssetsPlugin()
       ],
-      // splitChunks: {
-      //   chunks: "all",
-      //   minSize: 0,
-      //   maxInitialRequests: 10,
-      //   maxAsyncRequests: 10,
-      //   cacheGroups: {
-      //     vendors: {
-      //       test: /[\\/]node_modules[\\/]/,
-      //       name(module, chunks, cacheGroupKey) {
-      //         const packageName = module.context.match(
-      //           /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-      //         )[1];
-      //         return `${cacheGroupKey}.${packageName.replace("@", "")}`;
-      //       }
-      //     },
-      //     common: {
-      //       minChunks: 2,
-      //       priority: -10
-      //     }
-      //   }
-      // },
-      // runtimeChunk: "single"
     },
     devServer: {
       compress: true,

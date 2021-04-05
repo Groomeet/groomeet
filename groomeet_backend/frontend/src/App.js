@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import 'react-chat-elements/dist/main.css';
+import "react-chat-elements/dist/main.css";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import {ToastContainer, toast} from 'react-toastify';
@@ -18,8 +18,8 @@ import {
     Popup,
 } from 'react-chat-elements';
 import throttle from 'lodash.throttle';
-import {FaSearch, FaComments, FaWindowClose, FaEdit, FaSquare, FaTimesCircle} from 'react-icons/fa';
-import {MdMenu} from 'react-icons/md';
+import {FaSearch, FaComments, FaWindowClose, FaEdit, FaSquare, FaTimesCircle} from "react-icons/fa";
+import {MdMenu} from "react-icons/md";
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {
     createNewDialogModelFromIncomingMessageBox,
@@ -34,11 +34,11 @@ import {
     sendIsTypingMessage,
     markMessagesForDialogAsRead,
     sendMessageReadMessage
-} from "../fs-src/App.fs.js"
+} from "../fs-src/App.fs.js";
 
 import {
     format,
-} from 'timeago.js';
+} from "timeago.js";
 
 import loremIpsum from 'lorem-ipsum';
 
@@ -59,7 +59,7 @@ export class App extends Component {
         };
 
         this.searchInput = null;
-        this.setSearchInputRef = element => {
+        this.setSearchInputRef = (element) => {
             this.searchInput = element;
         };
         this.clearSearchInput = () => {
@@ -93,19 +93,19 @@ export class App extends Component {
 
 
         this.isTyping = throttle(() => {
-            sendIsTypingMessage(this.state.socket)
-        }, TYPING_TIMEOUT)
+            sendIsTypingMessage(this.state.socket);
+        }, TYPING_TIMEOUT);
 
         this.localSearch = throttle(() => {
             let val = this.searchInput.input.value;
-            console.log("localSearch with '" + val + "'")
+            console.log("localSearch with '" + val + "'");
             if (!val || 0 === val.length) {
                 this.setState(prevState => ({filteredDialogList: prevState.dialogList}));
             } else {
                 this.setState(prevState => ({
                     filteredDialogList: prevState.dialogList.filter(function (el) {
-                        return el.title.toLowerCase().includes(val.toLowerCase())
-                    })
+                        return el.title.toLowerCase().includes(val.toLowerCase());
+                    });
                 }))
             }
         }, 100)
@@ -114,34 +114,34 @@ export class App extends Component {
     componentDidMount() {
         fetchMessages().then((r) => {
             if (r.tag === 0) {
-                console.log("Fetched messages:")
-                console.log(r.fields[0])
-                this.setState({messageList: r.fields[0]})
+                console.log("Fetched messages:");
+                console.log(r.fields[0]);
+                this.setState({messageList: r.fields[0]});
             } else {
-                console.log("Messages error:")
-                toast.error(r.fields[0])
+                console.log("Messages error:");
+                toast.error(r.fields[0]);
             }
         })
 
         fetchDialogs().then((r) => {
             if (r.tag === 0) {
-                console.log("Fetched dialogs:")
-                console.log(r.fields[0])
-                this.setState({dialogList: r.fields[0], filteredDialogList: r.fields[0]})
-                this.selectDialog(r.fields[0][0])
+                console.log("Fetched dialogs:");
+                console.log(r.fields[0]);
+                this.setState({dialogList: r.fields[0], filteredDialogList: r.fields[0]});
+                this.selectDialog(r.fields[0][0]);
             } else {
-                console.log("Dialogs error:")
-                toast.error(r.fields[0])
+                console.log("Dialogs error:");
+                toast.error(r.fields[0]);
             }
         })
         fetchSelfInfo().then((r) => {
             if (r.tag === 0) {
-                console.log("Fetched selfInfo:")
-                console.log(r.fields[0])
-                this.setState({selfInfo: r.fields[0]})
+                console.log("Fetched selfInfo:");
+                console.log(r.fields[0]);
+                this.setState({selfInfo: r.fields[0]});
             } else {
-                console.log("SelfInfo error:")
-                toast.error(r.fields[0])
+                console.log("SelfInfo error:");
+                toast.error(r.fields[0]);
             }
         })
         this.setState({socketConnectionState: this.state.socket.readyState});
@@ -157,9 +157,10 @@ export class App extends Component {
         };
 
         socket.onopen = function (e) {
-            toast.success("Conectado!!", toastOptions)
+            toast.success("Conectado!!", toastOptions);
             that.setState({socketConnectionState: socket.readyState});
         }
+
         socket.onmessage = function (e) {
             that.setState({socketConnectionState: socket.readyState});
 
@@ -176,17 +177,17 @@ export class App extends Component {
             }
         };
         socket.onclose = function (e) {
-            toast.info("Desconectado...", toastOptions)
+            toast.info("Desconectado...", toastOptions);
             that.setState({socketConnectionState: socket.readyState});
-            console.log("websocket closed")
+            console.log("websocket closed");
         }
     }
 
     selectDialog(item) {
-        console.log("Selecting dialog " + item.id)
-        this.setState({selectedDialog: item})
-        this.setState(prevState => ({
-            dialogList: prevState.dialogList.map(el => (el.id === item.id ?
+        console.log("Selecting dialog " + item.id);
+        this.setState({selectedDialog: item});
+        this.setState((prevState) => ({
+            dialogList: prevState.dialogList.map((el) => (el.id === item.id ?
                 {...el, statusColorType: 'encircle'} : {...el, statusColorType: undefined}))
         }))
         this.setState(prevState => ({filteredDialogList: prevState.dialogList}));
@@ -195,13 +196,13 @@ export class App extends Component {
 
     getSocketState() {
         if (this.state.socket.readyState === 0) {
-            return "Conectando..."
+            return "Conectando...";
         } else if (this.state.socket.readyState === 1) {
-            return "Conectado"
+            return "Conectado";
         } else if (this.state.socket.readyState === 2) {
-            return "Desconectando..."
+            return "Desconectando...";
         } else if (this.state.socket.readyState === 3) {
-            return "Desconectado"
+            return "Desconectado";
         }
     }
 
@@ -492,7 +493,7 @@ export class App extends Component {
                                         this.setState({availableUsers: r.fields[0]})
                                     } else {
                                         console.log("Users error:")
-                                        toast.error(r.fields[0])
+                                        toast.error(r.fields[0]);
                                     }
                                 })
                                 this.setState({showNewChatPopup: true})

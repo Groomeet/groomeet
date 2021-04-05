@@ -1,10 +1,13 @@
-{% block content %}
+{% extends 'menu.html' %}
+{% block body %}
 <div class="card-body">
-    <h4>Editar Banda</h4>
+     <div class="panel-heading">
+    <h2>Editar Banda</h2>
     <form method="post">
         {% csrf_token %}
         {{form.as_p}}
         <button type="submit" class="btn btn-success">Actualizar <span class="glyphicon glyphicon-edit"></span></button>
     </form>
+     </div>
 </div>
 {% endblock %}
