@@ -16,7 +16,6 @@ import os
 
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-import groomeet_backend.routing
 from django_private_chat2 import urls
 
 

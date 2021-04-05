@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from groomeet_backend import views, likes, bandas
 from django.contrib.auth import views as auth_views
-from django.urls import include
 
 import django_private_chat2.views
 

@@ -1,7 +1,5 @@
 from .models import MessageModel, DialogsModel, UserModel
-from datetime import datetime
 from typing import Optional
-import json
 
 
 def serialize_message_model(m: MessageModel, user_id):
