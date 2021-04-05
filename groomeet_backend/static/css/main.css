@@ -2440,3 +2440,7 @@ groomet-header {
 .rce-sbar.light {
     background: #f4f6f5
 }
+
+.rce-navbar-item.rce-navbar-item__right {
+    display:none;
+}
