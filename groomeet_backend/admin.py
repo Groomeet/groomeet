@@ -1,5 +1,5 @@
 from django.contrib import admin
-from groomeet_backend.models import Musico, Banda, Chat, Mensaje, Invitacion, MiembroDe, Genero, Instrumento
+from groomeet_backend.models import *
 # Register your models here.
 
 admin.site.register(Musico)
