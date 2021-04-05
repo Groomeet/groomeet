@@ -6,10 +6,6 @@ from django.contrib.auth import login, logout,authenticate
 # Create your views here.
 from django.shortcuts import render
 
-
-def base(request):
-    return render(request, 'base.html')
-
 def index(request):
     context = listadoMusicos(request)
     return render(request, '../templates/index.html', context)
@@ -17,6 +13,9 @@ def index(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+def chat(request):
+    return render(request, 'chat.html')
 
 def getMusico(request, id):
     musico = Musico.objects.get(id=id)
@@ -100,3 +99,9 @@ def listadoMisBandas(request):
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
     return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
+
+def listadoGeneros(request):
+    currentUser = Musico.objects.get(id=request.user.pk)
+    generos = Genero.objects.all()
+    context = {'generos': generos}
+    return render(request, '../templates/generos.html', context)
