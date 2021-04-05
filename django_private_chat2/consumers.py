@@ -1,5 +1,4 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import InMemoryChannelLayer
 from channels.db import database_sync_to_async
 from .models import MessageModel, DialogsModel, UserModel
 from typing import List, Set, Awaitable, Optional, Dict, Tuple

@@ -1,8 +1,5 @@
 from .models import MessageModel, DialogsModel, UserModel
-from datetime import datetime
-from typing import Callable, Optional
-from django.contrib.auth.models import AbstractBaseUser
-import json
+from typing import Optional
 
 
 def serialize_message_model(m: MessageModel, user_id):

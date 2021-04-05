@@ -1,10 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from groomeet_backend.models import *
-from django.contrib.auth import login, logout,authenticate
+from django.contrib.auth import logout,authenticate
 
 # Create your views here.
-from django.shortcuts import render
+def base(request):
+    return render(request, 'base.html')
 
 def index(request):
     context = listadoMusicos(request)

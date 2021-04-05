@@ -1,7 +1,5 @@
 from __future__ import unicode_literals, absolute_import
-from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
 from groomeet_backend import views
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.decorators import login_required
@@ -13,7 +11,6 @@ from django.http import JsonResponse
 from django.contrib.auth.models import AbstractBaseUser
 
 from typing import List
-from django_private_chat2 import urls as django_private_chat2_urls
 
 UserModel = get_user_model()
 
