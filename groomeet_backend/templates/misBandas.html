@@ -1,0 +1,56 @@
+{% extends 'menu.html' %}
+{% block body %}
+
+<div class="card-body" style="margin-top:50px;">
+    <h2>Mis Bandas</h2><br>
+
+    <div class="col-xs-1 col-sm-3 col-lg-1">
+        <a href="/createBanda">Nueva Banda</a><br>
+      </div>
+      
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Generos</th>
+                <th scope="col">Instrumentos</th>
+                <th scope="col">Miembros no registrados</th>
+                <th scope="col">Miembros registrados</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in misBandas %}
+            <tr>
+                <td>{{ row.nombre }}</td>
+                <td>{% for genero in row.generos.all %}
+                    - {{ genero.nombre }} <br>
+			    {% endfor %}</td>
+                <td>{% for instrumento in row.instrumentos.all %}
+                    - {{ instrumento.nombre }} <br>
+			    {% endfor %}</td>
+                <td>{% for miembro in row.miembrosNoRegistrados.all %}
+                    - {{ miembro.nombre }}
+                {% endfor %}</td>
+                <td>{% for miembro in row.miembros.all %}
+                    - {{ miembro.usuario.username }}
+                {% endfor %}</td>
+                <td>
+                    <a href="/updateBanda/{{ row.id }}" >Editar</a>
+                    <a href="/deleteBanda/{{ row.id }}">Eliminar</a>
+                    <a href="/createMiembroNoRegistrado/{{ row.id }}" >Nuevo Miembro</a>
+                    <a href="/invitacionBanda/{{ row.id }}">Invitar a un músico a la banda</a>
+                    <a href="/listadoBandasMusicos/{{ row.id }}" >Buscar Miembros</a>
+                    <a href="/buscarBandas/{{ row.id }}" >Buscar Bandas</a>
+                </td>
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+{% extends 'menu.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container-fluid">
+    {% if request.user.is_authenticated %}
+    <h2>Bienvenido/a, {{request.user.username}}</h2>
+
+    <div class="row">
+      <div class="col-md-3 chats">
+
+      </div>
+        <img id="picture" class="col-xs-1 offset-xs-2 offset-sm-3 offset-md-3 offset-lg-1" src="https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1">
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 offset-sm-3 offset-md-4">
+          <p class="" id="nombre"></p>
+      </div>
+      <div class="col-md-3">
+          <p class="" id="fechaNac"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 offset-sm-3 offset-md-4">
+          <button onclick="next(this)" class="btn btn-danger" id="dislike">Dislike</button>
+      </div>
+      <div class="col-md-1">
+          <button onclick="next(this)" class="btn btn-success" id="like">Like</button>
+      </div>
+    </div>
+    {% else %}
+        <script type="text/javascript">
+            window.location.replace("login/");
+        </script>
+    {% endif %}
+</div>
+
+<script>
+var count = 1;
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+
+    }
+
+    function asyncMusicoRequest() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == XMLHttpRequest.DONE) {
+            if(xhttp.status == "200") {
+                datos = xhttp.responseText.split(";");
+                var nombre = datos[0];
+                var fechaNac = datos[1];
+                console.log(nombre);
+                console.log(fechaNac);
+                document.getElementById("nombre").innerHTML = nombre;
+                document.getElementById("fechaNac").innerHTML = fechaNac;
+            } else {
+                document.getElementById("nombre").innerHTML = "¡Vaya, ya no queda nadie por tu zona!";
+                document.getElementById("fechaNac").innerHTML = "";
+            }
+        }
+    }
+        xhttp.open("GET", "/getMusico/" + count, true);
+        xhttp.send();
+    }
+
+    $( document ).ready(function() {
+        asyncMusicoRequest();
+});
+
+    function next(action) {
+        var link = "";
+
+        if(action.id == "dislike") {
+            console.log("Wo que mal");
+            link = "/noLike/" + count;
+        } else if(action.id == "like") {
+            console.log("Amonooooo");
+            link = "/like/" + count;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+                url : link,
+                type: "POST",
+                 data:{
+                    csrfmiddlewaretoken : csrftoken,
+                },
+            });
+
+        count = count + 1;
+        asyncMusicoRequest();
+
+    }
+</script>
+    {% endblock %}

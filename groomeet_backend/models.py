@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from model_utils.models import TimeStampedModel, SoftDeletableModel
+#from dateutil.relativedelta import relativedelta
+from enum import Enum
 
 # Create your models here.
 
@@ -63,4 +65,8 @@ class Mensaje(TimeStampedModel, SoftDeletableModel):
 class Invitacion(TimeStampedModel):
     emisor = models.ForeignKey(Musico, on_delete=models.CASCADE, related_name="invitacionesEnviadas")
     receptor = models.ForeignKey(Musico, on_delete=models.CASCADE, related_name="invitacionesRecibidas")
-    estado = models.BooleanField(default=False)
+    banda = models.ForeignKey(Banda, on_delete=models.CASCADE)
+    estado = models.CharField(
+        max_length=40,
+        choices=[(estado, estado.value) for estado in EstadoInvitacion]
+    )

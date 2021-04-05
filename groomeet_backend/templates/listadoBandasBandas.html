@@ -1,0 +1,34 @@
+{% extends 'menu.html' %}
+{% block body %}
+<h1>Bandas</h1>
+<section class="date-page">
+  
+  <div class="musicos-container">
+    {% for banda in bandas %}
+    <div>
+      <p><strong>Nombre de la banda: </strong>{{ banda.nombre }}</p>
+      <form action="{% url 'likeBandaBanda' pkBanda banda.pk %}" method="POST">
+        {% csrf_token %}
+
+        
+        <button class="like-btn" type="submit", name="banda_id", value="{{banda.id}}">
+            Like
+        </button>
+    
+      </form>
+      <form action="{% url 'noLikeBandaBanda' pkBanda banda.pk %}" method="POST">
+        {% csrf_token %}
+        <button class="block-btn" type="submit", name="banda_id", value="{{banda.id}}">
+          No Like
+        </button>
+
+      </form>
+
+    </div>
+
+  
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

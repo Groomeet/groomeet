@@ -1,0 +1,31 @@
+.panel-heading {
+    width: 600px;
+    padding: 20px;
+    border-radius: 40px;
+    margin: auto;
+    background-color: #00ff9d59;
+}
+
+.panel-heading input, .panel-heading select {
+    width: 450px;
+    border: 1px solid #155724;
+    border-radius: 6px;
+    background-color: #ffffff;
+    margin: 8px 0;
+    display: inline-block;
+}
+
+.panel-heading h2 {
+text-align: center;
+}
+
+.panel-heading label {
+    font-weight: bold;
+    display: flex;
+}
+.panel-heading form {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+

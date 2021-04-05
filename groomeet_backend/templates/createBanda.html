@@ -1,0 +1,20 @@
+{% extends 'menu.html' %}
+{% block body %}
+
+    <div class="panel-heading">
+        <h2 >Datos de la Banda</h2><br>
+            <form method="POST" class="post-form">{% csrf_token %}
+            
+                {{ formulario.as_p }}
+     
+                <button type="submit" class="btn btn-success">Crear</button>
+            </form>
+
+          </div>
+    </div>
+
+        
+{% endblock %}
+
+</body>
+</html>
