@@ -105,3 +105,7 @@ def listadoGeneros(request):
     generos = Genero.objects.all()
     context = {'generos': generos}
     return render(request, '../templates/generos.html', context)
+
+def listadoMisInvitaciones(request):
+    misInvitaciones = Invitacion.objects.all().filter(receptor=request.user.musico)
+    return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
