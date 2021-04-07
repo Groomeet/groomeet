@@ -28,7 +28,6 @@ urlpatterns = [
     path('',views.index, name='index'),
     path('getMusico', views.getMusico, name="musico"),
     path('geBanda/<int:id>', views.getBanda, name="banda"),
-    #path('listado/',views.listadoMusicos),
     path('listadoBandas/',views.listadoBandas),
     path('listadoBandasMusicos/<int:pkBanda>',views.listadoBandasMusicos),
     path('buscarBandas/<int:pkBanda>',views.listadoBandasBandas),
