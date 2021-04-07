@@ -26,7 +26,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/',views.logout_view, name='logout'),
     path('',views.index, name='index'),
-    path('getMusico/<int:id>', views.getMusico, name="musico"),
+    path('getMusico', views.getMusico, name="musico"),
     path('geBanda/<int:id>', views.getBanda, name="banda"),
     #path('listado/',views.listadoMusicos),
     path('listadoBandas/',views.listadoBandas),
