@@ -1,4 +1,4 @@
-{% extends 'menu.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block body %}
@@ -38,7 +38,7 @@
 </div>
 
 <script>
-var count = 1;
+var usuarioId=-1;
 
     function getCookie(name) {
         var cookieValue = null;
@@ -64,17 +64,18 @@ var count = 1;
                 datos = xhttp.responseText.split(";");
                 var nombre = datos[0];
                 var fechaNac = datos[1];
-                console.log(nombre);
-                console.log(fechaNac);
+                var id = datos[2];
+
                 document.getElementById("nombre").innerHTML = nombre;
                 document.getElementById("fechaNac").innerHTML = fechaNac;
+                usuarioId = id;
             } else {
                 document.getElementById("nombre").innerHTML = "¡Vaya, ya no queda nadie por tu zona!";
                 document.getElementById("fechaNac").innerHTML = "";
             }
         }
     }
-        xhttp.open("GET", "/getMusico/" + count, true);
+        xhttp.open("GET", "/getMusico", true);
         xhttp.send();
     }
 
@@ -84,13 +85,12 @@ var count = 1;
 
     function next(action) {
         var link = "";
+        console.log("Id: " + usuarioId);
 
         if(action.id == "dislike") {
-            console.log("Wo que mal");
-            link = "/noLike/" + count;
+            link = "/noLike/" + usuarioId;
         } else if(action.id == "like") {
-            console.log("Amonooooo");
-            link = "/like/" + count;
+            link = "/like/" + usuarioId;
         }
 
         var csrftoken = getCookie('csrftoken');
@@ -102,7 +102,6 @@ var count = 1;
                 },
             });
 
-        count = count + 1;
         asyncMusicoRequest();
 
     }
