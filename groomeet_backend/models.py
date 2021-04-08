@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 #from dateutil.relativedelta import relativedelta
 from enum import Enum
+import datetime
+
 
 # Create your models here.
 
@@ -30,6 +32,8 @@ class Musico(models.Model):
     #Sección de likes de Músico a Banda
     likesRecibidosBanda = models.ManyToManyField('Banda', related_name="likesDadosMusico", blank=True)
     noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosMusico", blank=True)
+    isGold = models.BooleanField(default=False)
+    isSilver = models.BooleanField(default=False)
 
     def __str__(self):
         return self.usuario.username
@@ -37,6 +41,9 @@ class Musico(models.Model):
     @property
     def numLikes(self):
         return self.likesRecibidos.all().count()
+
+   
+
     # @property
     # def edad(self):
     #     return relativedelta(date.today(), self.fechaNacimiento).years
@@ -108,3 +115,26 @@ class Invitacion(TimeStampedModel):
         max_length=40,
         choices=[(estado, estado.value) for estado in EstadoInvitacion]
     )
+
+class Producto(models.Model):
+    producto = models.CharField(max_length=100, null= False)
+    precio = models.DecimalField(max_digits=5 ,decimal_places= 2)
+
+    def __str__(self):
+        return self.producto
+
+class Compra(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    id = models.CharField(primary_key= True, max_length=100)
+    estado = models.CharField(max_length=100)
+    codigo_estado = models.CharField(max_length=100)
+    producto = models.ForeignKey(to=Producto, on_delete= models.SET_NULL, null = True)
+    total_de_la_compra = models.DecimalField(max_digits=5 ,decimal_places= 2)
+    nombre_cliente = models.CharField(max_length=100)
+    apellido_cliente = models.CharField(max_length=100)
+    correo_cliente = models.EmailField(max_length=100)
+    direccion_cliente = models.CharField(max_length=100)
+    fecha_compra = models.DateField(default=datetime.date.today)
+
+    def __str__(self):
+        return self.nombre_cliente

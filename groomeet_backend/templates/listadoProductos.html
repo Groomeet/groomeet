@@ -1,0 +1,48 @@
+{% block encabezado %}
+<h1> Equipos </h1>
+{% endblock %}
+
+  {% block contenido %}
+
+  <!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='utf-8'>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+</head>
+
+<body>
+    <main class="main">
+        <div class="container">
+           <div class="inner">
+              <div class="inner__headings">
+                 <h3 class="inner__head">Productos de Groomeet</h3></h3>
+              </div>
+              
+           </div><hr>
+           <div class="cards-grid">
+
+			{% for row in productos %}
+            
+              <div class="card">
+                 <div class="card__body">
+                    <h4 class="card__head" style="font-size: 22px;"><strong>{{row.producto}}</strong></h4>
+                    <p class="card__content"><strong>Precio: </strong>{{row.precio}} €</p>
+                    {% if request.user.musico.isGold or request.user.musico.isSilver %}
+                    <h3>Ya disfrutas de una suscripción</h3>
+                    {% else %}
+                    <a href="/comprarProducto/{{row.id}}">Comprar aquí</a>
+                    {% endif %}
+                </div>
+              </div><hr>
+              {% endfor %}
+              
+           </div>
+        </div>
+     </main>
+			
+  {% endblock %}

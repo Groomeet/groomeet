@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from groomeet_backend import views, likes, bandas
+from groomeet_backend import views, likes, bandas, pagos
 from django.contrib.auth import views as auth_views
 
 import django_private_chat2.views
@@ -53,5 +53,8 @@ urlpatterns = [
     path('messages/<dialog_with>/', django_private_chat2.views.MessagesModelList.as_view(), name='messages_list'),
     path('dialogs/', django_private_chat2.views.DialogsModelList.as_view(), name='dialogs_list'),
     path('self/', django_private_chat2.views.SelfInfoView.as_view(), name='self_info'),
+    path('pago/<int:id>', pagos.pago, name= 'pago'),
+    path('listadoProductos/', pagos.listadoProductos, name= 'listadoProductos'),
+    path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
     
 ]
