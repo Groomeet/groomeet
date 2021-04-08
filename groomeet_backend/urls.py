@@ -31,8 +31,10 @@ class UsersListView(LoginRequiredMixin, ListView):
         return JsonResponse(data, safe=False, **response_kwargs)
 
 urlpatterns = [
-    url('chat/', include('django_private_chat2.urls', namespace='django_private_chat2')),
     path('users/', UsersListView.as_view(), name='users_list'),
     path('', login_required(TemplateView.as_view(template_name='chat.html')), name='home'),
+    path('chat/', views.chat_index, name='chat'),    
+    path('', views.index, name='index'),
+    path('<str:room_name>/', views.chat_room, name='chat_room')
 ]
 

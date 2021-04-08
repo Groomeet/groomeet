@@ -1,5 +1,4 @@
 from groomeet_backend.models import *
-from django_private_chat2.models import DialogsModel
 from django import forms
 
 class BandaForm(forms.ModelForm):
