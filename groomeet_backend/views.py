@@ -14,30 +14,16 @@ def index(request):
     return render(request, '../templates/index.html', context)
 
 @login_required(login_url='/login/')
-def chat_index(request):
-    return render(request, 'chat_index.html')
-
-def chat_room(request, room_name):
-    return render(request, 'chat_room.html', {
-        'room_name': room_name
-})
-
-@login_required(login_url='/login/')
 def logout_view(request):
     logout(request)
     return redirect('/')
 
 @login_required(login_url='/login/')
 def chat(request):
-    return render(request, 'chat.html')
+    return render(request, 'chat_room.html')
 
 @login_required(login_url='/login/')
-def getMusico(request, id):
-#    musico = Musico.objects.get(id=id)
-#    nombre = musico.usuario.username + ";"
-#    fechaNac = str(musico.fechaNacimiento) + ";"
-#    id = str(musico.id)
-
+def getMusico(request):
     musicos = Musico.objects.all()
     result = []
     usuario = request.user
@@ -45,7 +31,8 @@ def getMusico(request, id):
         if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
             result.append(musico)
 
-    musico = result[id]
+    print(result)
+    musico = result[0]
     nombre = musico.usuario.username + ";"
     fechaNac = str(musico.fechaNacimiento) + ";"
     id = str(musico.id)
@@ -144,3 +131,9 @@ def listadoGeneros(request):
 def listadoMisInvitaciones(request):
     misInvitaciones = Invitacion.objects.all().filter(receptor=request.user.musico)
     return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
+
+@login_required(login_url='/login/')
+def chat_room(request, room_name):
+    return render(request, 'chat_room.html', {
+        'room_name': room_name
+})

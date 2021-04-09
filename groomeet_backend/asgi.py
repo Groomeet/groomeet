@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
+
 import os
+
 from groomeet_backend import routing
 
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "groomeet_backend.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
 application = ProtocolTypeRouter({
   "http": get_asgi_application(),

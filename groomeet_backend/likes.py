@@ -1,7 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from groomeet_backend.models import Musico, Banda
+from groomeet_backend.models import Musico, Banda, Chat
 from django.contrib.auth.decorators import login_required
+
 
 #Sección de likes y no likes entre músicos
 @login_required
@@ -18,10 +20,15 @@ def postLikeMusicoMusico(request, pk):
         if musico.usuario in usuario.musico.likesRecibidos.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
-            redirect("/chats/" + musico.usuario.username + usuario)
-            DialogsModel.create_if_not_exists(usuario, musico.usuario)
+            url = "/chat/" + usuario.id + "-" + musico.usuario.id
+            print(url)
+            chat = Chat.objects.create(nombre = url)
+            print(chat)
+            musico.chat.add(chat)
+            usuario.musico.chat.add(chat)            
             print(f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
-    return redirect("/listado")
+    return HttpResponse("Post correcto.")
+
 
 @login_required
 def postNoLikeMusicoMusico(request, pk):
@@ -30,7 +37,7 @@ def postNoLikeMusicoMusico(request, pk):
     if usuario not in musico.noLikesRecibidos.all():
         musico.noLikesRecibidos.add(usuario)
 
-    return redirect("/listado")
+    return HttpResponse("Post correcto.")
 
 #Sección de likes y no likes de músicos a bandas
 @login_required
@@ -47,7 +54,7 @@ def postLikeMusicoBanda(request, pk):
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {banda.nombre} también le gustaste")
             print(f"¡Eso fue un match!, a {banda.nombre} también le gustaste")
-    return redirect("/listadoBandas")
+    return HttpResponse("Post correcto.")
 
 @login_required
 def postNoLikeMusicoBanda(request, pk):
@@ -56,7 +63,7 @@ def postNoLikeMusicoBanda(request, pk):
     if usuario not in banda.noLikesRecibidosMusico.all():
         banda.noLikesRecibidosMusico.add(usuario)
 
-    return redirect("/listadoBandas")
+    return HttpResponse("Post correcto.")
 
 #Sección de likes y no likes de bandas a musicos
 @login_required
@@ -76,7 +83,7 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
             print(f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
-    return redirect(f"/listadoBandasMusicos/{pkBanda}")
+    return HttpResponse("Post correcto.")
 
 @login_required
 def postNoLikeBandaMusico(request, pkBanda, pkMusico):
@@ -90,7 +97,7 @@ def postNoLikeBandaMusico(request, pkBanda, pkMusico):
     if banda not in musico.noLikesRecibidosBanda.all():
         musico.noLikesRecibidosBanda.add(banda)
 
-    return redirect(f"/listadoBandasMusicos/{pkBanda}")
+    return HttpResponse("Post correcto.")
 
 #Sección de likes y no likes entre bandas 
 @login_required
@@ -112,7 +119,7 @@ def postLikeBandaBanda(request, pkEmisor, pkReceptor):
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {bandaReceptora.nombre} también le gustasteis")
             print(f"¡Eso fue un match!, a {bandaReceptora.nombre} también le gustasteis")
-    return redirect(f"/buscarBandas/{pkEmisor}")
+    return HttpResponse("Post correcto.")
 
 @login_required
 def postNoLikeBandaBanda(request, pkEmisor, pkReceptor):
@@ -128,4 +135,4 @@ def postNoLikeBandaBanda(request, pkEmisor, pkReceptor):
     if bandaEmisora not in bandaReceptora.noLikesRecibidosBanda.all():
         bandaReceptora.noLikesRecibidosBanda.add(bandaEmisora)
 
-    return redirect(f"/buscarBandas/{pkEmisor}")
+    return HttpResponse("Post correcto.")

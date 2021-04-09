@@ -14,10 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from groomeet_backend import views, likes, bandas, urls
+from django.urls import path, include
+from groomeet_backend import views, likes, bandas
 from django.contrib.auth import views as auth_views
-from django.conf.urls import include
+
 
 
 urlpatterns = [
@@ -25,9 +25,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/',views.logout_view, name='logout'),
     path('',views.index, name='index'),
-    path('getMusico/<int:id>', views.getMusico, name="musico"),
+    path('getMusico', views.getMusico, name="musico"),
     path('geBanda/<int:id>', views.getBanda, name="banda"),
-    #path('listado/',views.listadoMusicos),
     path('listadoBandas/',views.listadoBandas),
     path('listadoBandasMusicos/<int:pkBanda>',views.listadoBandasMusicos),
     path('buscarBandas/<int:pkBanda>',views.listadoBandasBandas),
@@ -49,7 +48,6 @@ urlpatterns = [
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
     path('misInvitaciones/',views.listadoMisInvitaciones),
     path('chat/', include('groomeet_backend.urls')),
-    path('chat/', views.chat_index, name='chat'),
-    path('', views.index, name='index'),
     path('chat/<str:room_name>/', views.chat_room, name='chat_room')
+
 ]
