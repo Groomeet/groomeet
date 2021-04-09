@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card-body">
+     <div class="panel-heading">
+    <h2>Editar perfil</h2>
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {{formularioUser.as_p}}
+        {{formularioMusico.as_p}}
+        <button type="submit" class="btn btn-success">Actualizar <span class="glyphicon glyphicon-edit"></span></button>
+    </form>
+     </div>
+</div>
+{% endblock %}
