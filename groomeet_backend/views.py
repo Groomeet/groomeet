@@ -9,9 +9,37 @@ def base(request):
     return render(request, 'base.html')
 
 @login_required(login_url='/login/')
-def index(request):
-    context = listadoMusicos(request)
-    return render(request, '../templates/index.html', context)
+def musico(request):
+    ruta = request.path
+    musico = Musico.objects.get(usuario=request.user)
+
+    if(ruta == "/"):
+        url = ""
+    elif(ruta == "buscarBandas"):
+        "Buscando bandas como músico"
+
+    return render(request, '../templates/index.html')
+
+@login_required(login_url='/login/')
+def banda(request, pkBanda):
+    ruta = request.path
+    musico = Musico.objects.get(usuario=request.user)
+
+    if(ruta == "buscarIntegrantes"):
+        banda = Banda.objects.get(administrador=musico)
+        if(banda == None):
+            return redirect('/createBanda')
+        else:
+            "Buscando músicos como banda"
+    elif(ruta == "colabora"):
+        banda = Banda.objects.get(administrador=musico)
+        if (banda == None):
+            return redirect('/createBanda')
+        else:
+            "Buscando banda como banda"
+
+    return render(request, '../templates/index.html')
+
 
 @login_required(login_url='/login/')
 def logout_view(request):
@@ -31,23 +59,32 @@ def getMusico(request):
         if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
             result.append(musico)
 
-    print(result)
     musico = result[0]
     nombre = musico.usuario.username + ";"
-    fechaNac = str(musico.fechaNacimiento) + ";"
+    generosList = musico.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + ";"
     id = str(musico.id)
 
-
-    response = nombre + fechaNac + id
+    response = nombre + generos + id
+    print(response)
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
-def getBanda(request, id):
-    banda = Banda.objects.get(id=id)
+def getBanda(request):
+    bandas = Banda.objects.all()
+    result = []
+    user = request.user
+    musico = Musico.objects.get(usuario=user)
+    for banda in bandas:
+        if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
+            result.append(banda)
+    banda = result[0]
     nombre = banda.nombre + ";"
+    generosList = banda.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + ";"
     id = str(banda.id)
 
-    response = nombre + id
+    response = nombre + generos + id
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
