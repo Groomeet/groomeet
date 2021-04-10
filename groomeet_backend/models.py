@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
-#from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import relativedelta
 from enum import Enum
 
 # Create your models here.
@@ -18,6 +18,11 @@ class Instrumento(models.Model):
     def __str__(self):
         return self.nombre
 
+#Método auxiliar para guardar la imagen como la id del usuario seguida de un punto
+def rename_avatar_image(instance, filename):
+        filesplits = filename.split('.')
+        return 'media/images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
+
 class Chat(models.Model):
     nombre = models.CharField(max_length=64, null=True, blank=True)
 
@@ -26,10 +31,14 @@ class Chat(models.Model):
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Musico(models.Model):
+   class Musico(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     instrumentos = models.ManyToManyField(Instrumento)
-    generos = models.ManyToManyField(Genero)
+    generos = models.ManyToManyField(Genero,verbose_name="Géneros")
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
+    descripcion = models.TextField(verbose_name="Descripción")
+    enlaceVideo = models.CharField(max_length=150, verbose_name="Enlace de vídeo", blank=True)
+    avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
     chat = models.ManyToManyField(Chat, blank=True)
     #Sección de likes de Músico a Músico
     likesRecibidos = models.ManyToManyField(User, related_name="likesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado like
@@ -44,9 +53,10 @@ class Musico(models.Model):
     @property
     def numLikes(self):
         return self.likesRecibidos.all().count()
-    # @property
-    # def edad(self):
-    #     return relativedelta(date.today(), self.fechaNacimiento).years
+
+    @property
+    def edad(self):
+        return relativedelta(date.today(), self.fechaNacimiento).years
 
 
 
@@ -116,4 +126,3 @@ class Invitacion(TimeStampedModel):
     estado = models.CharField(
         max_length=40,
         choices=[(estado, estado.value) for estado in EstadoInvitacion]
-    )

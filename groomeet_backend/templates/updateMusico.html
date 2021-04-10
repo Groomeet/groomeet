@@ -2,10 +2,11 @@
 {% block body %}
 <div class="card-body">
      <div class="panel-heading">
-    <h2>Editar Banda</h2>
-    <form method="post">
+    <h2>Editar perfil</h2>
+    <form enctype="multipart/form-data" method="post">
         {% csrf_token %}
-        {{form.as_p}}
+        {{formularioUser.as_p}}
+        {{formularioMusico.as_p}}
         <button type="submit" class="btn btn-success">Actualizar <span class="glyphicon glyphicon-edit"></span></button>
     </form>
      </div>
