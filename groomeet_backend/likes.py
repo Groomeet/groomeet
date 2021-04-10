@@ -53,6 +53,12 @@ def postLikeMusicoBanda(request, pk):
         if banda in usuario.musico.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {banda.nombre} también le gustaste")
+            url = "/chat/" + usuario.id + "-" + banda.administrador.usuario.id
+            print(url)
+            chat = Chat.objects.create(nombre = url)
+            print(chat)
+            banda.administrador.chat.add(chat)
+            usuario.musico.chat.add(chat)
             print(f"¡Eso fue un match!, a {banda.nombre} también le gustaste")
     return HttpResponse("Post correcto.")
 
@@ -82,6 +88,12 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
         if musico in banda.likesRecibidosMusico.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
+            url = "/chat/" + usuario.id + "-" + musico.usuario.id
+            print(url)
+            chat = Chat.objects.create(nombre = url)
+            print(chat)
+            musico.chat.add(chat)
+            usuario.musico.chat.add(chat)
             print(f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
     return HttpResponse("Post correcto.")
 
@@ -118,6 +130,12 @@ def postLikeBandaBanda(request, pkEmisor, pkReceptor):
         if bandaReceptora in bandaEmisora.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {bandaReceptora.nombre} también le gustasteis")
+            url = "/chat/" + bandaEmisora.administrador.usuario.id + "-" + bandaReceptora.administrador.usuario.id
+            print(url)
+            chat = Chat.objects.create(nombre = url)
+            print(chat)
+            bandaEmisora.administrador.chat.add(chat)
+            bandaReceptora.administrador.chat.add(chat)
             print(f"¡Eso fue un match!, a {bandaReceptora.nombre} también le gustasteis")
     return HttpResponse("Post correcto.")
 
