@@ -20,7 +20,7 @@ def logout_view(request):
 
 @login_required(login_url='/login/')
 def chat(request):
-    return render(request, 'chat.html')
+    return render(request, 'chat_room.html')
 
 @login_required(login_url='/login/')
 def getMusico(request):
@@ -131,3 +131,9 @@ def listadoGeneros(request):
 def listadoMisInvitaciones(request):
     misInvitaciones = Invitacion.objects.all().filter(receptor=request.user.musico)
     return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
+
+@login_required(login_url='/login/')
+def chat_room(request, room_name):
+    return render(request, 'chat_room.html', {
+        'room_name': room_name
+})

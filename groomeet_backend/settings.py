@@ -30,14 +30,12 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_private_chat2.apps.DjangoPrivateChat2Config',
     # 3rd party
     'channels',
 

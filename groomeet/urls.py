@@ -14,11 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from groomeet_backend import views, likes, bandas, musicos
+from django.urls import path, include
+from groomeet_backend import views, likes, bandas
 from django.contrib.auth import views as auth_views
 
-import django_private_chat2.views
 
 
 urlpatterns = [
@@ -48,12 +47,7 @@ urlpatterns = [
     path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
     path('misInvitaciones/',views.listadoMisInvitaciones),
-    path('signUp/',musicos.signUpMusico),
-    path('updateProfile/',musicos.updateProfileMusico),
-    path('chat/', views.chat, name='chat'),
-    path('messages/', django_private_chat2.views.MessagesModelList.as_view(), name='all_messages_list'),
-    path('messages/<dialog_with>/', django_private_chat2.views.MessagesModelList.as_view(), name='messages_list'),
-    path('dialogs/', django_private_chat2.views.DialogsModelList.as_view(), name='dialogs_list'),
-    path('self/', django_private_chat2.views.SelfInfoView.as_view(), name='self_info'),
-    
+    path('chat/', include('groomeet_backend.urls')),
+    path('chat/<str:room_name>/', views.chat_room, name='chat_room')
+
 ]

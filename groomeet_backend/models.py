@@ -23,8 +23,15 @@ def rename_avatar_image(instance, filename):
         filesplits = filename.split('.')
         return 'media/images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
 
+class Chat(models.Model):
+    nombre = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.nombre
+
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Musico(models.Model):
+   class Musico(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
@@ -32,6 +39,7 @@ class Musico(models.Model):
     descripcion = models.TextField(verbose_name="Descripción")
     enlaceVideo = models.CharField(max_length=150, verbose_name="Enlace de vídeo", blank=True)
     avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
+    chat = models.ManyToManyField(Chat, blank=True)
     #Sección de likes de Músico a Músico
     likesRecibidos = models.ManyToManyField(User, related_name="likesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado like
     noLikesRecibidos = models.ManyToManyField(User, related_name="noLikesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado "no me gusta"
@@ -49,6 +57,8 @@ class Musico(models.Model):
     @property
     def edad(self):
         return relativedelta(date.today(), self.fechaNacimiento).years
+
+
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):
@@ -86,22 +96,22 @@ class MiembroDe(models.Model):
 
 #TimeStampedModel tiene campos de created y modified, que almacenan las horas de creación y modificación
 #SoftDeletableModel en lugar de borrar una entrada de la tabla, le activa un campo llamado "is_removed"
-class Chat(TimeStampedModel, SoftDeletableModel):
-    participante1 = models.ForeignKey(Musico, verbose_name="Participante 1", on_delete=models.CASCADE, related_name="chats1")
-    participante2 = models.ForeignKey(Musico, verbose_name="Participante 2", on_delete=models.CASCADE, related_name="chats2")
+# class Chat(TimeStampedModel, SoftDeletableModel):
+#     participante1 = models.ForeignKey(Musico, verbose_name="Participante 1", on_delete=models.CASCADE, related_name="chats1")
+#     participante2 = models.ForeignKey(Musico, verbose_name="Participante 2", on_delete=models.CASCADE, related_name="chats2")
 
-    def __str__(self):
-        return "Chat de " + self.participante1.usuario.username + " con " + self.participante2.usuario.username
+#     def __str__(self):
+#         return "Chat de " + self.participante1.usuario.username + " con " + self.participante2.usuario.username
 
 
-class Mensaje(TimeStampedModel, SoftDeletableModel):
-    chat = models.ForeignKey(Chat, verbose_name="Chat", on_delete=models.CASCADE, related_name="mensajes")
-    autor = models.ForeignKey(Musico, verbose_name="Autor", on_delete=models.CASCADE, related_name="mensajes")
-    cuerpo = models.TextField(verbose_name="Cuerpo del mensaje")
-    #leido = models.BooleanField(verbose_name=_("Leido"), default=False)   #A tener en cuenta para posible mejora del chat, "doble check azul"
+# class Mensaje(TimeStampedModel, SoftDeletableModel):
+#     chat = models.ForeignKey(Chat, verbose_name="Chat", on_delete=models.CASCADE, related_name="mensajes")
+#     autor = models.ForeignKey(Musico, verbose_name="Autor", on_delete=models.CASCADE, related_name="mensajes")
+#     cuerpo = models.TextField(verbose_name="Cuerpo del mensaje")
+#     #leido = models.BooleanField(verbose_name=_("Leido"), default=False)   #A tener en cuenta para posible mejora del chat, "doble check azul"
 
-    def __str__(self):
-        return self.autor.usuario.username + "(" + self.created + ") - '" + self.cuerpo + "'"
+#     def __str__(self):
+#         return self.autor.usuario.username + "(" + self.created + ") - '" + self.cuerpo + "'"
 
 #Estado de las invitaciones a una banda
 class EstadoInvitacion(Enum):
@@ -116,4 +126,3 @@ class Invitacion(TimeStampedModel):
     estado = models.CharField(
         max_length=40,
         choices=[(estado, estado.value) for estado in EstadoInvitacion]
-    )
