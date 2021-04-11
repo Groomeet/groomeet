@@ -28,26 +28,23 @@ class InvitarBandaForm(forms.Form):
             raise forms.ValidationError("El usuario que quiere invitar a la banda no existe")
 
 class UserForm(forms.ModelForm):
-    username = forms.CharField(label="Nombre de usuario")
-    first_name = forms.CharField(label="Nombre")
-    last_name = forms.CharField(label="Apellidos")
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(label="Contraseña",widget=forms.PasswordInput())
     class Meta:
         model = User
         fields = ('username','first_name','last_name','email','password')
 
 class UserUpdateForm(forms.ModelForm):
-    first_name = forms.CharField(label="Nombre")
-    last_name = forms.CharField(label="Apellidos")
-    email = forms.EmailField(label="Email")
+    first_name = forms.CharField(label="")
+    last_name = forms.CharField(label="")
+    email = forms.EmailField(label="")
     class Meta:
         model = User
         fields = ('first_name','last_name','email')
 
 class MusicoForm(forms.ModelForm):
     YEARS= [x for x in range(1900,datetime.now().year)]
-    fechaNacimiento = forms.DateField(label="Fecha de nacimiento",widget=forms.SelectDateWidget(years=YEARS))
+    fechaNacimiento = forms.DateField(label="Fecha de nacimiento",widget=forms.TextInput(attrs={"data-provide":"datepicker", "class":"fechapick", "readonly":"true"}))
+    instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
+    generos = forms.ModelMultipleChoiceField(label="Géneros:", queryset=Genero.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'selectpicker'}))
     class Meta:
         model = Musico
-        fields = ('fechaNacimiento','descripcion','instrumentos','generos','avatar','enlaceVideo')
+        fields = ('fechaNacimiento','descripcion','avatar','instrumentos','generos','enlaceVideo')

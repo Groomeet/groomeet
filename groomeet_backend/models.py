@@ -30,7 +30,7 @@ class Musico(models.Model):
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
     descripcion = models.TextField(verbose_name="Descripción")
-    enlaceVideo = models.CharField(max_length=150, verbose_name="Enlace de vídeo", blank=True)
+    enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
     avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
     #Sección de likes de Músico a Músico
     likesRecibidos = models.ManyToManyField(User, related_name="likesDados", blank=True) #Tabla que relaciona con los usuarios que te han dado like
