@@ -5,3 +5,4 @@ Django==3.1.7
 django_model_utils==4.1.1
 django-heroku
 gunicorn
+paypal-checkout-serversdk

@@ -1,0 +1,17 @@
+.card-gold {
+    background: linear-gradient(to right, #BF953F, #FCF6BA, #FBF5B7, #AA771C);
+}
+
+.btn-gold {
+    background-color: #a88339 !important;
+    color: #ffffff !important;
+}
+
+.btn-gold:hover {
+    background: #8d6e30 !important;
+}
+
+.card-silver {
+    background: linear-gradient(to right, #A2A2A2, #eaecee, #eaecee, #B1B1B1);
+}
+
