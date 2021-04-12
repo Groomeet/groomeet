@@ -31,7 +31,6 @@ class Chat(models.Model):
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Musico(models.Model):
-   class Musico(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
@@ -125,4 +124,4 @@ class Invitacion(TimeStampedModel):
     banda = models.ForeignKey(Banda, on_delete=models.CASCADE)
     estado = models.CharField(
         max_length=40,
-        choices=[(estado, estado.value) for estado in EstadoInvitacion]
+        choices=[(estado, estado.value) for estado in EstadoInvitacion])
