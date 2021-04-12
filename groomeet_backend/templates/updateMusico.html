@@ -1,14 +1,38 @@
-{% extends 'base.html' %}
-{% block body %}
-<div class="card-body">
-     <div class="panel-heading">
-    <h2>Editar perfil</h2>
-    <form enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{formularioUser.as_p}}
-        {{formularioMusico.as_p}}
+<!DOCTYPE html>
+{% load static %}
+<html lang='es'>
+<head>
+<meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+</head>
+<body>
+<div class="signupdiv">
+    <div class="panel-heading">
+        <h2 >Datos del usuario</h2><br>
+            <form enctype="multipart/form-data" method="POST" class="post-form">{% csrf_token %}
+
+               {{ formularioUser.as_p }}
+                    <div id="cal"></div>
+                {{ formularioMusico.as_p }}
         <button type="submit" class="btn btn-success">Actualizar <span class="glyphicon glyphicon-edit"></span></button>
-    </form>
-     </div>
+            </form>
+          </div>
+    </div>
 </div>
-{% endblock %}
+    <script>
+        // picker
+        $('#cal').calendar({
+            trigger: '.fechapick',
+        });
+    </script>
+</body>
+</html>
