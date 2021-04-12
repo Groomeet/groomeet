@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from groomeet_backend import views, likes, bandas, musicos
+from groomeet_backend import views, likes, bandas, pagos, musicos
 from django.contrib.auth import views as auth_views
 
 
@@ -52,7 +52,9 @@ urlpatterns = [
     path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
     path('misInvitaciones/',views.listadoMisInvitaciones),
+    path('pago/<int:id>', pagos.pago, name= 'pago'),
+    path('listadoProductos/', pagos.listadoProductos, name= 'listadoProductos'),
+    path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
     path('chat/', include('groomeet_backend.urls')),
     path('chat/<str:room_name>/', views.chat_room, name='chat_room')
-
 ]

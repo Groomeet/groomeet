@@ -3,12 +3,31 @@ from django.shortcuts import render, get_object_or_404, redirect
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
 from django.contrib.auth.decorators import login_required
+from datetime import date
 
 # Create your views here.
 def base(request):
     return render(request, 'base.html')
 
+
+def days_between(d1, d2):
+    return abs(d2 - d1).days
+
 @login_required(login_url='/login/')
+def index(request):
+    context = listadoMusicos(request)
+    try:
+        compra = Compra.objects.filter(usuario=request.user).order_by('-fecha_compra').first()
+        today = date.today()
+        dias = days_between(compra.fecha_compra, today)
+        if(dias>30):
+            request.user.musico.isGold=False
+            request.user.musico.isSilver=False
+            request.user.musico.save()
+    except:
+        pass
+    return render(request, '../templates/index.html', context)
+
 def musico(request):
     ruta = request.path
     musico = Musico.objects.get(usuario=request.user)
