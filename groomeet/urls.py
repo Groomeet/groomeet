@@ -14,27 +14,29 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from groomeet_backend import views, likes, bandas, musicos
+from django.urls import path, include
+from groomeet_backend import views, likes, bandas
 from django.contrib.auth import views as auth_views
 
-import django_private_chat2.views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/',views.logout_view, name='logout'),
-    path('',views.index, name='index'),
+    path('',views.musico, name='index'),
+    path('buscarBandas',views.musico, name='index'),
+    path('buscarIntegrantes/<int:pkBanda>',views.banda, name='index'),
+    path('colabora/<int:pkBanda>',views.banda, name='index'),
     path('getMusico', views.getMusico, name="musico"),
-    path('geBanda/<int:id>', views.getBanda, name="banda"),
+    path('getBanda', views.getBanda, name="banda"),
     path('listadoBandas/',views.listadoBandas),
     path('listadoBandasMusicos/<int:pkBanda>',views.listadoBandasMusicos),
     path('buscarBandas/<int:pkBanda>',views.listadoBandasBandas),
     path("like/<int:pk>", likes.postLikeMusicoMusico, name="like"),
     path("noLike/<int:pk>", likes.postNoLikeMusicoMusico, name="noLike"),
-    path("likeMusicoBanda/<int:pk>/", likes.postLikeMusicoBanda, name="likeMusicoBanda"),
-    path("noLikeMusicoBanda/<int:pk>/", likes.postNoLikeMusicoBanda, name="noLikeMusicoBanda"),
+    path("likeMusicoBanda/<int:pk>", likes.postLikeMusicoBanda, name="likeMusicoBanda"),
+    path("noLikeMusicoBanda/<int:pk>", likes.postNoLikeMusicoBanda, name="noLikeMusicoBanda"),
     path("likeBandaMusico/<int:pkBanda>/<int:pkMusico>", likes.postLikeBandaMusico, name="likeBandaMusico"),
     path("noLikeBandaMusico/<int:pkBanda>/<int:pkMusico>", likes.postNoLikeBandaMusico, name="noLikeBandaMusico"),
     path("likeBandaBanda/<int:pkEmisor>/<int:pkReceptor>", likes.postLikeBandaBanda, name="likeBandaBanda"),
@@ -48,12 +50,7 @@ urlpatterns = [
     path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
     path('misInvitaciones/',views.listadoMisInvitaciones),
-    path('signUp/',musicos.signUpMusico),
-    path('updateProfile/',musicos.updateProfileMusico),
-    path('chat/', views.chat, name='chat'),
-    path('messages/', django_private_chat2.views.MessagesModelList.as_view(), name='all_messages_list'),
-    path('messages/<dialog_with>/', django_private_chat2.views.MessagesModelList.as_view(), name='messages_list'),
-    path('dialogs/', django_private_chat2.views.DialogsModelList.as_view(), name='dialogs_list'),
-    path('self/', django_private_chat2.views.SelfInfoView.as_view(), name='self_info'),
-    
+    path('chat/', include('groomeet_backend.urls')),
+    path('chat/<str:room_name>/', views.chat_room, name='chat_room')
+
 ]
