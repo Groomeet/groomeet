@@ -23,13 +23,7 @@
         <h2 >Datos del usuario</h2><br>
             <form enctype="multipart/form-data" method="POST" class="post-form">{% csrf_token %}
 
-                    <input type="text" name="username" id="username" placeholder="Usuario" class="userClass" required>
-                    <input type="text" name="first_name" id="first_name" placeholder="Nombre" class="userClass" required>
-                    <input type="text" name="last_name" id="last_name" placeholder="Apellidos" class="userClass" required>
-                    <input type="email" name="email" id="email" placeholder="Email" class="userClass" required>
-                    <input type="password" name="password" id="password" placeholder="Contraseña" class="userClass" required>
-
-
+                {{ formularioUser.as_p }}
                     <div id="cal"></div>
                 {{ formularioMusico.as_p }}
                 <button type="submit" class="btn btn-success">Registrarse</button>

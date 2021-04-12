@@ -60,8 +60,8 @@ def updateProfileMusico(request):
                     if model.avatar == "" or model.avatar == None:
                         os.remove(imagenMusico.path)
                 model = formularioUser.instance
-                messages.success = (request, f"¡Tu perfil ha sido modificado con éxito!")
-                return HttpResponseRedirect('/updateProfile')
+                messages.success(request, f"¡Tu perfil ha sido modificado con éxito!")
+                return redirect(request,'/updateProfile')
             except Exception as e:
                 pass
     return render(request, 'updateMusico.html', {'formularioMusico': formularioMusico,'formularioUser': formularioUser})
