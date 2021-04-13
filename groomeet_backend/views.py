@@ -28,6 +28,7 @@ def index(request):
         pass
     return render(request, '../templates/index.html', context)
 
+@login_required(login_url='/login/')
 def musico(request):
     ruta = request.path
     musico = Musico.objects.get(usuario=request.user)
