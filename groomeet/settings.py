@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'groomeet_backend',
     'channels',
-    'django_private_chat2.apps.DjangoPrivateChat2Config',
     'paypalcheckoutsdk',
 ]
 BASEURL = 'https://groomeet1.herokuapp.com'
