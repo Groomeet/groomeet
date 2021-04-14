@@ -1,20 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block style %}
-   <link rel="stylesheet" href="{% static 'css/compras.css' %}">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
-{% endblock %}
-
-{% block title %} - Productos{% endblock %}
-
 {% block body %}
-<body class="text-center">
    <div class="container">
       <div class="row">
          <h3>Productos de Groomeet</h3>
       </div>
-      <div class="row">
+            
+      <div class="row text-center">
          {% for row in productos %}
             <div class="col-sm-6">
             {% if row.producto|stringformat:"s" == "Gold Groomeet"  %}
@@ -76,11 +69,7 @@
 
 
     </div>  
-   </body>
-{% endblock %}
-
-
-
+   {% endblock %}
 
 
 
