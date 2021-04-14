@@ -1,77 +1,67 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/compras.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Comprar</title>
-    <script>
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/compras.css' %}">
+
+  <script>
     function token(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
     }
-    return cookieValue;
-}
-var csrftoken = token('csrftoken');
-    </script>
-</head>
-
+    var csrftoken = token('csrftoken');
+  </script>
+{% endblock %}
+  
+{% block title %} - Comprar{% endblock %}
+ 
+{% block body %}
 <body>
-
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top"
-         style="min-height: 80px; margin-top:-8px; margin-bottom:8px; ">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <img src="{% static 'img/logo_negativo_para_fondo_negro.png' %}" alt="" style="max-height: 60px">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-  </header>
-
     <div class="container">
       <div class="row">
-        <h3>Comprar {{producto.producto}}</h3>
+        <h3>Comprar producto</h3>
       </div>
             
       <div class="row">
             <div class="col-sm-6 text-center">
               {% if producto.producto|stringformat:"s" == "Gold Groomeet"  %}
               <div class="card card-gold">
+                <div class="card-header card-gold-header"><br><br></div>
+                <span class="card-title card-title-g font-xl"><strong>{{producto.producto}}</strong></span>
                 <p class="card-text">
+                   <span class="font-xxl">{{producto.precio}}€/</span>mes
+                </p>
+                <p class="card-text ctb">
                       Sin anuncios <br>
                       Likes ilimitados <br>
                       50 superlikes <br>
                       Boosteo en tu zona <br>
                       Retrocede los swaps <br>
                 </p>
-                <p class="card-text"><strong>Precio: </strong>{{producto.precio}} €/mes</p>
-              </div>
+             </div>
               {% elif producto.producto|stringformat:"s" == "Silver Groomeet" %}
               <div class="card card-silver">
+                <div class="card-header card-silver-header"><br><br></div>
+                <span class="card-title card-title-s font-xl"><strong>{{producto.producto}}</strong></span>
                 <p class="card-text">
-                   Likes ilimitados <br>
-                   Boosteo en tu zona <br>
+                   <span class="font-xxl">{{producto.precio}}€/</span>mes
                 </p>
-                <p class="card-text"><strong>Precio: </strong>{{producto.precio}} €/mes</p>
-              </div>
+                <p class="card-text ctb">
+                    Likes ilimitados <br>
+                    Boosteo en tu zona <br>
+                </p>
+             </div>
               {% endif %}
             </div>   
 
@@ -116,14 +106,7 @@ var csrftoken = token('csrftoken');
                 </script>
             </div>
       </div>
-
     </div> 
-
-
-
-    
-    
-      
-      
 </body>
+{% endblock %}
 </html>
