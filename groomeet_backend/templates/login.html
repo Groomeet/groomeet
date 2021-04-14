@@ -7,33 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"/>
     <title>Login</title>
   </head>
 
   <body class="text-center">
-    <div class="container">
-      <div class="row">
-          <div class="col-md-6">
-              <div class="card">
-                <form id="formulario" method="POST" action='/login/' class="box">{% csrf_token %}
-                  <img class="logo" src="{% static 'img/logo_negativo_para_fondo_negro.png' %}" alt="Groomeet">
-                  {% if form.errors %}
-                    <p class="text-danger">El nombre o la contraseña introducido/a no es correcto/a. Por favor, inténtelo de nuevo.</p>
-                  {% else %}
-                    <p class="text-muted"> Por favor, introduzca su nombre de usuario y contraseña</p>
-                  {% endif %}
-                  <input type="text" name="username" id="username" placeholder="Usuario" required>
-                  <input type="password"name="password" id="password" placeholder="Contraseña" required>
-                  <input type="submit" value="Iniciar sesión">
-                  <a href="/signUp">¿Aún no tienes cuenta? ¡Regístrate aquí!</a>          
-                </form>
-              </div>
-            </div>
+    <div class='overlay'>
+      <div class="container">
+        <div class="row login-page">
+	        <div class="col-md-12 login-form">
+            <form id="formulario" method="POST" action='/login/' class="box">{% csrf_token %} 
+              <img class="logo" src="{% static 'img/logo_negativo_para_fondo_negro.png' %}" alt="Groomeet">
+              {% if form.errors %}
+                <p class="text-danger">El nombre o la contraseña introducido/a no es correcto/a. Por favor, inténtelo de nuevo.</p>
+              {% else %}
+                <p class="text-muted"> Por favor, introduzca su nombre de usuario y contraseña</p>
+              {% endif %}
+              <input type="text" name="username" id="username" placeholder="Usuario" required>
+              <input type="password"name="password" id="password" placeholder="Contraseña" required>
+              <input type="submit" value="Iniciar sesión">
+              <a href="/signUp">¿Aún no tienes cuenta? ¡Regístrate aquí!</a> 
+	          </form>
+	        </div>
         </div>
-    </div>
+      </div>
+     </div>
   </body>
 
 </html>

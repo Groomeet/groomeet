@@ -56,18 +56,6 @@
                         <a href="/comprarProducto/{{row.id}}" class="btn btn-secondary btn-silver"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
                      {% endif %}
                </div>
-            {% else %}
-               <div class="card">
-                  <h5 class="card-title"><strong>{{row.producto}}</strong></h5>
-                  <p class="card-text">
-                  </p>
-                  <p class="card-text"><strong>Precio: </strong>{{row.precio}} €/mes</p>
-                  {% if request.user.musico.isGold or request.user.musico.isSilver %}
-                        <h3>Ya disfrutas de una suscripción</h3>
-                     {% else %}
-                        <a href="/comprarProducto/{{row.id}}" class="btn btn-primary"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
-                     {% endif %}
-               </div>
             {% endif %}
             </div>
          {% endfor %}
