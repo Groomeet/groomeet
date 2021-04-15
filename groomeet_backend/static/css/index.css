@@ -36,6 +36,19 @@
 .btn-outline-boost:not(:disabled):not(.disabled):active,.btn-outline-boost:not(:disabled):not(.disabled).active,.show>.btn-outline-boost.dropdown-toggle{color:#000;background-color: #6e02bf;border-color:#ab3ed9}
 .btn-outline-boost:not(:disabled):not(.disabled):active:focus,.btn-outline-boost:not(:disabled):not(.disabled).active:focus,.show>.btn-outline-boost.dropdown-toggle:focus{box-shadow:0 0 0 .2rem  rgba(75, 0, 130, 0.5)}
 
+button svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* Fixing the extra small */
+@media (min-width: 400px) {
+    button svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
 /* Small devices */
 @media (min-width: 768px) {
     #picture {
@@ -58,6 +71,11 @@
 
     .btns-margin {
         margin-left: 5%;
+    }
+
+    button svg {
+    width: 24px;
+    height: 24px;
     }
 }
 
