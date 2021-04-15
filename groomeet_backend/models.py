@@ -49,6 +49,10 @@ class Musico(models.Model):
     noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosMusico", blank=True)
     isGold = models.BooleanField(default=False)
     isSilver = models.BooleanField(default=False)
+    isBoosted = models.BooleanField(default=False)
+    superLikes = models.IntegerField(default=0)
+    likesDisponibles = models.IntegerField(default=10)
+    ultimaRenovacionLikes = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return self.usuario.username
