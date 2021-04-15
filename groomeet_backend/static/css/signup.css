@@ -1,15 +1,4 @@
-body {
-  background-color: springgreen;
-  animation-name: example;
-  animation-duration: 5s;
-  animation-iteration-count: infinite;
-}
 
-@keyframes example {
-  0%   {background-color: springgreen;}
-  50%  {background-color: black;}
-  100%   {background-color: springgreen;}
-}
 
 ul, ol,  li {
     list-style: none;
@@ -22,13 +11,13 @@ ul, ol,  li {
 }
 
 .signupdiv {
-    /*position: relative;
-    width: 50%; */
-
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    /*background: linear-gradient(to bottom right, #00ff9d, #ffffff);*/
 }
 
 .signupdiv:after {
@@ -52,8 +41,6 @@ ul, ol,  li {
     margin: auto;
     background-color: #191919;
     padding: 40px;
-    position: absolute;
-    top: 0%;
 }
 
 .post-form label, #text {
