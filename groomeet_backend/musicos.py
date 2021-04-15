@@ -61,7 +61,7 @@ def updateProfileMusico(request):
                         os.remove(imagenMusico.path)
                 model = formularioUser.instance
                 messages.success(request, f"¡Tu perfil ha sido modificado con éxito!")
-                return redirect(request,'/updateProfile')
+                return HttpResponseRedirect('/')
             except Exception as e:
                 pass
     return render(request, 'updateMusico.html', {'formularioMusico': formularioMusico,'formularioUser': formularioUser})
