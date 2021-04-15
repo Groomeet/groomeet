@@ -46,6 +46,8 @@ def pago(request, id):
         if(Producto.objects.get(pk=id).producto=="Gold Groomeet"):
             request.user.musico.isGold=True
             request.user.musico.isSilver=False
+            request.user.musico.isBoosted=True
+            request.user.musico.superLikes = 50
             request.user.musico.save()
         elif(Producto.objects.get(pk=id).producto=="Silver Groomeet"):
             request.user.musico.isGold=False

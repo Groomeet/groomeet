@@ -24,6 +24,14 @@
 
       </form>
 
+      <form action="{% url 'superLikeBandaMusico' pkBanda musico.pk %}" method="POST">
+        {% csrf_token %}
+        <button class="block-btn" type="submit", name="banda_id", value="{{banda.id}}">
+          SuperLike
+        </button>
+
+      </form>
+
     </div>
 
   

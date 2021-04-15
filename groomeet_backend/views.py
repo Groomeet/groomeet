@@ -15,7 +15,20 @@ def days_between(d1, d2):
 
 @login_required(login_url='/login/')
 def index(request):
+    
     context = listadoMusicos(request)
+    return render(request, '../templates/index.html', context)
+
+@login_required(login_url='/login/')
+def musico(request):
+    if request.user.musico.isGold==False and request.user.musico.isSilver==False:
+        fechaUltimaRenovacion = request.user.musico.ultimaRenovacionLikes
+        today = date.today()
+        dias = days_between(fechaUltimaRenovacion, today)
+        if dias >= 1:
+            request.user.musico.likesDisponibles = 10
+            request.user.musico.ultimaRenovacionLikes = today
+            request.user.musico.save()
     try:
         compra = Compra.objects.filter(usuario=request.user).order_by('-fecha_compra').first()
         today = date.today()
@@ -26,10 +39,6 @@ def index(request):
             request.user.musico.save()
     except:
         pass
-    return render(request, '../templates/index.html', context)
-
-@login_required(login_url='/login/')
-def musico(request):
     ruta = request.path
     musico = Musico.objects.get(usuario=request.user)
 
@@ -71,7 +80,7 @@ def chat(request):
 
 @login_required(login_url='/login/')
 def getMusico(request):
-    musicos = Musico.objects.all()
+    musicos = Musico.objects.all().order_by('-isBoosted', '-usuario__last_login')
     result = []
     usuario = request.user
     for musico in musicos:
@@ -108,12 +117,13 @@ def getBanda(request):
 
 @login_required(login_url='/login/')
 def listadoMusicos(request):
-    musicos = Musico.objects.all()
+    musicos = Musico.objects.all().order_by('-isBoosted')
     result = []
     usuario = request.user
     for musico in musicos:
         if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
             result.append(musico)
+    print(result)        
     context = {
         'musicos': result,
         'usuario': usuario,

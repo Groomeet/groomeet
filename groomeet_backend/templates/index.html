@@ -8,6 +8,9 @@
 {% block body %}
     <div class="container-fluid">
         {% if request.user.is_authenticated %}
+
+        
+
             <div class="video-responsive row">
                 {#        <img id="picture" class="col-xs-1 offset-xs-2 offset-sm-3 offset-md-3 offset-lg-1" src="https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1">#}
                 <iframe class="offset-xs-1 offset-md-3" src="https://www.youtube.com/embed/sOnqjkJTMaA" frameborder="0"
@@ -21,7 +24,7 @@
                     <p class="" id="generos"></p>
                 </div>
             </div>
-
+            
             <div class="row btns-margin">
                 <div class="col-md-1 offset-md-3">
                     <button onclick="next(this)" id="back" type="button" class="btn btn-outline-warning btn-index">
@@ -57,6 +60,7 @@
                         </svg>
                     </button>
                 </div>
+                <!--
                 <div class="col-md-1">
                     <button onclick="next(this)" id="boost" type="button" class="btn btn-outline-secondary btn-outline-boost btn-index">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -65,7 +69,7 @@
                         </svg>
                     </button>
                 </div>
-
+                -->
 
                 </button>
                 <i class="glyphicon glyphicon-remove"></i>
@@ -148,6 +152,12 @@
                     link = "/likeMusicoBanda/" + id;
                 } else {
                     link = "/like/" + id;
+                }
+            } else if (action.id == "superlike") {
+                if(currentURL.includes("buscarBandas")) {
+                    link = "/superLikeMusicoBanda/" + id;
+                } else {
+                    link = "/superLike/" + id;
                 }
             }
 
