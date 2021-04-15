@@ -28,7 +28,7 @@
               <li class="nav-item dropdown">
                   <div class="dropdown">
                       {% if request.user.musico.avatar %}
-                      <img class="rounded-circle" id="dropdownMenuImg" data-toggle="dropdown" src="{{ request.user.musico.avatar }}" style="height:40px;"/>
+                      <img class="rounded-circle" id="dropdownMenuImg" data-toggle="dropdown" src="/{{ request.user.musico.avatar }}" style="height:40px;"/>
                       {% else %}
                       <img class="rounded-circle" id="dropdownMenuImg" data-toggle="dropdown" src="https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1" style="height:40px;"/>
                       {% endif %}
