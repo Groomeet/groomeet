@@ -34,23 +34,12 @@ def musico(request):
 
 @login_required(login_url='/login/')
 def banda(request, pkBanda):
-    ruta = request.path
-    musico = Musico.objects.get(usuario=request.user)
-
-    if(ruta == "buscarIntegrantes"):
-        banda = Banda.objects.get(administrador=musico)
-        if(banda == None):
-            return redirect('/createBanda')
-        else:
-            "Buscando músicos como banda"
-    elif(ruta == "colabora"):
-        banda = Banda.objects.get(administrador=musico)
-        if (banda == None):
-            return redirect('/createBanda')
-        else:
-            "Buscando banda como banda"
-
-    return render(request, '../templates/index.html')
+    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+    usuario = request.user
+    if (banda.administrador.id == usuario.id):
+        return render(request, '../templates/index.html')
+    else:
+        return redirect("/")
 
 @login_required(login_url='/login/')
 def logout_view(request):
@@ -66,6 +55,7 @@ def getMusico(request):
     musicos = Musico.objects.all()
     result = []
     usuario = request.user
+
     for musico in musicos:
         if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
             result.append(musico)
@@ -74,9 +64,30 @@ def getMusico(request):
     nombre = musico.usuario.username + ";"
     generosList = musico.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
+    video = musico.enlaceVideo + ";"
     id = str(musico.id)
 
-    response = nombre + generos + id
+    response = nombre + generos + video + id
+    print(response)
+    return HttpResponse(response)
+
+@login_required(login_url='/login/')
+def getMusico2(request, pkBanda):
+    musicos = Musico.objects.all()
+    result = []
+    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+    for musico in musicos:
+        if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
+            result.append(musico)
+
+    musico = result[0]
+    nombre = musico.usuario.username + ";"
+    generosList = musico.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + ";"
+    video = musico.enlaceVideo + ";"
+    id = str(musico.id)
+
+    response = nombre + generos + video + id
     print(response)
     return HttpResponse(response)
 
@@ -93,9 +104,29 @@ def getBanda(request):
     nombre = banda.nombre + ";"
     generosList = banda.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
+    video = "https://www.youtube.com/embed/0hEYvdMoF2g" + ";"
     id = str(banda.id)
 
-    response = nombre + generos + id
+    response = nombre + generos + video + id
+    return HttpResponse(response)
+
+@login_required(login_url='/login/')
+def getBanda2(request, pkBanda):
+    bandas = Banda.objects.all()
+    result = []
+    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+    usuario = request.user
+    for b in bandas:
+        if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
+            result.append(b)
+    banda = result[0]
+    nombre = banda.nombre + ";"
+    generosList = banda.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + ";"
+    video = "https://www.youtube.com/embed/0hEYvdMoF2g" + ";"
+    id = str(banda.id)
+
+    response = nombre + generos + video + id
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
@@ -128,20 +159,22 @@ def listadoBandas(request):
 
 @login_required(login_url='/login/')
 def listadoBandasMusicos(request, pkBanda):
-    musicos = Musico.objects.all()
     banda = get_object_or_404(Banda, id=pkBanda)
-    result = []
     usuario = request.user
-    for musico in musicos:
-        if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
-            result.append(musico)
-    context = {
-        'musicos': result,
-        'usuario': usuario,
-        'pkBanda': pkBanda,
-    }
-    return render(request, "../templates/listadoBandasMusicos.html", context)
-
+    if(banda.administrador == usuario):
+        musicos = Musico.objects.all()
+        result = []
+        for musico in musicos:
+            if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
+                result.append(musico)
+        context = {
+            'musicos': result,
+            'usuario': usuario,
+            'pkBanda': pkBanda,
+        }
+        return render(request, "../templates/listadoBandasMusicos.html", context)
+    else:
+        return redirect("/")
 @login_required(login_url='/login/')
 def listadoBandasBandas(request, pkBanda):
     bandas = Banda.objects.all()

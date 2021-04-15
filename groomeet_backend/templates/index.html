@@ -2,15 +2,14 @@
 {% load static %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
         {% if request.user.is_authenticated %}
             <div class="video-responsive row">
-                {#        <img id="picture" class="col-xs-1 offset-xs-2 offset-sm-3 offset-md-3 offset-lg-1" src="https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1">#}
-                <iframe class="offset-xs-1 offset-md-3" src="https://www.youtube.com/embed/sOnqjkJTMaA" frameborder="0"
+                <iframe id="video" class="offset-md-3" src="" frameborder="0"
                         allowfullscreen="allowfullscreen"></iframe>
             </div>
             <div class="row">
@@ -58,7 +57,8 @@
                     </button>
                 </div>
                 <div class="col-md-1">
-                    <button onclick="next(this)" id="boost" type="button" class="btn btn-outline-secondary btn-outline-boost btn-index">
+                    <button onclick="next(this)" id="boost" type="button"
+                            class="btn btn-outline-secondary btn-outline-boost btn-index">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                              class="bi bi-lightning-fill" viewBox="0 0 16 16">
                             <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path>
@@ -108,24 +108,49 @@
                         datos = xhttp.responseText.split(";");
                         var nombre = datos[0];
                         var generos = datos[1];
-                        id = datos[2];
+                        var video = datos[2];
+                        id = datos[3];
 
                         document.getElementById("nombre").innerHTML = nombre;
                         document.getElementById("generos").innerHTML = generos;
+                        document.getElementById("video").src = video;
                     } else {
                         document.getElementById("nombre").innerHTML = "¡Vaya, ya no queda nadie por tu zona!";
                         document.getElementById("generos").innerHTML = "";
+
+                        var old = document.getElementById("video")
+                        var img = document.createElement('img');
+                        img.src = "/static/img/logo_para_fondo_blanco.png";
+                        img.width = "240";
+                        img.height = "240";
+                        $(old.parentNode).removeClass("video-responsive");
+                        $(old.parentNode).addClass("offset-2");
+                        $(old.parentNode).addClass("offset-md-4");
+                        $(old.parentNode).addClass("offset-lg-5");
+                        old.parentNode.replaceChild(img, old);
+                        document.getElementById("dislike").disabled = true;
+                        document.getElementById("like").disabled = true;
+                        document.getElementById("superlike").disabled = true;
                     }
                 }
             }
 
-            if(currentURL.includes("buscarBandas")) {
-                xhttp.open("GET", "/getBanda", true);
-                xhttp.send();
+            if (currentURL.includes("buscarBandas")) {
+                link = "/getBanda";
+            } else if (currentURL.includes("buscarIntegrantes")) {
+                splitURL = currentURL.split("/");
+                idBanda = splitURL[splitURL.length-1];
+                link = "/getMusico/" + idBanda;
+            } else if (currentURL.includes("colabora")) {
+                splitURL = currentURL.split("/");
+                idBanda = splitURL[splitURL.length-1];
+                link = "/getBanda/" + idBanda;
             } else {
-                xhttp.open("GET", "/getMusico", true);
-                xhttp.send();
+                link = "/getMusico";
             }
+
+            xhttp.open("GET", link, true);
+            xhttp.send();
         }
 
         $(document).ready(function () {
@@ -137,15 +162,31 @@
             console.log("Id: " + id);
 
             if (action.id == "dislike") {
-                if(currentURL.includes("buscarBandas")) {
+                if (currentURL.includes("buscarBandas")) {
                     link = "/noLikeMusicoBanda/" + id;
+                } else if (currentURL.includes("buscarIntegrantes")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length-1];
+                    link = "/noLikeBandaMusico/" + idBanda + "/" + id;
+                } else if (currentURL.includes("colabora")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length-1];
+                    link = "/noLikeBandaBanda/" + idBanda + "/" + id;
                 } else {
                     link = "/noLike/" + id;
                 }
 
             } else if (action.id == "like") {
-                if(currentURL.includes("buscarBandas")) {
+                if (currentURL.includes("buscarBandas")) {
                     link = "/likeMusicoBanda/" + id;
+                } else if (currentURL.includes("buscarIntegrantes")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length-1];
+                    link = "/likeBandaMusico/" + idBanda + "/" + id;
+                } else if (currentURL.includes("colabora")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length-1];
+                    link = "/likeBandaBanda/" + idBanda + "/" + id;
                 } else {
                     link = "/like/" + id;
                 }

@@ -20,7 +20,7 @@ def postLikeMusicoMusico(request, pk):
         if musico.usuario in usuario.musico.likesRecibidos.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
-            url = "/chat/" + usuario.id + "-" + musico.usuario.id
+            url = "/chat/" + str(usuario.id) + "-" + str(musico.usuario.id)
             print(url)
             chat = Chat.objects.create(nombre = url)
             print(chat)
@@ -53,7 +53,7 @@ def postLikeMusicoBanda(request, pk):
         if banda in usuario.musico.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {banda.nombre} también le gustaste")
-            url = "/chat/" + usuario.id + "-" + banda.administrador.usuario.id
+            url = "/chat/" + str(usuario.id) + "-" + str(banda.administrador.usuario.id)
             print(url)
             chat = Chat.objects.create(nombre = url)
             print(chat)
@@ -88,7 +88,7 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
         if musico in banda.likesRecibidosMusico.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
-            url = "/chat/" + usuario.id + "-" + musico.usuario.id
+            url = "/chat/" + str(usuario.id) + "-" + str(musico.usuario.id)
             print(url)
             chat = Chat.objects.create(nombre = url)
             print(chat)
@@ -130,7 +130,7 @@ def postLikeBandaBanda(request, pkEmisor, pkReceptor):
         if bandaReceptora in bandaEmisora.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {bandaReceptora.nombre} también le gustasteis")
-            url = "/chat/" + bandaEmisora.administrador.usuario.id + "-" + bandaReceptora.administrador.usuario.id
+            url = "/chat/" + str(bandaEmisora.administrador.usuario.id) + "-" + str(bandaReceptora.administrador.usuario.id)
             print(url)
             chat = Chat.objects.create(nombre = url)
             print(chat)
