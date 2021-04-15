@@ -20,10 +20,9 @@
 	        <div class="col-md-12 login-form">
             <form id="formulario" method="POST" action='/login/' class="box">{% csrf_token %} 
               <img class="logo" src="{% static 'img/logo_negativo_para_fondo_negro.png' %}" alt="Groomeet">
+              <p class="eslogan">¿Hacemos música?</p>
               {% if form.errors %}
                 <p class="text-danger">El nombre o la contraseña introducido/a no es correcto/a. Por favor, inténtelo de nuevo.</p>
-              {% else %}
-                <p class="text-muted"> Por favor, introduzca su nombre de usuario y contraseña</p>
               {% endif %}
               <input type="text" name="username" id="username" placeholder="Usuario" required>
               <input type="password"name="password" id="password" placeholder="Contraseña" required>
