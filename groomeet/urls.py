@@ -60,5 +60,6 @@ urlpatterns = [
     path('listadoProductos/', pagos.listadoProductos, name= 'listadoProductos'),
     path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
     path('chat/', include('groomeet_backend.urls')),
-    path('chat/<str:room_name>/', views.chat_room, name='chat_room')
+    path('chat/<str:room_name>/', views.chat_room, name='chat_room'),
+    path('error/', views.error, name="error")
 ]
