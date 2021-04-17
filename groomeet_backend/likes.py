@@ -68,7 +68,7 @@ def postLikeMusicoBanda(request, pk):
         banda.likesRecibidosMusico.add(usuario)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
         usuario.musico.ultimoUsuarioInteraccion.clear()
-        usuario.musico.ultimoUsuarioInteraccion.add(banda.administrador)
+        usuario.musico.ultimoUsuarioInteraccion.add(banda.administrador.usuario)
         usuario.musico.save()
         if banda in usuario.musico.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
@@ -88,6 +88,9 @@ def postNoLikeMusicoBanda(request, pk):
     usuario = request.user
     if usuario not in banda.noLikesRecibidosMusico.all():
         banda.noLikesRecibidosMusico.add(usuario)
+        usuario.ultimoUsuarioInteraccion.clear()
+        usuario.ultimoUsuarioInteraccion.add(banda.administrador.usuario)
+        usuario.musico.save()
         
     return HttpResponse("Post correcto.")
 
@@ -112,6 +115,9 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
     else:
         musico.likesRecibidosBanda.add(banda)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
+        banda.administrador.usuario.ultimoUsuarioInteraccion.clear()
+        banda.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
+        banda.administrador.usuario.save()
         usuario.musico.save()
         if musico in banda.likesRecibidosMusico.all():
             #Aquí se uniría la creación del chat
@@ -136,6 +142,9 @@ def postNoLikeBandaMusico(request, pkBanda, pkMusico):
         redirect(f"/listadoBandasMusicos/{pkBanda}")
     if banda not in musico.noLikesRecibidosBanda.all():
         musico.noLikesRecibidosBanda.add(banda)
+        banda.administrador.usuario.ultimoUsuarioInteraccion.clear()
+        banda.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
+        banda.administrador.usuario.save()
 
     return HttpResponse("Post correcto.")
 
@@ -161,6 +170,9 @@ def postLikeBandaBanda(request, pkEmisor, pkReceptor):
     else:
         bandaReceptora.likesRecibidosBanda.add(bandaEmisora)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
+        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.clear()
+        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
+        bandaEmisora.administrador.usuario.save()
         usuario.musico.save()
         if bandaReceptora in bandaEmisora.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
@@ -187,6 +199,9 @@ def postNoLikeBandaBanda(request, pkEmisor, pkReceptor):
         redirect(f"/buscarBandas/{pkEmisor}")
     if bandaEmisora not in bandaReceptora.noLikesRecibidosBanda.all():
         bandaReceptora.noLikesRecibidosBanda.add(bandaEmisora)
+        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.clear()
+        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
+        bandaEmisora.administrador.usuario.save()
 
     return HttpResponse("Post correcto.")
 
@@ -311,3 +326,142 @@ def postSuperLikeBandaBanda(request, pkEmisor, pkReceptor):
     bandaReceptora.administrador.chat.add(chat)
     print(f"¡Eso fue un superlike!, os encantó {bandaReceptora.nombre}")
     return redirect(f'/buscarBandas/{pkEmisor}')
+
+@login_required(login_url='/login/')
+def postNoDislikeMusicoMusico(request, pk):
+    print(pk)
+    musico = get_object_or_404(Musico, id=pk)
+    usuario = request.user
+    if musico.usuario.id is usuario.id:
+        redirect("/listado")
+    if usuario in musico.noLikesRecibidos.all():
+        musico.noLikesRecibidos.remove(usuario)
+        usuario.musico.save()
+    if not usuario.musico.isGold and not usuario.musico.isSilver and usuario.musico.likesDisponibles <= 0:
+        #mensaje = "Has agotado tus likes"
+        #return render(request, '../templates/index.html', {'mensaje': mensaje})
+        #Cambiar a un mensaje/vista de que compre una suscripción
+        return HttpResponseRedirect("/listadoProductos")
+    return HttpResponse("Post correcto.")
+
+@login_required(login_url='/login/')
+def postNoDislikeMusicoBanda(request, pk):
+    print(pk)
+    banda = get_object_or_404(Banda, id=pk)
+    usuario = request.user
+    if banda.administrador.id is usuario.id:
+        redirect("/listado")
+    if usuario in banda.noLikesRecibidosBanda.all():
+        banda.noLikesRecibidosBanda.remove(usuario)
+        usuario.musico.save()
+    if not usuario.musico.isGold and not usuario.musico.isSilver and usuario.musico.likesDisponibles <= 0:
+        #mensaje = "Has agotado tus likes"
+        #return render(request, '../templates/index.html', {'mensaje': mensaje})
+        #Cambiar a un mensaje/vista de que compre una suscripción
+        return HttpResponseRedirect("/listadoProductos")
+    return HttpResponse("Post correcto.")
+
+@login_required(login_url='/login/')
+def postNoDislikeBandaMusico(request, pkBanda, pkMusico):
+
+    musico = get_object_or_404(Musico, id=pkMusico)
+    banda = get_object_or_404(Banda, id=pkBanda)
+    usuario = request.user
+    if banda.administrador.id != usuario.musico.id:
+        redirect("/misBandas")
+    if banda.administrador.id is musico.id or musico in banda.miembros.all():
+        redirect(f"/listadoBandasMusicos/{pkBanda}")
+    if not usuario.musico.isGold:
+        return HttpResponseRedirect(f"/listadoProductos/")
+    if usuario.id is banda.administrador.id and musico.usuario.id in banda.noLikesRecibidosBanda.all():
+        banda.noLikesRecibidosBanda.remove(musico.usuario.id)
+        usuario.musico.save()
+    return HttpResponse("Post correcto.")
+
+@login_required(login_url='/login/')
+def postNoDislikeBandaBanda(request, pkEmisor, pkReceptor):
+
+    bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
+    bandaReceptora = get_object_or_404(Banda, id=pkReceptor)
+    usuario = request.user
+    if not usuario.musico.isGold:
+        return HttpResponseRedirect(f"/listadoProductos/")
+    if bandaEmisora.administrador.id != usuario.id:
+        redirect("/misBandas")
+    if bandaEmisora.administrador.id is bandaReceptora.administrador.id:
+        redirect(f"/buscarBandas/{pkEmisor}")
+    if bandaEmisora.id is bandaReceptora.id:
+        redirect(f"/buscarBandas/{pkEmisor}")
+    if bandaEmisora.administrador.id is not bandaReceptora.administradorid and bandaEmisora.administrador in bandaReceptora.noLikesRecibidosBanda.all():
+        bandaReceptora.noLikesRecibidosBanda.remove(bandaEmisora.administrador)
+    return HttpResponse("Post correcto.")
+
+
+@login_required(login_url='/login/')
+def postUndoLikeMusicoMusico(request, pk):
+    musico = get_object_or_404(Musico, id=pk)
+    usuario = request.user
+    if musico.usuario.id is usuario.id:
+        redirect("/listado")
+    if usuario in musico.likesRecibidos.all():
+        musico.likesRecibidos.remove(usuario)
+        usuario.musico.save()
+    if not usuario.musico.isGold and not usuario.musico.isSilver and usuario.musico.likesDisponibles <= 0:
+        # mensaje = "Has agotado tus likes"
+        # return render(request, '../templates/index.html', {'mensaje': mensaje})
+        # Cambiar a un mensaje/vista de que compre una suscripción
+        return HttpResponseRedirect("/listadoProductos")
+    return HttpResponse("Post correcto.")
+
+
+@login_required(login_url='/login/')
+def postUndoLikeMusicoBanda(request, pk):
+    print(pk)
+    banda = get_object_or_404(Banda, id=pk)
+    usuario = request.user
+    if banda.administrador.id is usuario.id:
+        redirect("/listado")
+    if usuario in banda.likesRecibidosBanda.all():
+        banda.likesRecibidosBanda.remove(usuario)
+        usuario.musico.save()
+    if not usuario.musico.isGold and not usuario.musico.isSilver and usuario.musico.likesDisponibles <= 0:
+        # mensaje = "Has agotado tus likes"
+        # return render(request, '../templates/index.html', {'mensaje': mensaje})
+        # Cambiar a un mensaje/vista de que compre una suscripción
+        return HttpResponseRedirect("/listadoProductos")
+    return HttpResponse("Post correcto.")
+
+
+@login_required(login_url='/login/')
+def postUndoLikeBandaMusico(request, pkBanda, pkMusico):
+    musico = get_object_or_404(Musico, id=pkMusico)
+    banda = get_object_or_404(Banda, id=pkBanda)
+    usuario = request.user
+    if banda.administrador.id != usuario.musico.id:
+        redirect("/misBandas")
+    if banda.administrador.id is musico.id or musico in banda.miembros.all():
+        redirect(f"/listadoBandasMusicos/{pkBanda}")
+    if not usuario.musico.isGold:
+        return HttpResponseRedirect(f"/listadoProductos/")
+    if usuario.id is banda.administrador.id and musico.usuario.id in banda.likesRecibidosBanda.all():
+        banda.likesRecibidosBanda.remove(musico.usuario.id)
+        usuario.musico.save()
+    return HttpResponse("Post correcto.")
+
+
+@login_required(login_url='/login/')
+def postUndoDislikeBandaBanda(request, pkEmisor, pkReceptor):
+    bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
+    bandaReceptora = get_object_or_404(Banda, id=pkReceptor)
+    usuario = request.user
+    if not usuario.musico.isGold:
+        return HttpResponseRedirect(f"/listadoProductos/")
+    if bandaEmisora.administrador.id != usuario.id:
+        redirect("/misBandas")
+    if bandaEmisora.administrador.id is bandaReceptora.administrador.id:
+        redirect(f"/buscarBandas/{pkEmisor}")
+    if bandaEmisora.id is bandaReceptora.id:
+        redirect(f"/buscarBandas/{pkEmisor}")
+    if bandaEmisora.administrador.id is not bandaReceptora.administradorid and bandaEmisora.administrador in bandaReceptora.likesRecibidosBanda.all():
+        bandaReceptora.likesRecibidosBanda.remove(bandaEmisora.administrador)
+    return HttpResponse("Post correcto.")
