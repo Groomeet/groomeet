@@ -49,6 +49,10 @@ class Musico(models.Model):
     noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosMusico", blank=True)
     isGold = models.BooleanField(default=False)
     isSilver = models.BooleanField(default=False)
+    isBoosted = models.BooleanField(default=False)
+    superLikes = models.IntegerField(default=0)
+    likesDisponibles = models.IntegerField(default=10)
+    ultimaRenovacionLikes = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return self.usuario.username
@@ -61,6 +65,10 @@ class Musico(models.Model):
     # def edad(self):
     #     return relativedelta(date.today(), self.fechaNacimiento).years
 
+#Método auxiliar para guardar la imagen como la id de la banda seguida de un punto
+def rename_image_banda(instance, filename):
+        filesplits = filename.split('.')
+        return 'media/images/bandas/%s.%s' % (instance.id, filesplits[-1])
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):
@@ -69,6 +77,9 @@ class Banda(models.Model):
     miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
     generos = models.ManyToManyField(Genero, blank=True)
     instrumentos = models.ManyToManyField(Instrumento, blank=True)
+    descripcion = models.TextField(verbose_name="Descripción")
+    enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
+    imagen = models.ImageField(verbose_name="Imagen de la banda",upload_to=rename_image_banda, blank=True, null=True)
     #Sección de likes de Banda a Músico
     likesRecibidosMusico = models.ManyToManyField(User, related_name="likesDadosBanda", blank=True)
     noLikesRecibidosMusico = models.ManyToManyField(User, related_name="noLikesDadosBanda", blank=True)

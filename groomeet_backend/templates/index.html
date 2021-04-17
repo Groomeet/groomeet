@@ -18,6 +18,9 @@
 {% block body %}
     <div class="container-fluid">
         {% if request.user.is_authenticated %}
+
+        
+
             <div class="video-responsive row">
                 <iframe id="video" class="offset-md-3" src="" frameborder="0"
                         allowfullscreen="allowfullscreen"></iframe>
@@ -30,7 +33,7 @@
                     <p class="" id="generos"></p>
                 </div>
             </div>
-
+            
             <div class="row btns-margin">
                 <div class="col-md-1 offset-md-3">
                     <button onclick="next(this)" id="back" type="button" class="btn btn-outline-warning btn-index">
@@ -66,6 +69,7 @@
                         </svg>
                     </button>
                 </div>
+                <!--
                 <div class="col-md-1">
                     <button onclick="next(this)" id="boost" type="button"
                             class="btn btn-outline-secondary btn-outline-boost btn-index">
@@ -75,7 +79,7 @@
                         </svg>
                     </button>
                 </div>
-
+                -->
 
                 </button>
                 <i class="glyphicon glyphicon-remove"></i>
@@ -199,6 +203,12 @@
                     link = "/likeBandaBanda/" + idBanda + "/" + id;
                 } else {
                     link = "/like/" + id;
+                }
+            } else if (action.id == "superlike") {
+                if(currentURL.includes("buscarBandas")) {
+                    link = "/superLikeMusicoBanda/" + id;
+                } else {
+                    link = "/superLike/" + id;
                 }
             }
 
