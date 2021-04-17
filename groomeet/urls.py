@@ -17,8 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from groomeet_backend import views, likes, bandas, pagos, musicos
 from django.contrib.auth import views as auth_views
-
-
+from . import settings
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,7 +32,9 @@ urlpatterns = [
     path('buscarIntegrantes/<int:pkBanda>',views.banda, name='index'),
     path('colabora/<int:pkBanda>',views.banda, name='index'),
     path('getMusico', views.getMusico, name="musico"),
+    path('getMusico/<int:pkBanda>', views.getMusico2, name="musico"),
     path('getBanda', views.getBanda, name="banda"),
+    path('getBanda/<int:pkBanda>', views.getBanda2, name="musico"),
     path('listadoBandas/',views.listadoBandas),
     path('listadoBandasMusicos/<int:pkBanda>',views.listadoBandasMusicos),
     path('buscarBandas/<int:pkBanda>',views.listadoBandasBandas),
@@ -62,3 +65,6 @@ urlpatterns = [
     path('chat/', include('groomeet_backend.urls')),
     path('chat/<str:room_name>/', views.chat_room, name='chat_room')
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

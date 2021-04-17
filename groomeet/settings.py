@@ -130,6 +130,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ( os.path.join('static'), )
 
+# Static files (CSS, JavaScript, Images)
+# https://matthiasomisore.com/web-programming/display-image-in-a-django-template-using-imagefield/
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 #  Add configuration for static files storage using whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
