@@ -3,13 +3,18 @@ from django.shortcuts import redirect, render, get_object_or_404
 from groomeet_backend.form import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import os
 
-@login_required
+@login_required(login_url='/login/')
 def bandaCreate(request):
     if request.method == "POST":
         formulario = BandaForm(request.POST)
         if formulario.is_valid():
-            banda = Banda.objects.create(nombre = formulario.cleaned_data['nombre'], administrador=get_object_or_404(Musico,usuario = request.user))
+            banda = Banda.objects.create(nombre = formulario.cleaned_data['nombre'], administrador=get_object_or_404(Musico,usuario = request.user),
+                                        descripcion=formulario.cleaned_data['descripcion'],enlaceVideo = formulario.cleaned_data['enlaceVideo'])
+            if 'imagen' in request.FILES:
+                banda.imagen = imagen=request.FILES['imagen']
+            banda.save()
             banda.generos.set(request.POST.getlist('generos'))
             banda.instrumentos.set(request.POST.getlist('instrumentos'))
             
@@ -18,25 +23,48 @@ def bandaCreate(request):
         formulario = BandaForm()
     return render(request, 'createBanda.html', {'formulario': formulario})
 
-@login_required
+@login_required(login_url='/login/')
 def bandaUpdate(request, id):
-    banda = Banda.objects.get(id=id)
-    form = BandaForm(initial={'nombre': banda.nombre})
+    banda = get_object_or_404(Banda,id=id)
+    musico = get_object_or_404(Musico,usuario=request.user)
+    if banda.administrador != musico:
+        return redirect('/misBandas')
+    imagenBanda = banda.imagen
+    form = BandaForm(initial={'nombre': banda.nombre,'descripcion': banda.descripcion,'instrumentos': banda.instrumentos.all,
+                            'generos': banda.generos.all,'imagen': banda.imagen,'enlaceVideo': banda.enlaceVideo})
     if request.method == "POST":
         form = BandaForm(request.POST, instance=banda)
         if form.is_valid():
             try:
                 form.save()
                 model = form.instance
+                #Si existe una nueva imagen, habrá que cambiar la existente por esta.
+                if 'imagen' in request.FILES:
+                    print("He recibido la imagen")
+                    #Borramos la imagen anterior si existia.
+                    if imagenBanda != "" and imagenBanda != None:
+                        os.remove(banda.imagen.path)
+                    model.imagen = request.FILES['imagen']
+                    model.save()
+                else:
+                    print("Nada bro, no He recibido la imagen")
+                #En caso contrario, comprobaremos que el usuario no ha eliminado la imagen que tenía.
+                #Si la ha eliminado habrá que borrarla de los datos.
+                    if model.imagen == "" or model.imagen == None:
+                        os.remove(imagenBanda.path)
+                messages.success(request, f"¡Tu banda ha sido modificada con éxito!")
                 return redirect('/misBandas')
             except Exception as e:
                 pass
     return render(request, 'updateBanda.html', {'form': form})
 
 
-@login_required
+@login_required(login_url='/login/')
 def bandaDelete(request, id):
-    banda = Banda.objects.get(id=id)
+    banda = get_object_or_404(Banda,id=id)
+    musico = get_object_or_404(Musico,usuario=request.user)
+    if banda.administrador != musico:
+        return redirect('/misBandas')
     try:
         banda.delete()
     except:
@@ -44,11 +72,12 @@ def bandaDelete(request, id):
     return redirect('/misBandas')
 
 
-@login_required
+@login_required(login_url='/login/')
 def miembroNoRegistradoCreate(request, pk):
-    banda = get_object_or_404(Banda, id=pk)
-    if banda.administrador.usuario.id != request.user.id:
-        return HttpResponseRedirect('/misBandas')
+    banda = get_object_or_404(Banda,id=pk)
+    musico = get_object_or_404(Musico,usuario=request.user)
+    if banda.administrador != musico:
+        return redirect('/misBandas')
     if request.method == "POST":
         formulario = MiembroNoRegistradoForm(request.POST)
         if formulario.is_valid():
@@ -61,7 +90,7 @@ def miembroNoRegistradoCreate(request, pk):
         formulario = MiembroNoRegistradoForm()
     return render(request, 'createMiembroNoRegistrado.html', {'formulario': formulario})
 
-@login_required
+@login_required(login_url='/login/')
 def enviarInvitacionBanda(request, banda_id):
     if request.method == "POST":
         formulario = InvitarBandaForm(request.POST)
@@ -96,7 +125,7 @@ def enviarInvitacionBanda(request, banda_id):
     return render(request, 'invitarBanda.html', {'formulario': formulario})
 
 
-@login_required
+@login_required(login_url='/login/')
 def aceptarInvitacionBanda(request, invitacion_id):
     usuario = request.user
     receptor = get_object_or_404(Musico, usuario=usuario)
@@ -110,7 +139,7 @@ def aceptarInvitacionBanda(request, invitacion_id):
 
     return redirect("/misInvitaciones")
 
-@login_required
+@login_required(login_url='/login/')
 def rechazarInvitacionBanda(request, invitacion_id):
     usuario = request.user
     receptor = get_object_or_404(Musico, usuario=usuario)
@@ -124,7 +153,7 @@ def rechazarInvitacionBanda(request, invitacion_id):
 
 #Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 '''
-@login_required
+@login_required(login_url='/login/')
 def enviarInvitacionBanda(request, receptor_id, banda_id):
     emisor = get_object_or_404(Musico, usuario=request.user)
     receptor = get_object_or_404(Musico, id=receptor_id)

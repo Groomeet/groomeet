@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 from dateutil.relativedelta import relativedelta
 from enum import Enum
+import datetime
+
 
 # Create your models here.
 
@@ -35,8 +37,8 @@ class Musico(models.Model):
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
-    descripcion = models.TextField(verbose_name="Descripción", null=True)
-    enlaceVideo = models.CharField(max_length=150, verbose_name="Enlace de vídeo", blank=True)
+    descripcion = models.TextField(verbose_name="Descripción")
+    enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
     avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
     chat = models.ManyToManyField(Chat, blank=True)
     #Sección de likes de Músico a Músico
@@ -45,6 +47,12 @@ class Musico(models.Model):
     #Sección de likes de Músico a Banda
     likesRecibidosBanda = models.ManyToManyField('Banda', related_name="likesDadosMusico", blank=True)
     noLikesRecibidosBanda = models.ManyToManyField('Banda', related_name="noLikesDadosMusico", blank=True)
+    isGold = models.BooleanField(default=False)
+    isSilver = models.BooleanField(default=False)
+    isBoosted = models.BooleanField(default=False)
+    superLikes = models.IntegerField(default=0)
+    likesDisponibles = models.IntegerField(default=10)
+    ultimaRenovacionLikes = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return self.usuario.username
@@ -53,11 +61,14 @@ class Musico(models.Model):
     def numLikes(self):
         return self.likesRecibidos.all().count()
 
-    @property
-    def edad(self):
-        return relativedelta(date.today(), self.fechaNacimiento).years
+    # @property
+    # def edad(self):
+    #     return relativedelta(date.today(), self.fechaNacimiento).years
 
-
+#Método auxiliar para guardar la imagen como la id de la banda seguida de un punto
+def rename_image_banda(instance, filename):
+        filesplits = filename.split('.')
+        return 'media/images/bandas/%s.%s' % (instance.id, filesplits[-1])
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):
@@ -66,6 +77,9 @@ class Banda(models.Model):
     miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
     generos = models.ManyToManyField(Genero, blank=True)
     instrumentos = models.ManyToManyField(Instrumento, blank=True)
+    descripcion = models.TextField(verbose_name="Descripción")
+    enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
+    imagen = models.ImageField(verbose_name="Imagen de la banda",upload_to=rename_image_banda, blank=True, null=True)
     #Sección de likes de Banda a Músico
     likesRecibidosMusico = models.ManyToManyField(User, related_name="likesDadosBanda", blank=True)
     noLikesRecibidosMusico = models.ManyToManyField(User, related_name="noLikesDadosBanda", blank=True)
@@ -124,4 +138,29 @@ class Invitacion(TimeStampedModel):
     banda = models.ForeignKey(Banda, on_delete=models.CASCADE)
     estado = models.CharField(
         max_length=40,
-        choices=[(estado, estado.value) for estado in EstadoInvitacion])
+        choices=[(estado, estado.value) for estado in EstadoInvitacion]
+    )
+
+class Producto(models.Model):
+    producto = models.CharField(max_length=100, null= False)
+    precio = models.DecimalField(max_digits=5 ,decimal_places= 2)
+
+    def __str__(self):
+        return self.producto
+
+class Compra(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    id = models.CharField(primary_key= True, max_length=100)
+    estado = models.CharField(max_length=100)
+    codigo_estado = models.CharField(max_length=100)
+    producto = models.ForeignKey(to=Producto, on_delete= models.SET_NULL, null = True)
+    total_de_la_compra = models.DecimalField(max_digits=5 ,decimal_places= 2)
+    nombre_cliente = models.CharField(max_length=100)
+    apellido_cliente = models.CharField(max_length=100)
+    correo_cliente = models.EmailField(max_length=100)
+    direccion_cliente = models.CharField(max_length=100)
+    fecha_compra = models.DateField(default=datetime.date.today)
+
+    def __str__(self):
+        return self.nombre_cliente
+
