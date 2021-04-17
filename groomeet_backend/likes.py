@@ -23,6 +23,8 @@ def postLikeMusicoMusico(request, pk):
     else:
         musico.likesRecibidos.add(usuario)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
+        usuario.musico.ultimoUsuarioInteraccion.clear()
+        usuario.musico.ultimoUsuarioInteraccion.add(musico.usuario)
         usuario.musico.save()
         if musico.usuario in usuario.musico.likesRecibidos.all():
             #Aquí se uniría la creación del chat
@@ -43,6 +45,8 @@ def postNoLikeMusicoMusico(request, pk):
     usuario = request.user
     if usuario not in musico.noLikesRecibidos.all():
         musico.noLikesRecibidos.add(usuario)
+        usuario.musico.ultimoUsuarioInteraccion.clear()
+        usuario.musico.ultimoUsuarioInteraccion.add(musico.usuario)
 
     return HttpResponse("Post correcto.")
 
@@ -63,6 +67,8 @@ def postLikeMusicoBanda(request, pk):
     else:
         banda.likesRecibidosMusico.add(usuario)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
+        usuario.musico.ultimoUsuarioInteraccion.clear()
+        usuario.musico.ultimoUsuarioInteraccion.add(banda.administrador)
         usuario.musico.save()
         if banda in usuario.musico.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
@@ -82,7 +88,7 @@ def postNoLikeMusicoBanda(request, pk):
     usuario = request.user
     if usuario not in banda.noLikesRecibidosMusico.all():
         banda.noLikesRecibidosMusico.add(usuario)
-
+        
     return HttpResponse("Post correcto.")
 
 #Sección de likes y no likes de bandas a musicos
