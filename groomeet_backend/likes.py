@@ -20,7 +20,7 @@ def postLikeMusicoMusico(request, pk):
         if musico.usuario in usuario.musico.likesRecibidos.all():
             #Aquí se uniría la creación del chat
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustaste")
-            url = "/chat/" + usuario.id + "-" + musico.usuario.id
+            url = "/chat/" + str(usuario.id) + "-" + str(musico.usuario.id)
             print(url)
             chat = Chat.objects.create(nombre = url)
             print(chat)

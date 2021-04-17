@@ -14,7 +14,7 @@ import os
 
 from groomeet_backend import routing
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "groomeet_backend.settings")
 
 application = ProtocolTypeRouter({
   "http": get_asgi_application(),

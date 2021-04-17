@@ -31,12 +31,11 @@ class Chat(models.Model):
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Musico(models.Model):
-   class Musico(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
-    descripcion = models.TextField(verbose_name="Descripción")
+    descripcion = models.TextField(verbose_name="Descripción", null=True)
     enlaceVideo = models.CharField(max_length=150, verbose_name="Enlace de vídeo", blank=True)
     avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
     chat = models.ManyToManyField(Chat, blank=True)
@@ -125,4 +124,4 @@ class Invitacion(TimeStampedModel):
     banda = models.ForeignKey(Banda, on_delete=models.CASCADE)
     estado = models.CharField(
         max_length=40,
-        choices=[(estado, estado.value) for estado in EstadoInvitacion]
+        choices=[(estado, estado.value) for estado in EstadoInvitacion])
