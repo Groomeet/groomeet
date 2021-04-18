@@ -1,8 +1,8 @@
-
-{% block content %}
+{% extends 'base.html' %}
+{% block body %}
 <h1>Bandas</h1>
 <section class="date-page">
-  
+
   <div class="musicos-container">
     {% for banda in bandas %}
     <div>
@@ -31,4 +31,4 @@
   </div>
 </section>
 
-{% endblock content %}
+{% endblock %}

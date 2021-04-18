@@ -9,15 +9,12 @@ global:
 
 install:
 - pip install -r requirements.txt
-- pip install codacy-coverage
 
 script:
-# - coverage3 run --source='.' manage.py test
-- coverage xml
-- python-codacy-coverage -r coverage.xml
+- python manage.py test
 
 branches:
    only:
-     - main
+     - develop
 
 

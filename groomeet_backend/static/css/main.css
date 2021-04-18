@@ -1,0 +1,33 @@
+body {
+	--primary-color: #00ff9d;
+    --secondary-color: #002718;
+    --tertiary-color: #00140c;
+    --quaternary-color: #6c9384;
+    --fifth-color: #ebfff7;
+}
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+
+header .navbar{
+    background-color: #00ff9d;
+    margin-bottom: 30px;
+}
+
+a, a:hover {
+    color: #00140C;
+    margin-right: 30px;
+}
+
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+footer {
+    margin-top: 50px;
+    margin-bottom: -20px;
+    padding-top: 20px;
+    background: #6c9384;
+    color: #00140c;
+    box-shadow: 0px 0px 20px #888888;
+}

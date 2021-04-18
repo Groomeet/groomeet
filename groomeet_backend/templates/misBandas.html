@@ -1,40 +1,93 @@
-{% block content %}
+{% extends 'base.html' %}
+{% block body %}
+
+<style>
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:nth-of-type(odd) {
+    background-color: #d8d8d8;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #343a40;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.icon {
+    height: 20px;
+    width: 20px;
+}
+</style>
 
 <div class="card-body" style="margin-top:50px;">
-    <h2>Mis Bandas</h2><br>
-    <table class="table table-striped">
+    <div>
+        <h2 style="white-space: nowrap;">Mis Bandas <a href="/createBanda"><img class="icon" src="../static/img/icons/add.png" title="Nueva banda" alt="Nueva banda"></a></h2> 
+    </div>
+    <br><br>
+    <table class="table  styled-table">
         <thead>
-            <tr>
+            <tr align="center">
                 <th scope="col">Nombre</th>
                 <th scope="col">Generos</th>
                 <th scope="col">Instrumentos</th>
-                <th scope="col">Miembros no registrados</th>
-                <th scope="col">Miembros registrados</th>
+                <th colspan="2" scope="col">Miembros</th>
                 <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for row in misBandas %}
             <tr>
-                <td>{{ row.nombre }}</td>
+                <td>
+                    {{ row.nombre }}
+                    <div>
+                        <a href="/updateBanda/{{ row.id }}" ><img class="icon" src="../static/img/icons/edit.png" title="Editar banda" alt="Editar banda"></a>
+                        <a href="/deleteBanda/{{ row.id }}"><img class="icon" style="tint" src="../static/img/icons/delete.png" title="Eliminar banda" alt="Eliminar banda"></a>
+                    </div>
+                </td>
                 <td>{% for genero in row.generos.all %}
                     - {{ genero.nombre }} <br>
 			    {% endfor %}</td>
                 <td>{% for instrumento in row.instrumentos.all %}
                     - {{ instrumento.nombre }} <br>
 			    {% endfor %}</td>
-                <td>{% for miembro in row.miembrosNoRegistrados.all %}
+                <td style="font-style: italic;">{% for miembro in row.miembrosNoRegistrados.all %}
                     - {{ miembro.nombre }}
                 {% endfor %}</td>
                 <td>{% for miembro in row.miembros.all %}
                     - {{ miembro.usuario.username }}
                 {% endfor %}</td>
                 <td>
-                    <a href="/updateBanda/{{ row.id }}" >Editar</a>
-                    <a href="/deleteBanda/{{ row.id }}">Eliminar</a>
-                    <a href="/createMiembroNoRegistrado/{{ row.id }}" >Nuevo Miembro</a>
-                    <a href="/listadoBandasMusicos/{{ row.id }}" >Buscar Miembros</a>
-                    <a href="/buscarBandas/{{ row.id }}" >Buscar Bandas</a>
+                    <a href="/listadoBandasMusicos/{{ row.id }}" ><img class="icon" src="../static/img/icons/finduser.png" title="Buscar músicos" alt="Buscar músicos"></a>
+                    <a href="/invitacionBanda/{{ row.id }}"><img class="icon" src="../static/img/icons/adduser.png"  title="Invitar músico" alt="Invitar músico"></a>
+                    <a href="/buscarBandas/{{ row.id }}" ><img class="icon" src="../static/img/icons/findband.png" title="Buscar bandas" alt="Buscar bandas"></a>
                 </td>
             </tr>
             

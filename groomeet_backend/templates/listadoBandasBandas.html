@@ -1,5 +1,5 @@
-
-{% block content %}
+{% extends 'base.html' %}
+{% block body %}
 <h1>Bandas</h1>
 <section class="date-page">
   
@@ -24,6 +24,14 @@
 
       </form>
 
+      <form action="{% url 'superLikeBandaBanda' pkBanda banda.pk %}" method="POST">
+        {% csrf_token %}
+        <button class="block-btn" type="submit", name="banda_id", value="{{banda.id}}">
+          SuperLike
+        </button>
+
+      </form>
+
     </div>
 
   
@@ -31,4 +39,4 @@
   </div>
 </section>
 
-{% endblock content %}
+{% endblock %}

@@ -1,0 +1,55 @@
+.card-gold{
+    margin-bottom: 30px;
+    box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.1);
+}
+
+.card-silver {
+    margin-bottom: 30px;
+    box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.1);
+}
+
+.card-gold-header {
+    background: linear-gradient(to right, #BF953F, #FCF6BA, #FBF5B7, #AA771C);
+}
+
+.card-silver-header {
+    background: linear-gradient(to right, #A2A2A2, #eaecee, #eaecee, #B1B1B1);
+}
+
+.card-title-g{
+    color: #8d6e30;
+    margin-top: 4%;
+}
+
+.card-title-s{
+    color: #696969;
+    margin-top: 4%;
+}
+
+.btn-gold {
+    background-color: #a88339 !important;
+    color: #ffffff !important;
+    margin-bottom: 4%;
+    margin-left: 30px;
+}
+
+.btn-gold:hover {
+    background: #8d6e30 !important;
+}
+
+.btn-silver {
+    margin-bottom: 4%;
+    margin-left: 30px;
+}
+
+.font-xxl {
+    font-size:xx-large;
+}
+
+.font-xl {
+    font-size:x-large;
+}
+
+.ctb {
+    padding-bottom: 15px;
+}

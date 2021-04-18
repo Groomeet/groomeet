@@ -1,5 +1,6 @@
-{% block content %}
-        
+{% extends 'base.html' %}
+{% block body %}
+ <div class="panel-heading">
         <h2 >Datos del miembro</h2><br>
             <form method="POST" class="post-form">{% csrf_token %}
             
@@ -9,7 +10,7 @@
             </form>
 
           </div>
-            
+            </div>
 {% endblock %}
 
 </body>

@@ -1,9 +1,9 @@
-{% block content %}
-        
+{% extends 'base.html' %}
+{% block body %}
 
-    
+    <div class="panel-heading">
         <h2 >Datos de la Banda</h2><br>
-            <form method="POST" class="post-form">{% csrf_token %}
+            <form enctype="multipart/form-data" method="POST" class="post-form">{% csrf_token %}
             
                 {{ formulario.as_p }}
      
@@ -11,7 +11,7 @@
             </form>
 
           </div>
-        
+    </div>
 
         
 {% endblock %}
