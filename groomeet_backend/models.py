@@ -23,7 +23,7 @@ class Instrumento(models.Model):
 #Método auxiliar para guardar la imagen como la id del usuario seguida de un punto
 def rename_avatar_image(instance, filename):
         filesplits = filename.split('.')
-        return 'media/images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
+        return 'images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
 
 class Chat(models.Model):
     nombre = models.CharField(max_length=64, null=True, blank=True)
@@ -69,7 +69,7 @@ class Musico(models.Model):
 #Método auxiliar para guardar la imagen como la id de la banda seguida de un punto
 def rename_image_banda(instance, filename):
         filesplits = filename.split('.')
-        return 'media/images/bandas/%s.%s' % (instance.id, filesplits[-1])
+        return 'images/bandas/%s.%s' % (instance.id, filesplits[-1])
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):
