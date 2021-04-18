@@ -9,11 +9,13 @@ User = get_user_model()
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, data):
-        messages = Message.last_10_messages()
+        messages = Message.last_10_messages(self)
+
         content = {
             'command': 'messages',
             'messages': self.messages_to_json(messages)
         }
+
         self.send_message(content)
 
     def new_message(self, data):
@@ -76,8 +78,12 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def send_message(self, message):
-        self.send(text_data=json.dumps(message))
+        text_data = json.dumps(message)
+        self.send(text_data)
+
 
     def chat_message(self, event):
         message = event['message']
         self.send(text_data=json.dumps(message))
+
+
