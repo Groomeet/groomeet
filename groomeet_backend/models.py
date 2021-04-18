@@ -53,6 +53,7 @@ class Musico(models.Model):
     superLikes = models.IntegerField(default=0)
     likesDisponibles = models.IntegerField(default=10)
     ultimaRenovacionLikes = models.DateField(default=datetime.date.today)
+    ultimoUsuarioInteraccion = models.ManyToManyField(User, related_name="ultimoUsuarioInteraccion", blank=True)
 
     def __str__(self):
         return self.usuario.username
