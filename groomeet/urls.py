@@ -14,30 +14,41 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from groomeet_backend import views, likes, bandas
+from django.urls import path, include
+from groomeet_backend import views, likes, bandas, pagos, musicos
 from django.contrib.auth import views as auth_views
-
-import django_private_chat2.views
-
+from . import settings
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/',views.logout_view, name='logout'),
-    path('',views.index, name='index'),
+    path('',views.musico, name='index'),
+    path('signUp/',musicos.signUpMusico),
+    path('updateProfile/',musicos.updateProfileMusico),
+    path('buscarBandas',views.musico, name='index'),
+    path('buscarIntegrantes/<int:pkBanda>',views.banda, name='index'),
+    path('colabora/<int:pkBanda>',views.banda, name='index'),
     path('getMusico', views.getMusico, name="musico"),
-    path('geBanda/<int:id>', views.getBanda, name="banda"),
+    path('getMusico/<int:pkBanda>', views.getMusico2, name="musico"),
+    path('getBanda', views.getBanda, name="banda"),
+    path('getBanda/<int:pkBanda>', views.getBanda2, name="musico"),
     path('listadoBandas/',views.listadoBandas),
     path('listadoBandasMusicos/<int:pkBanda>',views.listadoBandasMusicos),
     path('buscarBandas/<int:pkBanda>',views.listadoBandasBandas),
     path("like/<int:pk>", likes.postLikeMusicoMusico, name="like"),
+    path("superLike/<int:pk>", likes.postSuperLikeMusicoMusico, name="superlikeMusicoMusico"),
     path("noLike/<int:pk>", likes.postNoLikeMusicoMusico, name="noLike"),
-    path("likeMusicoBanda/<int:pk>/", likes.postLikeMusicoBanda, name="likeMusicoBanda"),
-    path("noLikeMusicoBanda/<int:pk>/", likes.postNoLikeMusicoBanda, name="noLikeMusicoBanda"),
+    path("likeMusicoBanda/<int:pk>", likes.postLikeMusicoBanda, name="likeMusicoBanda"),
+    path("superLikeMusicoBanda/<int:pk>", likes.postSuperLikeMusicoBanda, name="superLikeMusicoBanda"),
+    path("noLikeMusicoBanda/<int:pk>", likes.postNoLikeMusicoBanda, name="noLikeMusicoBanda"),
     path("likeBandaMusico/<int:pkBanda>/<int:pkMusico>", likes.postLikeBandaMusico, name="likeBandaMusico"),
+    path("superLikeBandaMusico/<int:pkBanda>/<int:pkMusico>", likes.postSuperLikeBandaMusico, name="superLikeBandaMusico"),
     path("noLikeBandaMusico/<int:pkBanda>/<int:pkMusico>", likes.postNoLikeBandaMusico, name="noLikeBandaMusico"),
     path("likeBandaBanda/<int:pkEmisor>/<int:pkReceptor>", likes.postLikeBandaBanda, name="likeBandaBanda"),
+    path("superLikeBandaBanda/<int:pkEmisor>/<int:pkReceptor>", likes.postSuperLikeBandaBanda, name="superLikeBandaBanda"),
     path("noLikeBandaBanda/<int:pkEmisor>/<int:pkReceptor>", likes.postNoLikeBandaBanda, name="noLikeBandaBanda"),
     path('createBanda/',bandas.bandaCreate),
     path('createMiembroNoRegistrado/<int:pk>',bandas.miembroNoRegistradoCreate),
@@ -48,10 +59,13 @@ urlpatterns = [
     path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
     path('misInvitaciones/',views.listadoMisInvitaciones),
-    path('chat/', views.chat, name='chat'),
-    path('messages/', django_private_chat2.views.MessagesModelList.as_view(), name='all_messages_list'),
-    path('messages/<dialog_with>/', django_private_chat2.views.MessagesModelList.as_view(), name='messages_list'),
-    path('dialogs/', django_private_chat2.views.DialogsModelList.as_view(), name='dialogs_list'),
-    path('self/', django_private_chat2.views.SelfInfoView.as_view(), name='self_info'),
-    
+    path('pago/<int:id>', pagos.pago, name= 'pago'),
+    path('listadoProductos/', pagos.listadoProductos, name= 'listadoProductos'),
+    path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
+    path('chat/', include('groomeet_backend.urls')),
+    path('chat/<str:room_name>/', views.chat_room, name='chat_room')
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

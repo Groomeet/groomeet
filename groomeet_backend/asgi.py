@@ -9,17 +9,18 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-from django_private_chat2 import urls
+
 import os
 
+from groomeet_backend import routing
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "groomeet_backend.settings")
 
 application = ProtocolTypeRouter({
   "http": get_asgi_application(),
   "websocket": AuthMiddlewareStack(
         URLRouter(
-            urls.websocket_urlpatterns
+            routing.websocket_urlpatterns
         )
     ),
 })

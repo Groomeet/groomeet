@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+   <link rel="stylesheet" href="{% static 'css/compras.css' %}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block title %} - Productos{% endblock %}
+
+{% block body %}
+   <div class="container text-center">
+      <div class="row">
+         <h3>Productos de Groomeet</h3>
+      </div>
+      <div class="row">
+         {% for row in productos %}
+            <div class="col-sm-6">
+            {% if row.producto|stringformat:"s" == "Gold Groomeet"  %}
+               <div class="card card-gold">
+                  <div class="card-header card-gold-header"><br><br></div>
+                  <span class="card-title card-title-g font-xl"><strong>{{row.producto}}</strong></span>
+                  <p class="card-text">
+                     <span class="font-xxl">{{row.precio}}€/</span>mes
+                  </p>
+                  <p class="card-text">
+                        Sin anuncios <br>
+                        Likes ilimitados <br>
+                        50 superlikes <br>
+                        Boosteo en tu zona <br>
+                        Retrocede los swaps <br>
+                  </p>
+                  {% if request.user.musico.isGold or request.user.musico.isSilver %}
+                        <h3>Ya disfrutas de una suscripción</h3>
+                     {% else %}
+                        <a href="/comprarProducto/{{row.id}}" class="btn btn-gold"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
+                     {% endif %}
+               </div>
+            {% elif row.producto|stringformat:"s" == "Silver Groomeet" %}
+               <div class="card card-silver">
+                  <div class="card-header card-silver-header"><br><br></div>
+                  <span class="card-title card-title-s font-xl"><strong>{{row.producto}}</strong></span>
+                  <p class="card-text">
+                     <span class="font-xxl">{{row.precio}}€/</span>mes
+                  </p>
+                  <p class="card-text">
+                     <br>
+                     Likes ilimitados <br>
+                     Boosteo en tu zona <br>
+                     <br>
+                     <br>
+                  </p>
+                  {% if request.user.musico.isGold or request.user.musico.isSilver %}
+                        <h3>Ya disfrutas de una suscripción</h3>
+                     {% else %}
+                        <a href="/comprarProducto/{{row.id}}" class="btn btn-secondary btn-silver"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
+                     {% endif %}
+               </div>
+            {% endif %}
+            </div>
+         {% endfor %}
+      </div>
+
+
+    </div>
+{% endblock %}
