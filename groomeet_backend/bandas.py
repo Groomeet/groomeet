@@ -122,7 +122,8 @@ def enviarInvitacionBanda(request, banda_id):
             return HttpResponseRedirect('/misBandas')
     else:
         formulario = InvitarBandaForm()
-    return render(request, 'invitarBanda.html', {'formulario': formulario})
+        bID = banda_id
+    return render(request, 'invitarBanda.html', {'formulario': formulario,'bID': bID})
 
 
 @login_required(login_url='/login/')

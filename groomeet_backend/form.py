@@ -9,6 +9,7 @@ class BandaForm(forms.ModelForm):
         ,'likesRecibidosBanda','noLikesRecibidosBanda' )
 
 class MiembroNoRegistradoForm(forms.ModelForm):
+    instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
     class Meta:
         model = MiembroNoRegistrado
         exclude =('banda',)
@@ -34,6 +35,7 @@ class BandaForm(forms.ModelForm):
         ,'likesRecibidosBanda','noLikesRecibidosBanda' )
 
 class MiembroNoRegistradoForm(forms.ModelForm):
+    instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
     class Meta:
         model = MiembroNoRegistrado
         exclude =('banda',)
