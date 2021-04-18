@@ -23,7 +23,7 @@
 
             <div class="row btns-margin">
                 <div class="col-md-1 offset-md-3">
-                    <button onclick="next(this)" id="back" type="button" class="btn btn-outline-warning btn-index">
+                    <button onclick="back()" id="back" type="button" class="btn btn-outline-warning btn-index">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                              class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
@@ -73,7 +73,9 @@
     <script>
         var id = -1;
         var currentURL = window.location.href;
-        var oldVideo = document.getElementById("video").parentNode;
+        var oldVideo = document.getElementById("video");
+        var lastAction = "";
+        var lastEntityId = -1;
 
         function getCookie(name) {
             var cookieValue = null;
@@ -131,11 +133,11 @@
                 link = "/getBanda";
             } else if (currentURL.includes("buscarIntegrantes")) {
                 splitURL = currentURL.split("/");
-                idBanda = splitURL[splitURL.length-1];
+                idBanda = splitURL[splitURL.length - 1];
                 link = "/getMusico/" + idBanda;
             } else if (currentURL.includes("colabora")) {
                 splitURL = currentURL.split("/");
-                idBanda = splitURL[splitURL.length-1];
+                idBanda = splitURL[splitURL.length - 1];
                 link = "/getBanda/" + idBanda;
             } else {
                 link = "/getMusico";
@@ -150,53 +152,104 @@
         });
 
         function next(action) {
+            lastEntityId = id;
             var link = "";
             console.log("Id: " + id);
-            if(action.id != "back") {
-                if (action.id == "dislike") {
-                    if (currentURL.includes("buscarBandas")) {
-                        link = "/noLikeMusicoBanda/" + id;
-                    } else if (currentURL.includes("buscarIntegrantes")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/noLikeBandaMusico/" + idBanda + "/" + id;
-                    } else if (currentURL.includes("colabora")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/noLikeBandaBanda/" + idBanda + "/" + id;
-                    } else {
-                        link = "/noLike/" + id;
-                    }
-
-                } else if (action.id == "like") {
-                    if (currentURL.includes("buscarBandas")) {
-                        link = "/likeMusicoBanda/" + id;
-                    } else if (currentURL.includes("buscarIntegrantes")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/likeBandaMusico/" + idBanda + "/" + id;
-                    } else if (currentURL.includes("colabora")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/likeBandaBanda/" + idBanda + "/" + id;
-                    } else {
-                        link = "/like/" + id;
-                    }
-                } else if (action.id == "superlike") {
-                    if (currentURL.includes("buscarBandas")) {
-                        link = "/superLikeMusicoBanda/" + id;
-                    } else if (currentURL.includes("buscarIntegrantes")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/superLikeBandaMusico/" + idBanda + "/" + id;
-                    } else if (currentURL.includes("colabora")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/superLikeBandaBanda/" + idBanda + "/" + id;
-                    } else {
-                        link = "/superLike/" + id;
-                    }
+            if (action.id == "dislike") {
+                lastAction = "dislike";
+                if (currentURL.includes("buscarBandas")) {
+                    link = "/noLikeMusicoBanda/" + id;
+                } else if (currentURL.includes("buscarIntegrantes")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length - 1];
+                    link = "/noLikeBandaMusico/" + idBanda + "/" + id;
+                } else if (currentURL.includes("colabora")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length - 1];
+                    link = "/noLikeBandaBanda/" + idBanda + "/" + id;
+                } else {
+                    link = "/noLike/" + id;
                 }
+
+            } else if (action.id == "like") {
+                lastAction = "like";
+                if (currentURL.includes("buscarBandas")) {
+                    link = "/likeMusicoBanda/" + id;
+                } else if (currentURL.includes("buscarIntegrantes")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length - 1];
+                    link = "/likeBandaMusico/" + idBanda + "/" + id;
+                } else if (currentURL.includes("colabora")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length - 1];
+                    link = "/likeBandaBanda/" + idBanda + "/" + id;
+                } else {
+                    link = "/like/" + id;
+                }
+            } else if (action.id == "superlike") {
+                lastAction = "superlike";
+                if (currentURL.includes("buscarBandas")) {
+                    link = "/superLikeMusicoBanda/" + id;
+                } else if (currentURL.includes("buscarIntegrantes")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length - 1];
+                    link = "/superLikeBandaMusico/" + idBanda + "/" + id;
+                } else if (currentURL.includes("colabora")) {
+                    splitURL = currentURL.split("/");
+                    idBanda = splitURL[splitURL.length - 1];
+                    link = "/superLikeBandaBanda/" + idBanda + "/" + id;
+                } else {
+                    link = "/superLike/" + id;
+                }
+            }
+
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                url: link,
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: csrftoken,
+                },
+            }).fail(function (xhr) {
+                if (xhr.status == 402) {
+                    if(link.includes("/like")) {
+                        alert('¡Parece que se han agotado tus likes! ¿Has pensado en unirte a alguna de nuestras membresías?');
+                    } else {
+                        alert('Esta función es exclusiva de usuarios Gold, ¿por qué no te unes?');
+                    }
+                } else if (xhr.status == 405) {
+                    alert('¡Has agotado tus superlikes!');
+                }
+            })
+
+            asyncRequest();
+        }
+
+        function back() {
+            console.log(id)
+            console.log(lastEntityId)
+            console.log(lastAction)
+            if(lastAction == "like") {
+                link = "/undoLike";
+            } else if(lastAction == "dislike") {
+                link = "/undoDislike";
+            } else if(lastAction == "superlike") {
+                link = "noValid";
+                alert("No se pueden deshacer superlikes.")
+            }
+            if (currentURL.includes("buscarBandas")) {
+                        link = link + "MusicoBanda/" + lastEntityId;
+                    } else if (currentURL.includes("buscarIntegrantes")) {
+                        splitURL = currentURL.split("/");
+                        idBanda = splitURL[splitURL.length - 1];
+                        link = link + "BandaMusico/" + idBanda + "/" + lastEntityId;
+                    } else if (currentURL.includes("colabora")) {
+                        splitURL = currentURL.split("/");
+                        idBanda = splitURL[splitURL.length - 1];
+                        link = link + "BandaBanda/" + idBanda + "/" + lastEntityId;
+                    } else {
+                        link = link + "MusicoMusico/" + lastEntityId;
+                    }
 
                 var csrftoken = getCookie('csrftoken');
                 $.ajax({
@@ -205,48 +258,35 @@
                     data: {
                         csrfmiddlewaretoken: csrftoken,
                     },
-                }).fail(function (xhr) {
-                    if (xhr.status == 402) {
-                        alert('¿Has pensado en unirte a nuestra membresía Gold?');
-                    } else if (xhr.status == 405) {
-                        alert('¡Has agotado tus superlikes!');
-                    }
-                })
+                }).done( function(data) {
+                    datos = data.split(";");
+                    var nombre = datos[0];
+                    var generos = datos[1];
+                    var video = datos[2];
+                    id = datos[3];
 
-                asyncRequest();
-            } else {
-                if (currentURL.includes("buscarBandas")) {
-                        link = "/undoLikeMusicoBanda/" + id;
-                    } else if (currentURL.includes("buscarIntegrantes")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/undoLikeBandaMusico/" + idBanda + "/" + id;
-                    } else if (currentURL.includes("colabora")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = "/undoLikeBandaBanda/" + idBanda + "/" + id;
-                    } else {
-                        link = "/undoLikeMusicoMusico/" + id;
+                    document.getElementById("nombre").innerHTML = nombre;
+                    document.getElementById("generos").innerHTML = generos;
+
+                    var old = document.getElementById("end-image");
+                    if(old != null) {
+                        $(old.parentNode).addClass("video-responsive");
+                        $(old.parentNode).removeClass("offset-2");
+                        $(old.parentNode).removeClass("offset-md-4");
+                        $(old.parentNode).removeClass("offset-lg-5");
+                        old.parentNode.replaceChild(oldVideo, old);
+                        document.getElementById("dislike").disabled = false;
+                        document.getElementById("like").disabled = false;
+                        document.getElementById("superlike").disabled = false;
                     }
 
-                $.ajax({
-                    url: link,
-                    type: "POST",
-                    data: {
-                        csrfmiddlewaretoken: csrftoken,
-                    },
-                }).done( function() {
-
-                alert( 'Success!!' );
+                    document.getElementById("video").src = video;
 
                 }).fail(function (xhr) {
                     if (xhr.status == 402) {
-                        alert('¿Has pensado en unirte a nuestra membresía Gold?');
-                    } else if (xhr.status == 405) {
-                        alert('¡Has agotado tus superlikes!');
+                        alert('Esta función es exclusiva de usuarios Gold, ¿por qué no te unes?');
                     }
                 })
-            }
         }
     </script>
 {% endblock %}

@@ -39,13 +39,6 @@ def musico(request):
             request.user.musico.save()
     except:
         pass
-    ruta = request.path
-    musico = Musico.objects.get(usuario=request.user)
-
-    if(ruta == "/"):
-        url = ""
-    elif(ruta == "buscarBandas"):
-        "Buscando bandas como músico"
     return render(request, '../templates/index.html')
 
 @login_required(login_url='/login/')
