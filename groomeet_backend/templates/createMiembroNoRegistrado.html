@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 {% block body %}
+
+<head>
+  <meta charset='utf-8'>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="../static/css/signup.css">
+  
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+  
+  </head>
+
  <div class="panel-heading">
         <h2 >Datos del miembro</h2><br>
             <form method="POST" class="post-form">{% csrf_token %}
