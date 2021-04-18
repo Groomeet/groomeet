@@ -7,6 +7,17 @@ import datetime
 
 
 # Create your models here.
+class Message(models.Model):
+    author = models.ForeignKey(
+        User, related_name='author_messages', on_delete=models.CASCADE, null=True)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.author.username
+    
+    def last_10_messages():
+        return Message.objects.order_by('-timestamp').all()[:10]
 
 class Genero(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
@@ -26,6 +37,9 @@ def rename_avatar_image(instance, filename):
         return 'media/images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
 
 class Chat(models.Model):
+    participants = models.ManyToManyField(
+        User, related_name='chats', blank=True)
+    messages = models.ManyToManyField(Message, blank=True)
     nombre = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
@@ -37,7 +51,7 @@ class Musico(models.Model):
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
-    descripcion = models.TextField(verbose_name="Descripción")
+    descripcion = models.TextField(verbose_name="Descripción", null=True)
     enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
     avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
     chat = models.ManyToManyField(Chat, blank=True)
@@ -77,7 +91,7 @@ class Banda(models.Model):
     miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
     generos = models.ManyToManyField(Genero, blank=True)
     instrumentos = models.ManyToManyField(Instrumento, blank=True)
-    descripcion = models.TextField(verbose_name="Descripción")
+    descripcion = models.TextField(verbose_name="Descripción", null=True)
     enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
     imagen = models.ImageField(verbose_name="Imagen de la banda",upload_to=rename_image_banda, blank=True, null=True)
     #Sección de likes de Banda a Músico
