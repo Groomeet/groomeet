@@ -88,8 +88,8 @@ def postNoLikeMusicoBanda(request, pk):
     usuario = request.user
     if usuario not in banda.noLikesRecibidosMusico.all():
         banda.noLikesRecibidosMusico.add(usuario)
-        usuario.ultimoUsuarioInteraccion.clear()
-        usuario.ultimoUsuarioInteraccion.add(banda.administrador.usuario)
+        usuario.musico.ultimoUsuarioInteraccion.clear()
+        usuario.musico.ultimoUsuarioInteraccion.add(banda.administrador.usuario)
         usuario.musico.save()
         
     return HttpResponse("Post correcto.")
@@ -115,9 +115,9 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
     else:
         musico.likesRecibidosBanda.add(banda)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
-        banda.administrador.usuario.ultimoUsuarioInteraccion.clear()
-        banda.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
-        banda.administrador.usuario.save()
+        banda.administrador.ultimoUsuarioInteraccion.clear()
+        banda.administrador.ultimoUsuarioInteraccion.add(usuario)
+        banda.administrador.save()
         usuario.musico.save()
         if musico in banda.likesRecibidosMusico.all():
             #Aquí se uniría la creación del chat
@@ -142,9 +142,9 @@ def postNoLikeBandaMusico(request, pkBanda, pkMusico):
         redirect(f"/listadoBandasMusicos/{pkBanda}")
     if banda not in musico.noLikesRecibidosBanda.all():
         musico.noLikesRecibidosBanda.add(banda)
-        banda.administrador.usuario.ultimoUsuarioInteraccion.clear()
-        banda.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
-        banda.administrador.usuario.save()
+        banda.administrador.ultimoUsuarioInteraccion.clear()
+        banda.administrador.ultimoUsuarioInteraccion.add(usuario)
+        banda.administrador.save()
 
     return HttpResponse("Post correcto.")
 
@@ -170,9 +170,9 @@ def postLikeBandaBanda(request, pkEmisor, pkReceptor):
     else:
         bandaReceptora.likesRecibidosBanda.add(bandaEmisora)
         usuario.musico.likesDisponibles = usuario.musico.likesDisponibles -1
-        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.clear()
-        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
-        bandaEmisora.administrador.usuario.save()
+        bandaEmisora.administrador.ultimoUsuarioInteraccion.clear()
+        bandaEmisora.administrador.ultimoUsuarioInteraccion.add(usuario)
+        bandaEmisora.administrador.save()
         usuario.musico.save()
         if bandaReceptora in bandaEmisora.likesRecibidosBanda.all():
             #Aquí se uniría la creación del chat
@@ -199,9 +199,9 @@ def postNoLikeBandaBanda(request, pkEmisor, pkReceptor):
         redirect(f"/buscarBandas/{pkEmisor}")
     if bandaEmisora not in bandaReceptora.noLikesRecibidosBanda.all():
         bandaReceptora.noLikesRecibidosBanda.add(bandaEmisora)
-        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.clear()
-        bandaEmisora.administrador.usuario.ultimoUsuarioInteraccion.add(usuario)
-        bandaEmisora.administrador.usuario.save()
+        bandaEmisora.administrador.ultimoUsuarioInteraccion.clear()
+        bandaEmisora.administrador.ultimoUsuarioInteraccion.add(usuario)
+        bandaEmisora.administrador.save()
 
     return HttpResponse("Post correcto.")
 
