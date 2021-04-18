@@ -1,6 +1,8 @@
 from django.http import HttpResponse , HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib import messages
+from rest_framework import status
+
 from groomeet_backend.models import Musico, Banda, Chat
 from django.contrib.auth.decorators import login_required
 
@@ -213,12 +215,9 @@ def postSuperLikeMusicoMusico(request, pk):
     if musico.usuario.id is usuario.id:
         redirect("/listado")
     if not usuario.musico.isGold:
-        return HttpResponseRedirect(f"/listadoProductos/")
+        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
     if request.user.musico.isGold and request.user.musico.superLikes <= 0:
-        mensaje = "Has agotado tus superlikes" 
-        return render(request, '../templates/index.html', {'mensaje': mensaje})
-    #if usuario in musico.likesRecibidos.all(): RETROCEDER?
-    #    musico.likesRecibidos.remove(usuario)
+        return HttpResponse(f"/listadoProductos/", status=status.HTTP_405_METHOD_NOT_ALLOWED)
     if musico.usuario in usuario.musico.likesRecibidos.all():
         usuario.musico.likesRecibidos.remove(musico.usuario)
     musico.likesRecibidos.add(usuario)
@@ -242,7 +241,7 @@ def postSuperLikeMusicoBanda(request, pk):
     if banda.administrador.id is usuario.id:
         redirect("/listado")
     if not usuario.musico.isGold:
-        return HttpResponseRedirect(f"/listadoProductos/")
+        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
     if request.user.musico.isGold and request.user.musico.superLikes <= 0:
         mensaje = "Has agotado tus superlikes" 
         return render(request, '../templates/index.html', {'mensaje': mensaje})
@@ -275,7 +274,7 @@ def postSuperLikeBandaMusico(request, pkBanda, pkMusico):
     if banda.administrador.id is musico.id or musico in banda.miembros.all():
         redirect(f"/listadoBandasMusicos/{pkBanda}")
     if not usuario.musico.isGold:
-        return HttpResponseRedirect(f"/listadoProductos/")
+        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
     if request.user.musico.isGold and request.user.musico.superLikes <= 0:
         mensaje = "Has agotado tus superlikes" 
         return render(request, '../templates/index.html', {'mensaje': mensaje})
@@ -444,13 +443,13 @@ def postUndoLikeBandaMusico(request, pkBanda, pkMusico):
     if not usuario.musico.isGold:
         return HttpResponseRedirect(f"/listadoProductos/")
     if usuario.id is banda.administrador.id and musico.usuario.id in banda.likesRecibidosBanda.all():
-        banda.likesRecibidosBanda.remove(musico.usuario.id)
+        musico.likesRecibidosBanda.remove(banda.administrador.id)
         usuario.musico.save()
     return HttpResponse("Post correcto.")
 
 
 @login_required(login_url='/login/')
-def postUndoDislikeBandaBanda(request, pkEmisor, pkReceptor):
+def postUndoLikeBandaBanda(request, pkEmisor, pkReceptor):
     bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
     bandaReceptora = get_object_or_404(Banda, id=pkReceptor)
     usuario = request.user

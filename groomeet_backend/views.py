@@ -1,7 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from groomeet_backend.likes import postUndoLikeMusicoMusico
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
 from django.contrib.auth.decorators import login_required
@@ -10,7 +9,6 @@ from datetime import date
 # Create your views here.
 def base(request):
     return render(request, 'base.html')
-
 
 def days_between(d1, d2):
     return abs(d2 - d1).days
