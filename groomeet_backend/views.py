@@ -226,9 +226,27 @@ def listadoMisInvitaciones(request):
 
 @login_required(login_url='/login/')
 def chat_room(request, room_name):
+    user_o=User.objects.get(id=request.user.id)
+    musico = Musico.objects.get(usuario=user_o)
+    chats = Chat.objects.all()
+    loged_id = request.user.id
+    result = []
+    for chat in chats:
+        if chat in musico.chat.all():
+            chat_name=chat.nombre.split("/")
+            users_id=chat_name[-1].split("-")
+            if users_id[0] == str(loged_id):
+                other_id=users_id[1]
+            elif users_id[0] != str(loged_id):
+                other_id=users_id[0]
+            other_user = User.objects.get(id=other_id)
+            other_musico = Musico.objects.get(usuario=other_user)
+            url_name_chat = [chat.nombre+'/', other_musico]
+            result.append(url_name_chat)
     return render(request, 'chat_room.html', {
-        'room_name': room_name
+        'room_name': room_name, 'chat_list': result, 'path': request.path
 })
+
 
 @login_required(login_url='/login/')
 def error(request):

@@ -1,13 +1,37 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+{% block body %}
 <head>
     <meta charset="utf-8"/>
     <title>Chat Room</title>
 </head>
-<body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+<div class="row">
+    <div class="col-3">
+        {% for chat_url in chat_list %}
+            {% if path == chat_url.0 %}
+                <a href="{{ chat_url.0 }}" class="btn btn-success" style="padding-right: 235px; color: #212529;
+                   background-color: #19ce43; border-color: #000000;">{{ chat_url.1 }}</a>
+            {% else %}
+                <a href="{{ chat_url.0 }}" class="btn btn-success" style="padding-right: 235px; color: #212529;
+                   background-color: #00ff9d; border-color: #000000;">{{ chat_url.1 }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+
+
+    <div class="col-9">
+    <div class="form-row align-items-center">
+        <textarea id="chat-log" cols="100" rows="20" class="form-control" readonly></textarea>
+         <div class="col-11">
+            <input id="chat-message-input" type="text" size="100" class="form-control">
+         </div>
+         <div class="col-1">
+            <input id="chat-message-submit" type="button" value=">" class="btn btn-success btn-sm">
+        </div>
+    </div>
+    </div>
+</div>
     {{ room_name|json_script:"room-name" }}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
@@ -45,5 +69,4 @@
             messageInputDom.value = '';
         };
     </script>
-</body>
-</html>
+{% endblock %}
