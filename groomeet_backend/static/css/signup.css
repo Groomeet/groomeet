@@ -1,6 +1,6 @@
-
-
-ul, ol,  li {
+ul,
+ol, 
+li {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -31,7 +31,6 @@ ul, ol,  li {
     display: block;
     align-items: center;
     justify-content: center;
-
 }
 
 .panel-heading {
@@ -43,30 +42,32 @@ ul, ol,  li {
     padding: 40px;
 }
 
-.post-form label, #text {
+.post-form label, 
+#text {
     font-weight: bold;
     display: flex;
-    color: #ffffff
-
+    color: #fff;
 }
 
 .panel-heading h2 {
 text-align: center;
-color: #ffffff
+color: #fff;
 }
 
-.panel-heading input, textarea {
+.panel-heading input, 
+textarea {
     width: 400px;
     border: 2px solid #2ecc71;
     border-radius: 6px;
-    background-color: #ffffff;
+    background-color: #fff;
     margin: 8px 0;
     display: inline-block;
 }
 
-#avatar-clear_id input{
-    width: 20px !important ;
+#avatar-clear_id input {
+    width: 20px !important;
 }
+
 textarea {
     height: 100px;
 }
@@ -81,7 +82,8 @@ textarea {
     display: inline-block;
 }
 
-.instrumentClass, .genereClass {
+.instrumentClass, 
+.genereClass {
     width: 400px !important;
     border: 1px solid #2ecc71;
     border-radius: 6px;
@@ -91,8 +93,7 @@ textarea {
 }
 
 .dropdown.bootstrap-select.show-tick {
-width: 400px !important;
-
+    width: 400px !important;
 }
 
 .btn.btn-success{
@@ -111,12 +112,10 @@ width: 400px !important;
     transition: 0.25s;
     cursor: pointer;
 }
-.btn.btn-success:hover{
-background: #2ecc71
+
+.btn.btn-success:hover {
+    background: #2ecc71;
 }
-
-
-
 
 /* CALENDARIO */
 .calendar {
@@ -160,8 +159,8 @@ background: #2ecc71
     left: 0;
     background: #fff;
     *overflow: hidden;
-    -webkit-transition: .6s;
-    transition: .6s;
+    -webkit-transition: 0.6s;
+    transition: 0.6s;
 }
 
 .calendar-d .view-month,
@@ -333,7 +332,7 @@ background: #2ecc71
     color: #fff;
     background: #000;
     border-radius: 3px;
-    opacity: .7;
+    opacity: 0.7;
     filter: alpha(opacity=70);
 }
 
@@ -349,7 +348,8 @@ background: #2ecc71
     border-top-color: #000;
 }
 
-.calendar.calendar-modal.calendar-d, .calendar-m {
+.calendar.calendar-modal.calendar-d,
+.calendar-m {
     left: auto !important;
     top: 368px !important;
 }
