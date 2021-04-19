@@ -3,13 +3,16 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import json
 from groomeet_backend.models import Message
+from groomeet_backend.views import last_30_messages
 
 User = get_user_model()
 
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, data):
-        messages = Message.last_10_messages(self)
+        author = User.objects.filter(username=data['from'])[0]
+        receptor = User.objects.filter(username=data['to'])[0]
+        messages = last_30_messages(author.id, receptor.id)
 
         content = {
             'command': 'messages',
@@ -21,8 +24,11 @@ class ChatConsumer(WebsocketConsumer):
     def new_message(self, data):
         author = data['from']
         author_user = User.objects.filter(username=author)[0]
+        receptor = data['to']
+        receptor_user = User.objects.filter(username=receptor)[0]
         message = Message.objects.create(
             author=author_user, 
+            receptor=receptor_user,
             content=data['message'])
         content = {
             'command': 'new_message',
@@ -39,6 +45,7 @@ class ChatConsumer(WebsocketConsumer):
     def message_to_json(self, message):
         return {
             'author': message.author.username,
+            'receptor': message.receptor.username,
             'content': message.content,
             'timestamp': str(message.timestamp)
         }

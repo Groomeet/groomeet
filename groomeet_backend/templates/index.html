@@ -210,6 +210,8 @@
                 data: {
                     csrfmiddlewaretoken: csrftoken,
                 },
+            }).done(function () {
+                asyncRequest();
             }).fail(function (xhr) {
                 if (xhr.status == 402) {
                     if(link.includes("/like")) {
@@ -222,7 +224,6 @@
                 }
             })
 
-            asyncRequest();
         }
 
         function back() {

@@ -332,7 +332,7 @@ def postUndoDislikeMusicoMusico(request, pk):
         nombre = musico.usuario.username + ";"
         generosList = musico.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideo + ";"
+        video = musico.enlaceVideoFormateado + ";"
         id = str(musico.id)
 
         response = nombre + generos + video + id
@@ -356,7 +356,7 @@ def postUndoDislikeMusicoBanda(request, pk):
         nombre = banda.nombre + ";"
         generosList = banda.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = banda.enlaceVideo + ";"
+        video = banda.enlaceVideoFormateado + ";"
         id = str(banda.id)
 
         response = nombre + generos + video + id
@@ -383,7 +383,7 @@ def postUndoDislikeBandaMusico(request, pkBanda, pkMusico):
         nombre = musico.usuario.username + ";"
         generosList = musico.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideo + ";"
+        video = musico.enlaceVideoFormateado + ";"
         id = str(musico.id)
 
         response = nombre + generos + video + id
@@ -411,7 +411,7 @@ def postUndoDislikeBandaBanda(request, pkEmisor, pkReceptor):
         nombre = bandaReceptora.nombre + ";"
         generosList = bandaReceptora.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = bandaReceptora.enlaceVideo + ";"
+        video = bandaReceptora.enlaceVideoFormateado + ";"
         id = str(bandaReceptora.id)
 
         response = nombre + generos + video + id
@@ -434,7 +434,7 @@ def postUndoLikeMusicoMusico(request, pk):
         nombre = musico.usuario.username + ";"
         generosList = musico.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideo + ";"
+        video = musico.enlaceVideoFormateado + ";"
         id = str(musico.id)
 
         response = nombre + generos + video + id
@@ -458,7 +458,7 @@ def postUndoLikeMusicoBanda(request, pk):
         nombre = banda.nombre + ";"
         generosList = banda.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = banda.enlaceVideo + ";"
+        video = banda.enlaceVideoFormateado + ";"
         id = str(banda.id)
 
         response = nombre + generos + video + id
@@ -484,7 +484,7 @@ def postUndoLikeBandaMusico(request, pkBanda, pkMusico):
         nombre = musico.usuario.username + ";"
         generosList = musico.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideo + ";"
+        video = musico.enlaceVideoFormateado + ";"
         id = str(musico.id)
 
         response = nombre + generos + video + id
@@ -511,7 +511,7 @@ def postUndoLikeBandaBanda(request, pkEmisor, pkReceptor):
         nombre = bandaReceptora.nombre + ";"
         generosList = bandaReceptora.generos.values_list("nombre", flat=True)
         generos = ", ".join(generosList) + ";"
-        video = bandaReceptora.enlaceVideo + ";"
+        video = bandaReceptora.enlaceVideoFormateado + ";"
         id = str(bandaReceptora.id)
 
         response = nombre + generos + video + id

@@ -9,11 +9,11 @@
 }
 
 .card-gold-header {
-    background: linear-gradient(to right, #BF953F, #FCF6BA, #FBF5B7, #AA771C);
+    background: linear-gradient(to right, #bf953f, #fcf6ba, #fbf5b7, #aa771c);
 }
 
 .card-silver-header {
-    background: linear-gradient(to right, #A2A2A2, #eaecee, #eaecee, #B1B1B1);
+    background: linear-gradient(to right, #a2a2a2, #eaecee, #eaecee, #b1b1b1);
 }
 
 .card-title-g{
@@ -28,7 +28,7 @@
 
 .btn-gold {
     background-color: #a88339 !important;
-    color: #ffffff !important;
+    color: #fff !important;
     margin-bottom: 4%;
     margin-left: 30px;
 }
@@ -43,11 +43,11 @@
 }
 
 .font-xxl {
-    font-size:xx-large;
+    font-size: xx-large;
 }
 
 .font-xl {
-    font-size:x-large;
+    font-size: x-large;
 }
 
 .ctb {
