@@ -8,6 +8,7 @@ from datetime import date
 from django.utils.safestring import mark_safe
 import json
 from groomeet_backend.models import Message
+from django.db.models import Q
 
 # Create your views here.
 def base(request):
@@ -285,11 +286,8 @@ def chat_room(request, room_name):
     
 
 def last_30_messages(sender, receiver):
-    if Message.objects.filter(author=sender).filter(receptor=receiver).order_by('timestamp').all()[:30]:
-        return Message.objects.filter(author=sender).filter(receptor=receiver).order_by('timestamp').all()[:30]
-    else:
-        return Message.objects.filter(author=receiver).filter(receptor=sender).order_by('timestamp').all()[:30]
-        
+        return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
+
 @login_required(login_url='/login/')
 def error(request):
     return render(request, 'error.html')
