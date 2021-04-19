@@ -8,3 +8,4 @@ django-heroku
 gunicorn
 Pillow
 python_dateutil==2.8.1
+djangorestframework
