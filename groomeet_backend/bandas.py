@@ -40,20 +40,21 @@ def bandaUpdate(request, id):
                 model = form.instance
                 #Si existe una nueva imagen, habrá que cambiar la existente por esta.
                 if 'imagen' in request.FILES:
-                    print("He recibido la imagen")
                     #Borramos la imagen anterior si existia.
                     if imagenBanda != "" and imagenBanda != None:
                         os.remove(banda.imagen.path)
                     model.imagen = request.FILES['imagen']
                     model.save()
                 else:
-                    print("Nada bro, no He recibido la imagen")
                 #En caso contrario, comprobaremos que el usuario no ha eliminado la imagen que tenía.
                 #Si la ha eliminado habrá que borrarla de los datos.
                     if model.imagen == "" or model.imagen == None:
-                        os.remove(imagenBanda.path)
+                        try:
+                            os.remove(imagenBanda.path)
+                        except Exception as e:
+                            pass
                 messages.success(request, f"¡Tu banda ha sido modificada con éxito!")
-                return redirect('/misBandas')
+                return HttpResponseRedirect('/misBandas')
             except Exception as e:
                 pass
     return render(request, 'updateBanda.html', {'form': form})
@@ -92,31 +93,37 @@ def miembroNoRegistradoCreate(request, pk):
 
 @login_required(login_url='/login/')
 def enviarInvitacionBanda(request, banda_id):
+    banda = get_object_or_404(Banda, id=banda_id)
+    if banda.administrador != request.user.musico:
+        return HttpResponseRedirect('/misBandas')
     if request.method == "POST":
         formulario = InvitarBandaForm(request.POST)
+        bID = banda_id
         if formulario.is_valid():
             estado = EstadoInvitacion.Pendiente
             usuario = get_object_or_404(User, username=formulario.cleaned_data['receptor'])
             banda = get_object_or_404(Banda, id=banda_id)
+            musicoReceptor = get_object_or_404(Musico,usuario=usuario)
+
+            if banda.administrador == musicoReceptor:
+                messages.error = (request, f"El usuario {usuario.username} ya pertenece a la banda {banda.nombre}")
+                return HttpResponseRedirect('/misBandas')
 
             #Comprobando que el usuario no pertenece ya a la banda
-            try:
-                invitacion_aceptada = Invitacion.objects.get(receptor = receptor, 
-                                                    banda = banda, estado = EstadoInvitacion.Aceptada)
+            if musicoReceptor in banda.miembros.all(): 
                 messages.error = (request, f"El usuario {usuario.username} ya pertenece a la banda {banda.nombre}")
-            except:
-                invitacion_aceptada = None
+                return HttpResponseRedirect('/misBandas')
 
             #Comprobando que el usuario no tiene ya una invitación pendiente para esa banda
             try:
-                invitacion_pendiente = Invitacion.objects.get(receptor = receptor, 
+                invitacion_pendiente = Invitacion.objects.get(receptor = musicoReceptor, 
                                                     banda = banda, estado = EstadoInvitacion.Pendiente)
                 messages.error = (request, f"El usuario {usuario.username} ya tiene una invitación pendiente para la banda {banda.nombre}")
             except:
                 invitacion_pendiente = None
 
-            if invitacion_aceptada == None and invitacion_pendiente == None:
-                invitacion = Invitacion.objects.create(receptor = get_object_or_404(Musico,usuario=usuario), emisor=get_object_or_404(Musico,usuario = request.user),
+            if invitacion_pendiente == None:
+                invitacion = Invitacion.objects.create(receptor = musicoReceptor, emisor=get_object_or_404(Musico,usuario = request.user),
                                                 banda=banda, estado=estado)
                 messages.success = (request, f"¡La invitación a {usuario.username} para la banda {banda.nombre} fue enviada!")
             return HttpResponseRedirect('/misBandas')

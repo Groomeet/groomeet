@@ -45,7 +45,7 @@ def musico(request):
 def banda(request, pkBanda):
     banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
     usuario = request.user
-    if (banda.administrador.id == usuario.id):
+    if (banda.administrador.usuario.id == usuario.id):
         return render(request, '../templates/index.html')
     else:
         return redirect("/")
@@ -73,7 +73,7 @@ def getMusico(request):
     nombre = musico.usuario.username + ";"
     generosList = musico.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideo + ";"
+    video = musico.enlaceVideoFormateado + ";"
     id = str(musico.id)
 
     response = nombre + generos + video + id
@@ -93,7 +93,7 @@ def getMusico2(request, pkBanda):
     nombre = musico.usuario.username + ";"
     generosList = musico.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideo + ";"
+    video = musico.enlaceVideoFormateado + ";"
     id = str(musico.id)
 
     response = nombre + generos + video + id
@@ -113,7 +113,7 @@ def getBanda(request):
     nombre = banda.nombre + ";"
     generosList = banda.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = "https://www.youtube.com/embed/0hEYvdMoF2g" + ";"
+    video = banda.enlaceVideoFormateado + ";"
     id = str(banda.id)
 
     response = nombre + generos + video + id
@@ -132,7 +132,7 @@ def getBanda2(request, pkBanda):
     nombre = banda.nombre + ";"
     generosList = banda.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = "https://www.youtube.com/embed/0hEYvdMoF2g" + ";"
+    video = banda.enlaceVideoFormateado + ";"
     id = str(banda.id)
 
     response = nombre + generos + video + id
