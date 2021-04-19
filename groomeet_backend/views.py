@@ -1,16 +1,16 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from groomeet_backend.likes import postUndoLikeMusicoMusico
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import date
+from django.utils.safestring import mark_safe
+import json
 
 # Create your views here.
 def base(request):
     return render(request, 'base.html')
-
 
 def days_between(d1, d2):
     return abs(d2 - d1).days
@@ -41,20 +41,13 @@ def musico(request):
             request.user.musico.save()
     except:
         pass
-    ruta = request.path
-    musico = Musico.objects.get(usuario=request.user)
-
-    if(ruta == "/"):
-        url = ""
-    elif(ruta == "buscarBandas"):
-        "Buscando bandas como músico"
     return render(request, '../templates/index.html')
 
 @login_required(login_url='/login/')
 def banda(request, pkBanda):
     banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
     usuario = request.user
-    if (banda.administrador.id == usuario.id):
+    if (banda.administrador.usuario.id == usuario.id):
         return render(request, '../templates/index.html')
     else:
         return redirect("/")
@@ -82,7 +75,7 @@ def getMusico(request):
     nombre = musico.usuario.username + ";"
     generosList = musico.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideo + ";"
+    video = musico.enlaceVideoFormateado + ";"
     id = str(musico.id)
 
     response = nombre + generos + video + id
@@ -102,7 +95,7 @@ def getMusico2(request, pkBanda):
     nombre = musico.usuario.username + ";"
     generosList = musico.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideo + ";"
+    video = musico.enlaceVideoFormateado + ";"
     id = str(musico.id)
 
     response = nombre + generos + video + id
@@ -122,7 +115,7 @@ def getBanda(request):
     nombre = banda.nombre + ";"
     generosList = banda.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = "https://www.youtube.com/embed/0hEYvdMoF2g" + ";"
+    video = banda.enlaceVideoFormateado + ";"
     id = str(banda.id)
 
     response = nombre + generos + video + id
@@ -141,7 +134,7 @@ def getBanda2(request, pkBanda):
     nombre = banda.nombre + ";"
     generosList = banda.generos.values_list("nombre", flat=True)
     generos = ", ".join(generosList) + ";"
-    video = "https://www.youtube.com/embed/0hEYvdMoF2g" + ";"
+    video = banda.enlaceVideoFormateado + ";"
     id = str(banda.id)
 
     response = nombre + generos + video + id
@@ -234,9 +227,36 @@ def listadoMisInvitaciones(request):
     return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
 
 @login_required(login_url='/login/')
+def listadoChats(request):
+    musico = Musico.objects.get(id=request.user.pk)
+    chats = Chat.objects.all()
+    result = [] 
+    for chat in chats:
+        if chat in musico.chat.all():
+            result.append(chat)
+    return result
+
+@login_required(login_url='/login/')
 def chat_room(request, room_name):
+    user_o=User.objects.get(id=request.user.id)
+    musico = Musico.objects.get(usuario=user_o)
+    chats = Chat.objects.all()
+    loged_id = request.user.id
+    result = []
+    for chat in chats:
+        if chat in musico.chat.all():
+            chat_name=chat.nombre.split("/")
+            users_id=chat_name[-1].split("-")
+            if users_id[0] == str(loged_id):
+                other_id=users_id[1]
+            elif users_id[0] != str(loged_id):
+                other_id=users_id[0]
+            other_user = User.objects.get(id=other_id)
+            other_musico = Musico.objects.get(usuario=other_user)
+            url_name_chat = [chat.nombre+'/', other_musico]
+            result.append(url_name_chat)
     return render(request, 'chat_room.html', {
-        'room_name': room_name
+        'room_name': room_name, 'chat_list': result, 'path': request.path
 })
 
 @login_required(login_url='/login/')

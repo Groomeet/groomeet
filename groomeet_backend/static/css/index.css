@@ -47,6 +47,10 @@ button svg {
         width: 18px;
         height: 18px;
     }
+
+    .btns-margin {
+        margin-left: 5%;
+    }
 }
 
 /* Small devices */
@@ -70,7 +74,7 @@ button svg {
     }
 
     .btns-margin {
-        margin-left: 5%;
+        margin-left: 9%;
     }
 
     button svg {
@@ -86,7 +90,7 @@ button svg {
     }
 
     .btns-margin {
-        margin-left: 9%;
+        margin-left: 13%;
     }
 }
 
