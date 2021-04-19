@@ -21,15 +21,17 @@
     <div class="col-9">
           <div class="form-row align-items-center">
           <script src="{% static 'reconnecting-websocket.js' %}"></script>
-          <div class="col-11 card">
+          <div class="col-12 card overflow-auto" style="height: 480px;">
               <ul id="chat-log" cols="100" rows="20" class="list-unstyled"></ul><br>
           </div>
-            <div class="col-11">
+            <div class="col-sm-11 col-10">
               <input id="chat-message-input" type="text" class="form-control" size="100"><br>
             </div>
-            <div class="col-1">
-              <input id="chat-message-submit" class="btn btn-success btn-sm" type="button" value="Send">
-            </div>
+
+                <button id="chat-message-submit" class="btn btn-success col-sm-1 col-2" type="button" style="bottom: 12px;">
+                    <i class="bi bi-cursor"></i>
+                </button>
+
           </div>
         </div>
     </div>
@@ -113,4 +115,23 @@
       document.querySelector('#chat-log').appendChild(msgListTag);
     }
     </script>
+    <style>
+        .sent{
+        text-align: right;
+        border-right: solid;
+        border-color: #19ce43;
+        }
+        .sent p {
+            padding-right: 3px;
+            padding-left: 90px;
+        }
+        .replies p {
+            padding-left: 3px;
+            padding-right: 90px;
+        }
+        .replies{
+        border-left: solid;
+        border-color: #00ff9d;
+        }
+    </style>
 {% endblock %}
