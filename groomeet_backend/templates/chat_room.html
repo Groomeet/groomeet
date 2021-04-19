@@ -43,6 +43,8 @@
         console.log(username)
         console.log(other)
 
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+
         const chatSocket = new ReconnectingWebSocket(
             'ws://'
             + window.location.host
