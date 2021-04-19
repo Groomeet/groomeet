@@ -5,6 +5,8 @@ from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import date
+from django.utils.safestring import mark_safe
+import json
 
 # Create your views here.
 def base(request):
@@ -225,6 +227,16 @@ def listadoMisInvitaciones(request):
     return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
 
 @login_required(login_url='/login/')
+def listadoChats(request):
+    musico = Musico.objects.get(id=request.user.pk)
+    chats = Chat.objects.all()
+    result = [] 
+    for chat in chats:
+        if chat in musico.chat.all():
+            result.append(chat)
+    return result
+
+@login_required(login_url='/login/')
 def chat_room(request, room_name):
     user_o=User.objects.get(id=request.user.id)
     musico = Musico.objects.get(usuario=user_o)
@@ -244,9 +256,9 @@ def chat_room(request, room_name):
             url_name_chat = [chat.nombre+'/', other_musico]
             result.append(url_name_chat)
     return render(request, 'chat_room.html', {
-        'room_name': room_name, 'chat_list': result, 'path': request.path
+        'room_name': room_name,
+        'username': mark_safe(json.dumps(request.user.username)),
 })
-
 
 @login_required(login_url='/login/')
 def error(request):

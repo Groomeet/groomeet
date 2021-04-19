@@ -35,8 +35,10 @@
     {{ room_name|json_script:"room-name" }}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        var username = {{ username }};
+        console.log(username)
 
-        const chatSocket = new WebSocket(
+        const chatSocket = new ReconnectingWebSocket(
             'ws://'
             + window.location.host
             + '/ws/chat/'
@@ -44,10 +46,25 @@
             + '/'
         );
 
+        chatSocket.onopen = function(e) {
+            console.log('hola q')
+            fetchMessages();
+        }
+
         chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
+            console.log('on message')
+            var data = JSON.parse(e.data);
+            console.log(data)
+            if (data['command'] === 'messages') {
+            console.log(data['messages'])
+              for (let i=0; i<data['messages'].length; i++) {
+                console.log('bucle')
+                createMessage(data['messages'][i]);
+              }
+            } else if (data['command'] === 'new_message'){
+              createMessage(data['message']);
+            }
+    };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
@@ -64,9 +81,32 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'from': username,
+                'command': 'new_message',
             }));
             messageInputDom.value = '';
         };
+
+    function fetchMessages() {
+      chatSocket.send(JSON.stringify({'command': 'fetch_messages' }));
+    }
+
+    function createMessage(data) {
+      var author = data['author'];
+      var msgListTag = document.createElement('li');
+      var imgTag = document.createElement('img');
+      var pTag = document.createElement('p');
+      pTag.textContent = data.content;
+      console.log(author)
+      if (author === username) {
+        msgListTag.className = 'sent';
+      } else {
+        msgListTag.className = 'replies';
+      }
+      msgListTag.appendChild(imgTag);
+      msgListTag.appendChild(pTag);
+      document.querySelector('#chat-log').appendChild(msgListTag);
+    }
     </script>
 {% endblock %}
