@@ -37,7 +37,9 @@
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         var username = {{ username }};
+        var other = {{ other }};
         console.log(username)
+        console.log(other)
 
         const chatSocket = new ReconnectingWebSocket(
             'ws://'
@@ -84,13 +86,14 @@
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'from': username,
+                'to': other,
                 'command': 'new_message',
             }));
             messageInputDom.value = '';
         };
 
     function fetchMessages() {
-      chatSocket.send(JSON.stringify({'command': 'fetch_messages' }));
+      chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'from': username, 'to': other }));
     }
 
     function createMessage(data) {

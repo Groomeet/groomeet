@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date
 from django.utils.safestring import mark_safe
 import json
+from groomeet_backend.models import Message
 
 # Create your views here.
 def base(request):
@@ -238,6 +239,16 @@ def listadoChats(request):
 
 @login_required(login_url='/login/')
 def chat_room(request, room_name):
+    print(room_name)
+    if room_name == "listado":
+        aux = ""
+    else:
+        lista = room_name.split("-")
+        if lista[0] == str(request.user.id):
+            aux = User.objects.get(id=int(lista[1]))
+        elif lista[0] != str(request.user.id):
+            aux = User.objects.get(id=int(lista[0]))
+
     user_o=User.objects.get(id=request.user.id)
     musico = Musico.objects.get(usuario=user_o)
     chats = Chat.objects.all()
@@ -255,10 +266,30 @@ def chat_room(request, room_name):
             other_musico = Musico.objects.get(usuario=other_user)
             url_name_chat = [chat.nombre+'/', other_musico]
             result.append(url_name_chat)
-    return render(request, 'chat_room.html', {
+            
+    if room_name == "listado":
+        aux = ""
+        return render(request, 'chat_room.html', {
         'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),
 })
+    else:
+        lista = room_name.split("-")
+        if lista[0] == str(request.user.id):
+            aux = User.objects.get(id=int(lista[1]))
+        elif lista[0] != str(request.user.id):
+            aux = User.objects.get(id=int(lista[0]))
+        return render(request, 'chat_room.html', {
+        'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),'other': mark_safe(json.dumps(aux.username)),
+})
+    
+    
 
+def last_30_messages(sender, receiver):
+    if Message.objects.filter(author=sender).filter(receptor=receiver).order_by('timestamp').all()[:30]:
+        return Message.objects.filter(author=sender).filter(receptor=receiver).order_by('timestamp').all()[:30]
+    else:
+        return Message.objects.filter(author=receiver).filter(receptor=sender).order_by('timestamp').all()[:30]
+        
 @login_required(login_url='/login/')
 def error(request):
     return render(request, 'error.html')
