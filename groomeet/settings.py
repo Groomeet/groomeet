@@ -28,7 +28,7 @@ SECRET_KEY = 'jxa+$x*3u&7&gxdjyf@b5+qp&k9%*fybgt+y_ejwh&$!&19^_('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['groomeet2.herokuapp.com']
+ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'channels',
     'paypalcheckoutsdk',
 ]
-BASEURL = 'https://groomeet2.herokuapp.com'
+BASEURL = 'http://localhost:8000'
 APIS = {}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
