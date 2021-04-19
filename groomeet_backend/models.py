@@ -4,6 +4,7 @@ from model_utils.models import TimeStampedModel, SoftDeletableModel
 from dateutil.relativedelta import relativedelta
 from enum import Enum
 import datetime
+import re
 
 
 # Create your models here.
@@ -76,6 +77,17 @@ class Musico(models.Model):
     def numLikes(self):
         return self.likesRecibidos.all().count()
 
+    @property
+    def enlaceVideoFormateado(self):
+        try:
+            pattern = re.compile('https://www[.]youtube[.]com/watch[?]v=(.+)')
+            en = pattern.search(str(self.enlaceVideo))
+            parteEnlace = en.group(1)
+            nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+        except:
+            nuevoEnlaceVideoFormateado = ""
+        return nuevoEnlaceVideoFormateado
+
     # @property
     # def edad(self):
     #     return relativedelta(date.today(), self.fechaNacimiento).years
@@ -104,6 +116,17 @@ class Banda(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def enlaceVideoFormateado(self):
+        try:
+            pattern = re.compile('https://www[.]youtube[.]com/watch[?]v=(.+)')
+            en = pattern.search(str(self.enlaceVideo))
+            parteEnlace = en.group(1)
+            nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+        except:
+            nuevoEnlaceVideoFormateado = ""
+        return nuevoEnlaceVideoFormateado
 
 class MiembroNoRegistrado(models.Model):
     banda = models.ForeignKey(Banda, on_delete = models.CASCADE, related_name="miembrosNoRegistrados")

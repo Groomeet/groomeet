@@ -58,7 +58,10 @@ def updateProfileMusico(request):
                 #En caso contrario, comprobaremos que el usuario no ha eliminado la imagen que tenía.
                 #Si la ha eliminado habrá que borrarla de los datos.
                     if model.avatar == "" or model.avatar == None:
-                        os.remove(imagenMusico.path)
+                        try:
+                            os.remove(imagenMusico.path)
+                        except Exception as e:
+                            pass
                 model = formularioUser.instance
                 messages.success(request, f"¡Tu perfil ha sido modificado con éxito!")
                 return HttpResponseRedirect('/')
