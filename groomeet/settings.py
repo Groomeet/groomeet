@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'groomeet_backend.asgi.application'
+ASGI_APPLICATION = 'groomeet.asgi.application'
 WSGI_APPLICATION = 'groomeet.wsgi.application'
 
 
