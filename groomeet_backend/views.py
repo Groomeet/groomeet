@@ -256,8 +256,7 @@ def chat_room(request, room_name):
             url_name_chat = [chat.nombre+'/', other_musico]
             result.append(url_name_chat)
     return render(request, 'chat_room.html', {
-        'room_name': room_name,
-        'username': mark_safe(json.dumps(request.user.username)),
+        'room_name': room_name, 'chat_list': result, 'path': request.path
 })
 
 @login_required(login_url='/login/')
