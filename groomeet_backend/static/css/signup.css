@@ -1,5 +1,5 @@
 ul,
-ol, 
+ol,
 li {
     list-style: none;
     padding: 0;
@@ -17,7 +17,6 @@ li {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    /*background: linear-gradient(to bottom right, #00ff9d, #ffffff);*/
 }
 
 .signupdiv:after {
@@ -42,7 +41,7 @@ li {
     padding: 40px;
 }
 
-.post-form label, 
+.post-form label,
 #text {
     font-weight: bold;
     display: flex;
@@ -54,7 +53,7 @@ text-align: center;
 color: #fff;
 }
 
-.panel-heading input, 
+.panel-heading input,
 textarea {
     width: 400px;
     border: 2px solid #2ecc71;
@@ -72,7 +71,6 @@ textarea {
     height: 100px;
 }
 
-
 .panel-heading select {
     width: 133px;
     border: 1px solid #2ecc71;
@@ -82,7 +80,7 @@ textarea {
     display: inline-block;
 }
 
-.instrumentClass, 
+.instrumentClass,
 .genereClass {
     width: 400px !important;
     border: 1px solid #2ecc71;
@@ -99,7 +97,6 @@ textarea {
 .btn.btn-success{
     float: none;
     margin-left: 42%;
-    border: 0;
     background: none;
     display: block;
     margin: 20px auto;
@@ -244,7 +241,7 @@ textarea {
 
 .calendar-views .days .old,
 .calendar-views .days .new {
-    color: #ccc
+    color: #ccc;
 }
 
 .calendar-arrow span,
@@ -298,7 +295,7 @@ textarea {
 
 .calendar .calendar-views .selected {
     color: #66be8c;
-    background: #CDE9D9!important;
+    background: #cde9d9 !important;
 }
 
 .calendar .calendar-views .dot {

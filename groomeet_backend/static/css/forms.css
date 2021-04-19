@@ -10,7 +10,7 @@
     width: 450px;
     border: 1px solid #155724;
     border-radius: 6px;
-    background-color: #ffffff;
+    background-color: #fff;
     margin: 8px 0;
     display: inline-block;
 }
@@ -23,6 +23,7 @@ text-align: center;
     font-weight: bold;
     display: flex;
 }
+
 .panel-heading form {
     display: grid;
     align-items: center;
