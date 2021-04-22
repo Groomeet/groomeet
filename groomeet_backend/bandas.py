@@ -159,12 +159,14 @@ def rechazarInvitacionBanda(request, invitacion_id):
 
     return redirect("/misInvitaciones")
 
-#Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
-'''
+# Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 @login_required(login_url='/login/')
-def enviarInvitacionBanda(request, receptor_id, banda_id):
+def enviarInvitacionBanda2(request, receptor_id, banda_id):
     emisor = get_object_or_404(Musico, usuario=request.user)
+    print(emisor.usuario)
+    print(receptor_id)
     receptor = get_object_or_404(Musico, id=receptor_id)
+    print(receptor.usuario)
     banda = get_object_or_404(Banda, id=banda_id)
     estado = EstadoInvitacion.Pendiente
 
@@ -194,4 +196,3 @@ def enviarInvitacionBanda(request, receptor_id, banda_id):
             messages.error = (request, f"La invitación no se pudo enviar")
         
     return redirect("/listado")
-'''
