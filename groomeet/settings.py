@@ -28,7 +28,7 @@ SECRET_KEY = 'jxa+$x*3u&7&gxdjyf@b5+qp&k9%*fybgt+y_ejwh&$!&19^_('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition

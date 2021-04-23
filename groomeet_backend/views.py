@@ -291,3 +291,9 @@ def last_30_messages(sender, receiver):
 @login_required(login_url='/login/')
 def error(request):
     return render(request, 'error.html')
+
+def privacyPolicy(request):
+    return render(request, 'privacy-policy.html')
+
+def termsAndConditions(request):
+    return render(request, 'terms-condictions.html')

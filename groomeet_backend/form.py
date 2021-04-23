@@ -76,6 +76,7 @@ class MusicoForm(forms.ModelForm):
     fechaNacimiento = forms.DateField(label="Fecha de nacimiento",widget=forms.TextInput(attrs={"data-provide":"datepicker","autocomplete":"off","class":"fechapick", "required":"true"}))
     instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
     generos = forms.ModelMultipleChoiceField(label="Géneros:", queryset=Genero.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'selectpicker'}))
+    check = forms.BooleanField(required = True, label="Aceptar las Políticas de Privacidad y los Términos y Condiciones de uso de la aplicación")
     class Meta:
         model = Musico
         fields = ('fechaNacimiento','descripcion','avatar','instrumentos','generos','enlaceVideo')
