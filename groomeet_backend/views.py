@@ -209,7 +209,8 @@ def listadoBandasBandas(request, pkBanda):
 @login_required(login_url='/login/')
 def listadoMisBandas(request):
     misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
-    return render(request, "misBandas.html", {'misBandas': misBandas})
+    bandasMiembro = Banda.objects.all().filter(miembros__id__contains=request.user.musico.id).order_by('-nombre')
+    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro})
 
 @login_required(login_url='/login/')
 def listadoMiembrosNoRegistrados(request):
@@ -284,10 +285,13 @@ def chat_room(request, room_name):
 })
     
     
-
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
 @login_required(login_url='/login/')
 def error(request):
     return render(request, 'error.html')
+
+def showBanda(request, id):
+    banda = Banda.objects.filter(pk=id)
+    return render(request, "showBanda.html", {'banda': banda})
