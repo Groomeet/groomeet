@@ -79,12 +79,23 @@ class Musico(models.Model):
     @property
     def enlaceVideoFormateado(self):
         try:
-            pattern = re.compile('https://www[.]youtube[.]com/watch[?]v=(.+)')
+            pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)[&]ab_channel=(.+)')
             en = pattern.search(str(self.enlaceVideo))
             parteEnlace = en.group(1)
             nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
         except:
             nuevoEnlaceVideoFormateado = ""
+        
+        if nuevoEnlaceVideoFormateado == "":
+            try:
+                pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)')
+                en = pattern.search(str(self.enlaceVideo))
+                parteEnlace = en.group(1)
+                nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+            except:
+                # Si el vídeo no sigue el formato quiere decir que este está mal escrito, por lo que devolveremos este enlace vacío,
+                # sería conveniente decirle al usuario que su enlace no es reconocido por nuestra aplicación.
+                nuevoEnlaceVideoFormateado = ""
         return nuevoEnlaceVideoFormateado
 
     # @property
@@ -119,12 +130,23 @@ class Banda(models.Model):
     @property
     def enlaceVideoFormateado(self):
         try:
-            pattern = re.compile('https://www[.]youtube[.]com/watch[?]v=(.+)')
+            pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)[&]ab_channel=(.+)')
             en = pattern.search(str(self.enlaceVideo))
             parteEnlace = en.group(1)
             nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
         except:
             nuevoEnlaceVideoFormateado = ""
+        
+        if nuevoEnlaceVideoFormateado == "":
+            try:
+                pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)')
+                en = pattern.search(str(self.enlaceVideo))
+                parteEnlace = en.group(1)
+                nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+            except:
+                # Si el vídeo no sigue el formato quiere decir que este está mal escrito, por lo que devolveremos este enlace vacío,
+                # sería conveniente decirle al usuario que su enlace no es reconocido por nuestra aplicación.
+                nuevoEnlaceVideoFormateado = ""
         return nuevoEnlaceVideoFormateado
 
 class MiembroNoRegistrado(models.Model):
