@@ -5,6 +5,7 @@ from rest_framework import status
 
 from groomeet_backend.models import Musico, Banda, Chat
 from django.contrib.auth.decorators import login_required
+from datetime import date
 
 
 #Sección de likes y no likes entre músicos
@@ -54,7 +55,7 @@ def postNoLikeMusicoMusico(request, pk):
 def postLikeMusicoBanda(request, pk):
     banda = get_object_or_404(Banda, id=pk)
     usuario = request.user
-    if banda.administrador.id is usuario.id:
+    if banda.administrador.usuario_id is usuario.id:
         redirect("/listadoBandas")
     if usuario in banda.likesRecibidosMusico.all():
         banda.likesRecibidosMusico.remove(usuario)
@@ -99,7 +100,7 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
     musico = get_object_or_404(Musico, id=pkMusico)
     banda = get_object_or_404(Banda, id=pkBanda)
     usuario = request.user
-    if banda.administrador.id != usuario.id:
+    if banda.administrador.usuario_id != usuario.id:
         redirect("/misBandas")
     if banda.administrador.id is musico.id or musico in banda.miembros.all():
         redirect(f"/listadoBandasMusicos/{pkBanda}")
@@ -135,7 +136,7 @@ def postNoLikeBandaMusico(request, pkBanda, pkMusico):
     musico = get_object_or_404(Musico, id=pkMusico)
     banda = get_object_or_404(Banda, id=pkBanda)
     usuario = request.user
-    if banda.administrador.id != usuario.id:
+    if banda.administrador.usuario_id != usuario.id:
         redirect("/misBandas")
     if banda.administrador.id is musico.id or musico in banda.miembros.all():
         redirect(f"/listadoBandasMusicos/{pkBanda}")
@@ -235,7 +236,7 @@ def postSuperLikeMusicoMusico(request, pk):
 def postSuperLikeMusicoBanda(request, pk):
     banda = get_object_or_404(Banda, id=pk)
     usuario = request.user
-    if banda.administrador.id is usuario.id:
+    if banda.administrador.usuario_id is usuario.id:
         redirect("/listado")
     if not usuario.musico.isGold:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
@@ -263,7 +264,7 @@ def postSuperLikeBandaMusico(request, pkBanda, pkMusico):
     musico = get_object_or_404(Musico, id=pkMusico)
     banda = get_object_or_404(Banda, id=pkBanda)
     usuario = request.user
-    if banda.administrador.id != usuario.musico.id:
+    if banda.administrador.usuario_id != usuario.musico.id:
         redirect("/misBandas")
     if banda.administrador.id is musico.id or musico in banda.miembros.all():
         redirect(f"/listadoBandasMusicos/{pkBanda}")
@@ -316,6 +317,55 @@ def postSuperLikeBandaBanda(request, pkEmisor, pkReceptor):
     print(f"¡Eso fue un superlike!, os encantó {bandaReceptora.nombre}")
     return redirect(f'/buscarBandas/{pkEmisor}')
 
+def datosMusico(musico):
+    nombre = musico.usuario.first_name + "&;*"
+    descripcion = musico.descripcion + "&;*"
+
+    fechaNac = musico.fechaNacimiento
+    today = date.today()
+    edad = today.year - fechaNac.year - ((today.month, today.day) < (fechaNac.month, fechaNac.day))
+    edad = str(edad) + "&;*"
+
+    generosList = musico.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + "&;*"
+    instrumentosList = musico.instrumentos.values_list("nombre", flat=True)
+    instrumentos = ", ".join(instrumentosList) + "&;*"
+
+    print(musico.avatar)
+    if (musico.avatar == ""):
+        avatar = 'https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1' + "&;*"
+    else:
+        avatar = musico.avatar.url + "&;*"
+
+    video = musico.enlaceVideoFormateado + "&;*"
+    id = str(musico.id)
+
+    response = nombre + descripcion + edad + generos + instrumentos + avatar + video + id
+    print(response)
+    return response
+
+def datosBanda(banda):
+    nombre = banda.nombre + "&;*"
+    descripcion = banda.descripcion + "&;*"
+    edad = "&;*"
+    generosList = banda.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + "&;*"
+    instrumentosList = banda.instrumentos.values_list("nombre", flat=True)
+    instrumentos = ", ".join(instrumentosList) + "&;*"
+
+    print(banda.imagen)
+    if (banda.imagen == ""):
+        avatar = 'https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1' + "&;*"
+    else:
+        avatar = banda.imagen.url + "&;*"
+
+    video = banda.enlaceVideoFormateado + "&;*"
+    id = str(banda.id)
+
+    response = nombre + descripcion + edad + generos + instrumentos + avatar + video + id
+    print(response)
+    return response
+
 @login_required(login_url='/login/')
 def postUndoDislikeMusicoMusico(request, pk):
     print(pk)
@@ -329,14 +379,7 @@ def postUndoDislikeMusicoMusico(request, pk):
         musico.noLikesRecibidos.remove(usuario)
         usuario.musico.save()
 
-        nombre = musico.usuario.username + ";"
-        generosList = musico.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideoFormateado + ";"
-        id = str(musico.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosMusico(musico)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -345,7 +388,7 @@ def postUndoDislikeMusicoBanda(request, pk):
     print(pk)
     banda = get_object_or_404(Banda, id=pk)
     usuario = request.user
-    if banda.administrador.id is usuario.id:
+    if banda.administrador.usuario_id is usuario.id:
         redirect("/listado")
     if not usuario.musico.isGold:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
@@ -353,14 +396,7 @@ def postUndoDislikeMusicoBanda(request, pk):
         banda.noLikesRecibidosMusico.remove(usuario)
         usuario.musico.save()
 
-        nombre = banda.nombre + ";"
-        generosList = banda.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = banda.enlaceVideoFormateado + ";"
-        id = str(banda.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosBanda(banda)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -370,24 +406,17 @@ def postUndoDislikeBandaMusico(request, pkBanda, pkMusico):
     banda = get_object_or_404(Banda, id=pkBanda)
     usuario = request.user
 
-    if banda.administrador.id != usuario.musico.id:
+    if banda.administrador.usuario_id != usuario.musico.id:
         redirect("/misBandas")
     if banda.administrador.id is musico.id or musico in banda.miembros.all():
         redirect(f"/listadoBandasMusicos/{pkBanda}")
     if not usuario.musico.isGold:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario.id is banda.administrador.id and banda in musico.noLikesRecibidosBanda.all():
+    if usuario.id is banda.administrador.usuario_id and banda in musico.noLikesRecibidosBanda.all():
         musico.noLikesRecibidosBanda.remove(banda.id)
         usuario.musico.save()
 
-        nombre = musico.usuario.username + ";"
-        generosList = musico.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideoFormateado + ";"
-        id = str(musico.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosMusico(musico)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -408,14 +437,7 @@ def postUndoDislikeBandaBanda(request, pkEmisor, pkReceptor):
     if bandaEmisora.administrador.id is not bandaReceptora.administrador.id and bandaEmisora in bandaReceptora.noLikesRecibidosBanda.all():
         bandaReceptora.noLikesRecibidosBanda.remove(bandaEmisora)
 
-        nombre = bandaReceptora.nombre + ";"
-        generosList = bandaReceptora.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = bandaReceptora.enlaceVideoFormateado + ";"
-        id = str(bandaReceptora.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosBanda(bandaReceptora)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -431,14 +453,7 @@ def postUndoLikeMusicoMusico(request, pk):
         musico.likesRecibidos.remove(usuario)
         usuario.musico.save()
 
-        nombre = musico.usuario.username + ";"
-        generosList = musico.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideoFormateado + ";"
-        id = str(musico.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosMusico(musico)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -447,7 +462,7 @@ def postUndoLikeMusicoBanda(request, pk):
     print(pk)
     banda = get_object_or_404(Banda, id=pk)
     usuario = request.user
-    if banda.administrador.id is usuario.id:
+    if banda.administrador.usuario_id is usuario.id:
         redirect("/listado")
     if not usuario.musico.isGold:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
@@ -455,14 +470,7 @@ def postUndoLikeMusicoBanda(request, pk):
         banda.likesRecibidosMusico.remove(usuario)
         usuario.musico.save()
 
-        nombre = banda.nombre + ";"
-        generosList = banda.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = banda.enlaceVideoFormateado + ";"
-        id = str(banda.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosBanda(banda)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -471,24 +479,17 @@ def postUndoLikeBandaMusico(request, pkBanda, pkMusico):
     musico = get_object_or_404(Musico, id=pkMusico)
     banda = get_object_or_404(Banda, id=pkBanda)
     usuario = request.user
-    if banda.administrador.id != usuario.musico.id:
+    if banda.administrador.usuario_id != usuario.musico.id:
         redirect("/misBandas")
     if banda.administrador.id is musico.id or musico in banda.miembros.all():
         redirect(f"/listadoBandasMusicos/{pkBanda}")
     if not usuario.musico.isGold:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario.id is banda.administrador.id and banda in musico.likesRecibidosBanda.all():
+    if usuario.id is banda.administrador.usuario_id and banda in musico.likesRecibidosBanda.all():
         musico.likesRecibidosBanda.remove(banda)
         usuario.musico.save()
 
-        nombre = musico.usuario.username + ";"
-        generosList = musico.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = musico.enlaceVideoFormateado + ";"
-        id = str(musico.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosMusico(musico)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -508,13 +509,6 @@ def postUndoLikeBandaBanda(request, pkEmisor, pkReceptor):
     if bandaEmisora.administrador.id is not bandaReceptora.administrador.id and bandaEmisora in bandaReceptora.likesRecibidosBanda.all():
         bandaReceptora.likesRecibidosBanda.remove(bandaEmisora)
 
-        nombre = bandaReceptora.nombre + ";"
-        generosList = bandaReceptora.generos.values_list("nombre", flat=True)
-        generos = ", ".join(generosList) + ";"
-        video = bandaReceptora.enlaceVideoFormateado + ";"
-        id = str(bandaReceptora.id)
-
-        response = nombre + generos + video + id
-        print(response)
+        response = datosBanda(bandaReceptora)
         return HttpResponse(response)
     return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)

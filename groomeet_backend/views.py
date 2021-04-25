@@ -63,6 +63,55 @@ def logout_view(request):
 def chat(request):
     return render(request, 'chat.html')
 
+def datosMusico(musico):
+    nombre = musico.usuario.first_name + "&;*"
+    descripcion = musico.descripcion + "&;*"
+
+    fechaNac = musico.fechaNacimiento
+    today = date.today()
+    edad = today.year - fechaNac.year - ((today.month, today.day) < (fechaNac.month, fechaNac.day))
+    edad = str(edad) + "&;*"
+
+    generosList = musico.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + "&;*"
+    instrumentosList = musico.instrumentos.values_list("nombre", flat=True)
+    instrumentos = ", ".join(instrumentosList) + "&;*"
+
+    print(musico.avatar)
+    if (musico.avatar == ""):
+        avatar = 'https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1' + "&;*"
+    else:
+        avatar = musico.avatar.url + "&;*"
+
+    video = musico.enlaceVideoFormateado + "&;*"
+    id = str(musico.id)
+
+    response = nombre + descripcion + edad + generos + instrumentos + avatar + video + id
+    print(response)
+    return response
+
+def datosBanda(banda):
+    nombre = banda.nombre + "&;*"
+    descripcion = banda.descripcion + "&;*"
+    edad = "&;*"
+    generosList = banda.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + "&;*"
+    instrumentosList = banda.instrumentos.values_list("nombre", flat=True)
+    instrumentos = ", ".join(instrumentosList) + "&;*"
+
+    print(banda.imagen)
+    if (banda.imagen == ""):
+        avatar = 'https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1' + "&;*"
+    else:
+        avatar = banda.imagen.url + "&;*"
+
+    video = banda.enlaceVideoFormateado + "&;*"
+    id = str(banda.id)
+
+    response = nombre + descripcion + edad + generos + instrumentos + avatar + video + id
+    print(response)
+    return response
+
 @login_required(login_url='/login/')
 def getMusico(request):
     musicos = Musico.objects.all().order_by('-isBoosted', '-usuario__last_login')
@@ -73,15 +122,7 @@ def getMusico(request):
         if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
             result.append(musico)
 
-    musico = result[0]
-    nombre = musico.usuario.username + ";"
-    generosList = musico.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideoFormateado + ";"
-    id = str(musico.id)
-
-    response = nombre + generos + video + id
-    print(response)
+    response = datosMusico(result[0])
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
@@ -93,15 +134,7 @@ def getMusico2(request, pkBanda):
         if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
             result.append(musico)
 
-    musico = result[0]
-    nombre = musico.usuario.username + ";"
-    generosList = musico.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideoFormateado + ";"
-    id = str(musico.id)
-
-    response = nombre + generos + video + id
-    print(response)
+    response = datosMusico(result[0])
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
@@ -113,14 +146,8 @@ def getBanda(request):
     for banda in bandas:
         if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
             result.append(banda)
-    banda = result[0]
-    nombre = banda.nombre + ";"
-    generosList = banda.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = banda.enlaceVideoFormateado + ";"
-    id = str(banda.id)
 
-    response = nombre + generos + video + id
+    response = datosBanda(result[0])
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
@@ -132,14 +159,8 @@ def getBanda2(request, pkBanda):
     for b in bandas:
         if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
             result.append(b)
-    banda = result[0]
-    nombre = banda.nombre + ";"
-    generosList = banda.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = banda.enlaceVideoFormateado + ";"
-    id = str(banda.id)
 
-    response = nombre + generos + video + id
+    response = datosBanda(result[0])
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
