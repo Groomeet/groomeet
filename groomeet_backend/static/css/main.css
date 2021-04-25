@@ -1,9 +1,13 @@
+@import url("http://fonts.googleapis.com/css?family=Open+Sans");
+
 body {
 	--primary-color: #00ff9d;
     --secondary-color: #002718;
     --tertiary-color: #00140c;
     --quaternary-color: #6c9384;
     --fifth-color: #ebfff7;
+
+    font-family: 'Open Sans', sans-serif;
 }
 
 /*--------------------------------------------------------------
