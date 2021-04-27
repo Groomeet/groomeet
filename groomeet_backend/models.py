@@ -68,6 +68,8 @@ class Musico(models.Model):
     likesDisponibles = models.IntegerField(default=10)
     ultimaRenovacionLikes = models.DateField(default=datetime.date.today)
     ultimoUsuarioInteraccion = models.ManyToManyField(User, related_name="ultimoUsuarioInteraccion", blank=True)
+    contadorReferidos = models.IntegerField(default=0, verbose_name="Referidos")
+    invitadoPor = models.ForeignKey('Musico', blank=True, null=True, related_name="referidos", on_delete = models.DO_NOTHING)
 
     def __str__(self):
         return self.usuario.username
@@ -223,3 +225,6 @@ class Compra(models.Model):
     def __str__(self):
         return self.nombre_cliente
 
+class Bonificacion(models.Model):
+    musico = models.ForeignKey(Musico, related_name="bonificaciones", on_delete=models.CASCADE)
+    fechaBonificacion = models.DateField(default=datetime.date.today)

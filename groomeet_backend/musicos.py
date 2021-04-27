@@ -10,6 +10,7 @@ def signUpMusico(request):
         formularioMusico = MusicoForm(request.POST)
         formularioUser = UserForm(request.POST)
         if formularioMusico.is_valid() and formularioUser.is_valid():
+
             user = User.objects.create_user(username = formularioUser.cleaned_data['username'],first_name = formularioUser.cleaned_data['first_name']
                                         ,last_name = formularioUser.cleaned_data['last_name'],email = formularioUser.cleaned_data['email']
                                         ,password = formularioUser.cleaned_data['password'])
@@ -23,6 +24,21 @@ def signUpMusico(request):
             musico.generos.set(request.POST.getlist('generos'))
             musico.instrumentos.set(request.POST.getlist('instrumentos'))
             
+            #Acciones que se toman si se introduce un usuario referido
+            referido = username=formularioMusico.cleaned_data['referido']
+            if  referido != None and referido != "":
+                referente = get_object_or_404(User, username=formularioMusico.cleaned_data['referido'])
+                musico.invitadoPor = referente.musico
+                musico.save()
+                referente.musico.contadorReferidos = referente.musico.contadorReferidos+1
+
+                #AQUI HAY QUE MIRAR
+                if(referente.musico.contadorReferidos == 3):
+                    referente.musico.contadorReferidos = 0
+                    bonificacion = Bonificacion.objects.create(musico = referente.musico)
+                    referente.musico.isGold = True
+                referente.musico.save()
+         
             return HttpResponseRedirect('/')
     else:
         formularioMusico = MusicoForm()
@@ -34,13 +50,13 @@ def updateProfileMusico(request):
     usuario = request.user
     musico = get_object_or_404(Musico,usuario=usuario)
     imagenMusico = musico.avatar
-    formularioMusico = MusicoForm(initial={'fechaNacimiento': musico.fechaNacimiento,'descripcion': musico.descripcion,
+    formularioMusico = MusicoUpdateForm(initial={'fechaNacimiento': musico.fechaNacimiento,'descripcion': musico.descripcion,
                                             'instrumentos': musico.instrumentos.all,'generos': musico.generos.all,'avatar': musico.avatar,
                                             'enlaceVideo': musico.enlaceVideo})
     formularioUser = UserUpdateForm(initial={'first_name': usuario.first_name,'last_name': usuario.last_name,
                                         'email': usuario.email})
     if request.method == "POST":
-        formularioMusico = MusicoForm(request.POST, instance=musico)
+        formularioMusico = MusicoUpdateForm(request.POST, instance=musico)
         formularioUser = UserUpdateForm(request.POST, instance=usuario)
         if formularioMusico.is_valid() and formularioUser.is_valid():
             try:
