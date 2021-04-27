@@ -111,7 +111,7 @@ def rename_image_banda(instance, filename):
 class Banda(models.Model):
     nombre = models.CharField(max_length=50)
     administrador = models.ForeignKey(Musico, on_delete = models.DO_NOTHING, related_name="bandasAdministradas") #Si desaparece el administrador, la banda puede seguir creada
-    miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
+    miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True, verbose_name="Miembros")
     generos = models.ManyToManyField(Genero, blank=True)
     instrumentos = models.ManyToManyField(Instrumento, blank=True)
     descripcion = models.TextField(verbose_name="Descripción", null=True)
