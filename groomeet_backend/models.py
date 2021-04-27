@@ -4,10 +4,21 @@ from model_utils.models import TimeStampedModel, SoftDeletableModel
 from dateutil.relativedelta import relativedelta
 from enum import Enum
 import datetime
+import re
 
 
 # Create your models here.
+class Message(models.Model):
+    author = models.ForeignKey(
+        User, related_name='author_messages', on_delete=models.CASCADE, null=True)
+    receptor = models.ForeignKey(
+        User, related_name='receptor_messages', on_delete=models.CASCADE, null=True)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.author.username
+        
 class Genero(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
     def __str__(self):
@@ -23,9 +34,12 @@ class Instrumento(models.Model):
 #Método auxiliar para guardar la imagen como la id del usuario seguida de un punto
 def rename_avatar_image(instance, filename):
         filesplits = filename.split('.')
-        return 'media/images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
+        return 'images/avatars/%s.%s' % (instance.usuario.id, filesplits[-1])
 
 class Chat(models.Model):
+    participants = models.ManyToManyField(
+        User, related_name='chats', blank=True)
+    messages = models.ManyToManyField(Message, blank=True)
     nombre = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
@@ -37,7 +51,7 @@ class Musico(models.Model):
     instrumentos = models.ManyToManyField(Instrumento)
     generos = models.ManyToManyField(Genero,verbose_name="Géneros")
     fechaNacimiento = models.DateField(verbose_name="Fecha de nacimiento", null=True)
-    descripcion = models.TextField(verbose_name="Descripción")
+    descripcion = models.TextField(verbose_name="Descripción", null=True)
     enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
     avatar = models.ImageField(upload_to=rename_avatar_image, blank=True, null=True)
     chat = models.ManyToManyField(Chat, blank=True)
@@ -53,6 +67,9 @@ class Musico(models.Model):
     superLikes = models.IntegerField(default=0)
     likesDisponibles = models.IntegerField(default=10)
     ultimaRenovacionLikes = models.DateField(default=datetime.date.today)
+    ultimoUsuarioInteraccion = models.ManyToManyField(User, related_name="ultimoUsuarioInteraccion", blank=True)
+    contadorReferidos = models.IntegerField(default=0, verbose_name="Referidos")
+    invitadoPor = models.ForeignKey('Musico', blank=True, null=True, related_name="referidos", on_delete = models.DO_NOTHING)
 
     def __str__(self):
         return self.usuario.username
@@ -61,6 +78,28 @@ class Musico(models.Model):
     def numLikes(self):
         return self.likesRecibidos.all().count()
 
+    @property
+    def enlaceVideoFormateado(self):
+        try:
+            pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)[&]ab_channel=(.+)')
+            en = pattern.search(str(self.enlaceVideo))
+            parteEnlace = en.group(1)
+            nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+        except:
+            nuevoEnlaceVideoFormateado = ""
+        
+        if nuevoEnlaceVideoFormateado == "":
+            try:
+                pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)')
+                en = pattern.search(str(self.enlaceVideo))
+                parteEnlace = en.group(1)
+                nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+            except:
+                # Si el vídeo no sigue el formato quiere decir que este está mal escrito, por lo que devolveremos este enlace vacío,
+                # sería conveniente decirle al usuario que su enlace no es reconocido por nuestra aplicación.
+                nuevoEnlaceVideoFormateado = ""
+        return nuevoEnlaceVideoFormateado
+
     # @property
     # def edad(self):
     #     return relativedelta(date.today(), self.fechaNacimiento).years
@@ -68,16 +107,16 @@ class Musico(models.Model):
 #Método auxiliar para guardar la imagen como la id de la banda seguida de un punto
 def rename_image_banda(instance, filename):
         filesplits = filename.split('.')
-        return 'media/images/bandas/%s.%s' % (instance.id, filesplits[-1])
+        return 'images/bandas/%s.%s' % (instance.id, filesplits[-1])
 
 #Añadir ubicaciones para mejora del filtro de búsqueda
 class Banda(models.Model):
     nombre = models.CharField(max_length=50)
     administrador = models.ForeignKey(Musico, on_delete = models.DO_NOTHING, related_name="bandasAdministradas") #Si desaparece el administrador, la banda puede seguir creada
-    miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True)
+    miembros = models.ManyToManyField(Musico, through='MiembroDe', blank=True, verbose_name="Miembros")
     generos = models.ManyToManyField(Genero, blank=True)
     instrumentos = models.ManyToManyField(Instrumento, blank=True)
-    descripcion = models.TextField(verbose_name="Descripción")
+    descripcion = models.TextField(verbose_name="Descripción", null=True)
     enlaceVideo = models.URLField(verbose_name="Enlace de vídeo", blank=True)
     imagen = models.ImageField(verbose_name="Imagen de la banda",upload_to=rename_image_banda, blank=True, null=True)
     #Sección de likes de Banda a Músico
@@ -89,6 +128,28 @@ class Banda(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def enlaceVideoFormateado(self):
+        try:
+            pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)[&]ab_channel=(.+)')
+            en = pattern.search(str(self.enlaceVideo))
+            parteEnlace = en.group(1)
+            nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+        except:
+            nuevoEnlaceVideoFormateado = ""
+        
+        if nuevoEnlaceVideoFormateado == "":
+            try:
+                pattern = re.compile('^https://www[.]youtube[.]com/watch[?]v=(.+)')
+                en = pattern.search(str(self.enlaceVideo))
+                parteEnlace = en.group(1)
+                nuevoEnlaceVideoFormateado = "https://www.youtube.com/embed/" + str(parteEnlace)
+            except:
+                # Si el vídeo no sigue el formato quiere decir que este está mal escrito, por lo que devolveremos este enlace vacío,
+                # sería conveniente decirle al usuario que su enlace no es reconocido por nuestra aplicación.
+                nuevoEnlaceVideoFormateado = ""
+        return nuevoEnlaceVideoFormateado
 
 class MiembroNoRegistrado(models.Model):
     banda = models.ForeignKey(Banda, on_delete = models.CASCADE, related_name="miembrosNoRegistrados")
@@ -163,3 +224,7 @@ class Compra(models.Model):
 
     def __str__(self):
         return self.nombre_cliente
+
+class Bonificacion(models.Model):
+    musico = models.ForeignKey(Musico, related_name="bonificaciones", on_delete=models.CASCADE)
+    fechaBonificacion = models.DateField(default=datetime.date.today)

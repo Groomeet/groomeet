@@ -1,47 +1,54 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<div class="card-body" style="margin-top:50px;">
-    <h2>Mis Bandas</h2><br>
+<style>
+.icon {
+    height: 20px;
+    width: 20px;
+}
+</style>
 
-    <div class="col-xs-1 col-sm-3 col-lg-1">
-        <a href="/createBanda">Nueva Banda</a><br>
-      </div>
-      
+<div class="card-body" style="margin-top:50px;">
+    <div>
+        <h2 style="white-space: nowrap;">Mis Bandas <a href="/createBanda"><img class="icon" src="../static/img/icons/add.png" title="Nueva banda" alt="Nueva banda"></a></h2> 
+    </div>
+    <br><br>
+    <h2>Bandas Administradas</h2>
     <table class="table table-striped">
         <thead>
-            <tr>
+            <tr align="center">
                 <th scope="col">Nombre</th>
                 <th scope="col">Generos</th>
                 <th scope="col">Instrumentos</th>
-                <th scope="col">Miembros no registrados</th>
-                <th scope="col">Miembros registrados</th>
+                <th colspan="2" scope="col">Miembros</th>
                 <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for row in misBandas %}
             <tr>
-                <td>{{ row.nombre }}</td>
-                <td>{% for genero in row.generos.all %}
+                <td class="text-center">
+                    {{ row.nombre }}
+                </td>
+                <td class="text-center">{% for genero in row.generos.all %}
                     - {{ genero.nombre }} <br>
 			    {% endfor %}</td>
-                <td>{% for instrumento in row.instrumentos.all %}
+                <td class="text-center">{% for instrumento in row.instrumentos.all %}
                     - {{ instrumento.nombre }} <br>
 			    {% endfor %}</td>
-                <td>{% for miembro in row.miembrosNoRegistrados.all %}
+                <td style="font-style: italic;">{% for miembro in row.miembrosNoRegistrados.all %}
                     - {{ miembro.nombre }}
                 {% endfor %}</td>
                 <td>{% for miembro in row.miembros.all %}
                     - {{ miembro.usuario.username }}
                 {% endfor %}</td>
-                <td>
-                    <a href="/updateBanda/{{ row.id }}" >Editar</a>
-                    <a href="/deleteBanda/{{ row.id }}">Eliminar</a>
-                    <a href="/createMiembroNoRegistrado/{{ row.id }}" >Nuevo Miembro</a>
-                    <a href="/invitacionBanda/{{ row.id }}">Invitar a un músico a la banda</a>
-                    <a href="/listadoBandasMusicos/{{ row.id }}" >Buscar Miembros</a>
-                    <a href="/buscarBandas/{{ row.id }}" >Buscar Bandas</a>
+                <td align="right">
+                    <a href="/invitacionBanda/{{ row.id }}"><img class="icon" src="../static/img/icons/adduser.png"  title="Invitar músico" alt="Invitar músico"></a>
+                    <a href="/buscarIntegrantes/{{ row.id }}" ><img class="icon" src="../static/img/icons/finduser.png" title="Buscar músicos" alt="Buscar músicos"></a>
+                    <a href="/colabora/{{ row.id }}" ><img class="icon" src="../static/img/icons/findband.png" title="Buscar bandas" alt="Buscar bandas"></a>
+                    <a href="/updateBanda/{{ row.id }}" ><img class="icon" src="../static/img/icons/edit.png" title="Editar banda" alt="Editar banda"></a>
+                    <a href="/deleteBanda/{{ row.id }}" class="btn btn-danger">Eliminar</a>
+                    <a href="/showBanda/{{ row.id }}" class="btn btn-info">Ver</a>
                 </td>
             </tr>
             
@@ -49,6 +56,46 @@
         </tbody>
     </table>
     
+    <br><br>
+
+    <h2>Bandas a las que pertenezco</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr align="center">
+                <th scope="col">Nombre</th>
+                <th scope="col">Generos</th>
+                <th scope="col">Instrumentos</th>
+                <th colspan="2" scope="col">Miembros</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in bandasMiembro %}
+            <tr>
+                <td class="text-center">
+                    {{ row.nombre }}
+                </td>
+                <td class="text-center">{% for genero in row.generos.all %}
+                    - {{ genero.nombre }} <br>
+			    {% endfor %}</td>
+                <td class="text-center">{% for instrumento in row.instrumentos.all %}
+                    - {{ instrumento.nombre }} <br>
+			    {% endfor %}</td>
+                <td style="font-style: italic;">{% for miembro in row.miembrosNoRegistrados.all %}
+                    - {{ miembro.nombre }}
+                {% endfor %}</td>
+                <td>{% for miembro in row.miembros.all %}
+                    - {{ miembro.usuario.username }}
+                {% endfor %}</td>
+                <td align="right">
+                    <a href="/showBanda/{{ row.id }}" class="btn btn-info">Ver</a>
+                    <a href="/eliminarMiembro/{{ row.id }}/{{ request.user.musico.pk }}" class="btn btn-info">Abandonar Banda</a>
+                </td>
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
 

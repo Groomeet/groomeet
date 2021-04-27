@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="card-body" style="margin-top:50px;">
+
+    {% for row in banda %}
+
+    <div>
+        <h2><strong>Banda: </strong>{{row.nombre}} </h2>
+        <p style="white-space: nowrap;"><i><strong>Administrador: </strong>{{row.administrador}} </i></p>
+
+        <p style="white-space: nowrap; padding: 30px; background-color:rgb(234, 255, 211); border-radius: 20px;">
+            <strong></strong>{{row.descripcion}}
+        </p>
+    </div>
+    <br><br>
+    <h4><strong>Miembros registrados</strong></h4><br>
+    <table class="table table-striped">
+        <thead>
+            <tr align="center">
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Instrumentos</th>
+                <th scope="col">Acciones</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in row.miembros.all %}
+            <tr>
+                <td class="text-center">
+                    {{ m.usuario.username }}
+                </td>
+                <td class="text-center">
+                    {{ m.descripcion }}
+                </td>
+                <td class="text-center">{% for instrumento in m.instrumentos.all %}
+                    - {{ instrumento.nombre }} <br>
+                    {% endfor %}</td>
+                
+                {% if request.user.musico == row.administrador %}
+                <td>
+                    <center><a href="/eliminarMiembro/{{ row.id }}/{{ m.pk }}" class="btn btn-info">Expulsar miembro</a></center>
+                </td>
+                {% elif request.user.musico == m %}
+                <td>
+                    <center><a href="/eliminarMiembro/{{ row.id }}/{{ m.pk }}" class="btn btn-info">Abandonar banda</a></center>
+                </td>
+                {% endif %}                
+
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table><br><br>
+
+    <h4><strong>Miembros no registrados</strong></h4><br>
+    <table class="table table-striped">
+        <thead>
+            <tr align="center">
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Instrumentos</th>
+                {% if request.user.musico == row.administrador %}
+                <th scope="col">Acciones</th>
+                {% else %}
+                
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in row.miembrosNoRegistrados.all %}
+            <tr>
+                <td class="text-center">
+                    {{ m.nombre }}
+                </td>
+                <td class="text-center">
+                    {{ m.descripcion }}
+                </td>
+                <td class="text-center">{% for instrumento in m.instrumentos.all %}
+                    - {{ instrumento.nombre }} <br>
+                    {% endfor %}</td>
+                
+                {% if request.user.musico == row.administrador %}
+                <td>
+                <center><a href="/eliminarMiembroNoRegistrado/{{ row.id }}/{{ m.pk }}" class="btn btn-info">Eliminar Miembro</a></center>
+                </td>
+                {% else %}
+                
+                {% endif %}
+            </tr>
+
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock body %}

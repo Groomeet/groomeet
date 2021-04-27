@@ -1,16 +1,106 @@
 {% extends 'base.html' %}
 {% block body %}
-        
+<style>
+    .post-form {
+    content: '';
+    display: block;
+    align-items: center;
+    justify-content: center;
 
-    
-        <h2 >Escriba el nombre del usuario que quiere invitar a la banda</h2><br>
+}
+
+.panel-heading {
+    width: 485px;
+    padding: 20px;
+    border-radius: 5px;
+    margin: auto;
+    background-color: #191919;
+    padding: 40px;
+}
+
+.post-form label, #text {
+    font-weight: bold;
+    display: flex;
+    color: #ffffff
+
+}
+
+.panel-heading h2 {
+text-align: center;
+color: #ffffff
+}
+
+.panel-heading input, textarea {
+    width: 400px;
+    border: 2px solid #2ecc71;
+    border-radius: 6px;
+    background-color: #ffffff;
+    margin: 8px 0;
+    display: inline-block;
+}
+
+#avatar-clear_id input{
+    width: 20px !important ;
+}
+textarea {
+    height: 100px;
+}
+
+
+.panel-heading select {
+    width: 133px;
+    border: 1px solid #2ecc71;
+    border-radius: 6px;
+    background-color: #ffffff;
+    margin: 8px 0;
+    display: inline-block;
+}
+
+.instrumentClass, .genereClass {
+    width: 400px !important;
+    border: 1px solid #2ecc71;
+    border-radius: 6px;
+    background-color: #ffffff;
+    margin: 8px 0;
+    display: inline-block;
+}
+
+.dropdown.bootstrap-select.show-tick {
+width: 400px !important;
+
+}
+
+.btn.btn-success{
+    float: none;
+    margin-left: 42%;
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #2ecc71;
+    padding: 14px 40px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+.btn.btn-success:hover{
+background: #2ecc71
+}
+</style>     
+
+    <div class="container panel-heading" style="text-align: right">
+
+        <h2>Nombre del usuario para invitar</h2><br>
             <form method="POST" class="post-form">{% csrf_token %}
                 {{ formulario }}
      
                 <button type="submit" class="btn btn-success">Invitar</button>
             </form>
-
-          </div>
+        <a href="/createMiembroNoRegistrado/{{ bID }}" class="text-secondary">Miembro no registrado</a>
+    </div>
         
 
         

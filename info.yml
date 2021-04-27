@@ -1,0 +1,56 @@
+project:
+  name: 'Groomeet'
+  owner: 'afternoon'
+  teamId: '16'
+  identities:
+    travis:
+      url: 'https://travis-ci.com/github/Groomeet/groomeet'
+  members:
+    member1:
+      name: 'Francisco'
+      surname: 'Alé Palacios' 
+      githubUsername: 'fraalepal'
+    member2:
+      name: 'Alberto'
+      surname: 'Parras Moreno' 
+      githubUsername: 'albparmor2'
+    member3:
+      name: 'Pedro'
+      surname: 'Biedma Fresno' 
+      githubUsername: 'pedbiefre'
+    member4:
+      name: 'Miguel'
+      surname: 'Yanes Ariza' 
+      githubUsername: 'migyanari'
+    member5:
+      name: 'Daniel'
+      surname: 'Toro Valle' 
+      githubUsername: 'dantorval-us'
+    member6:
+      name: 'José Manuel'
+      surname: 'Gata Fernández' 
+      githubUsername: 'josgatfer'
+    member7:
+      name: 'Enrique'
+      surname: 'Merino Verde' 
+      githubUsername: 'enrmerver'
+    member8:
+      name: 'Guillermo'
+      surname: 'Losada Osto' 
+      githubUsername: 'guilosost'
+    member9:
+      name: 'Marco Antonio'
+      surname: 'Fernández González' 
+      githubUsername: 'marfergon23'
+    member10:
+      name: 'Carlos Luis'
+      surname: 'Acuña Romero' 
+      githubUsername: 'Acunnia'
+    member11:
+      name: 'Diego'
+      surname: 'Horrillo Duran' 
+      githubUsername: 'DiegoHorrilloDuran'
+    member12:
+      name: 'Groomeet'
+      surname: 'ISPP' 
+      githubUsername: 'Groomeet'

@@ -28,7 +28,7 @@ SECRET_KEY = 'jxa+$x*3u&7&gxdjyf@b5+qp&k9%*fybgt+y_ejwh&$!&19^_('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'channels',
     'paypalcheckoutsdk',
 ]
-BASEURL = 'https://groomeet1.herokuapp.com'
+BASEURL = 'http://localhost:8000'
 APIS = {}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -128,7 +128,13 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ( os.path.join('static'), )
+STATICFILES_DIRS = ( os.path.join('static'), os.path.join(BASE_DIR, 'static'))
+
+# Static files (CSS, JavaScript, Images)
+# https://matthiasomisore.com/web-programming/display-image-in-a-django-template-using-imagefield/
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 #  Add configuration for static files storage using whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -145,5 +151,5 @@ import dj_database_url
 prod_db  =  dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
 
-import django_heroku
-django_heroku.settings(locals())
+#import django_heroku
+#django_heroku.settings(locals())
