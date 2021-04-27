@@ -20,6 +20,12 @@ from django.contrib.auth import views as auth_views
 from . import settings
 from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls import url
+#from groomeet_backend.views import error_404,error_500
+
+handler404 = 'groomeet_backend.views.handler404'
+handler500 = 'groomeet_backend.views.handler404'
+handler503 = 'groomeet_backend.views.handler404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -71,10 +77,8 @@ urlpatterns = [
     path('listadoProductos/', pagos.listadoProductos, name= 'listadoProductos'),
     path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
     path('chat/', include('groomeet_backend.urls')),
-    path('chat/<str:room_name>/', views.chat_room, name='chat_room'),
-    path('error/', views.error, name="error")
+    path('chat/<str:room_name>/', views.chat_room, name='chat_room')
 ]
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

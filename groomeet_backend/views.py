@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.defaults import page_not_found
 
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
@@ -9,6 +10,7 @@ from django.utils.safestring import mark_safe
 import json
 from groomeet_backend.models import Message
 from django.db.models import Q
+from django.views.defaults import page_not_found 
 
 # Create your views here.
 def base(request):
@@ -313,10 +315,10 @@ def chat_room(request, room_name):
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
+def handler404(request, *args, **argv):
+    return render(request, "error.html")
+    
 @login_required(login_url='/login/')
-def error(request):
-    return render(request, 'error.html')
-
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
     return render(request, "showBanda.html", {'banda': banda})
