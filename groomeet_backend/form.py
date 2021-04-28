@@ -76,6 +76,27 @@ class MusicoForm(forms.ModelForm):
     fechaNacimiento = forms.DateField(label="Fecha de nacimiento",widget=forms.TextInput(attrs={"data-provide":"datepicker","autocomplete":"off","class":"fechapick", "required":"true"}))
     instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
     generos = forms.ModelMultipleChoiceField(label="Géneros:", queryset=Genero.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'selectpicker'}))
+    referido = forms.CharField(label="Referido", required = False)
+
+    def clean(self):
+        referido = self.cleaned_data['referido']
+        print(referido)
+        if referido != None and referido != "":
+            try:
+                referido = User.objects.get(username=referido)
+            except:
+                referido = None
+                raise forms.ValidationError("El usuario referido no existe")            
+
+    class Meta:
+        model = Musico
+        fields = ('fechaNacimiento','descripcion','avatar','instrumentos','generos','enlaceVideo','referido')
+
+class MusicoUpdateForm(forms.ModelForm):
+    YEARS= [x for x in range(1900,datetime.now().year)]
+    fechaNacimiento = forms.DateField(label="Fecha de nacimiento",widget=forms.TextInput(attrs={"data-provide":"datepicker","autocomplete":"off","class":"fechapick", "required":"true"}))
+    instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
+    generos = forms.ModelMultipleChoiceField(label="Géneros:", queryset=Genero.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'selectpicker'}))
     class Meta:
         model = Musico
         fields = ('fechaNacimiento','descripcion','avatar','instrumentos','generos','enlaceVideo')

@@ -159,6 +159,26 @@ def rechazarInvitacionBanda(request, invitacion_id):
 
     return redirect("/misInvitaciones")
 
+
+@login_required(login_url='/login/')
+def eliminarMiembroBanda(request, pkBanda, pkMusico):
+    banda = get_object_or_404(Banda, id=pkBanda)
+    musico = get_object_or_404(Musico, id=pkMusico)
+    usuario = request.user
+    if (banda.administrador.usuario.id != usuario.id and usuario.id != musico.usuario.id):
+        return redirect("/misBandas")
+    banda.miembros.remove(musico)
+    return redirect("/misBandas")
+
+@login_required(login_url='/login/')
+def eliminarMiembroNoRegistrado(request, pkBanda, pkMiembro):
+    banda = get_object_or_404(Banda, id=pkBanda)
+    miembroNoRegistrado = get_object_or_404(MiembroNoRegistrado, id=pkMiembro)
+    usuario = request.user
+    if (banda.administrador.usuario.id != usuario.id):
+        return redirect("/misBandas")
+    miembroNoRegistrado.delete()
+    return redirect("/showBanda/{{ pkBanda }}")
 #Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 '''
 @login_required(login_url='/login/')

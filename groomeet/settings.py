@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import os.path
-
+import warnings
+warnings.filterwarnings("ignore", message="No directory at", module="whitenoise.base" )
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,9 +27,9 @@ BASE_URL = '/admin/login/'
 SECRET_KEY = 'jxa+$x*3u&7&gxdjyf@b5+qp&k9%*fybgt+y_ejwh&$!&19^_('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost',]
 
 
 # Application definition

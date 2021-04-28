@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.defaults import page_not_found
 
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
@@ -9,6 +10,7 @@ from django.utils.safestring import mark_safe
 import json
 from groomeet_backend.models import Message
 from django.db.models import Q
+from django.views.defaults import page_not_found 
 
 # Create your views here.
 def base(request):
@@ -33,6 +35,20 @@ def musico(request):
             request.user.musico.likesDisponibles = 10
             request.user.musico.ultimaRenovacionLikes = today
             request.user.musico.save()
+    goldConBonificacionTrasCompraExpirada = False
+    try:
+        bonificacion = Bonificacion.objects.filter(musico=request.user.musico).order_by('-fechaBonificacion').first()
+        today = date.today()
+        dias = days_between(bonificacion.fechaBonificacion, today)
+        if(dias>30):
+            request.user.musico.isGold=False
+            request.user.musico.save()
+        else:
+            goldConBonificacionTrasCompraExpirada = True
+            request.user.musico.isGold=True
+            request.user.musico.save()
+    except:
+        pass
     try:
         compra = Compra.objects.filter(usuario=request.user).order_by('-fecha_compra').first()
         today = date.today()
@@ -41,8 +57,19 @@ def musico(request):
             request.user.musico.isGold=False
             request.user.musico.isSilver=False
             request.user.musico.save()
+        else:
+            if compra.producto.producto=="Silver Groomeet":
+                request.user.musico.isSilver=True
+            else:
+                request.user.musico.isGold=True
+            request.user.musico.save()
     except:
         pass
+    #Esto soluciona el problema de que un usuario haya tenido el Gold comprado, haya expirado, y ahora haya conseguido la bonificación
+    #Sin esto, la comprobación de los 30 días de la compra saltaría y se le quitaría el Gold, aún teniendo la bonificación vigente.
+    if goldConBonificacionTrasCompraExpirada:
+        request.user.musico.isGold=True
+        request.user.musico.save()
     return render(request, '../templates/index.html')
 
 @login_required(login_url='/login/')
@@ -230,7 +257,8 @@ def listadoBandasBandas(request, pkBanda):
 @login_required(login_url='/login/')
 def listadoMisBandas(request):
     misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
-    return render(request, "misBandas.html", {'misBandas': misBandas})
+    bandasMiembro = Banda.objects.all().filter(miembros__id__contains=request.user.musico.id).order_by('-nombre')
+    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro})
 
 @login_required(login_url='/login/')
 def listadoMiembrosNoRegistrados(request):
@@ -305,10 +333,13 @@ def chat_room(request, room_name):
 })
     
     
-
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
+def handler404(request, *args, **argv):
+    return render(request, "error.html")
+    
 @login_required(login_url='/login/')
-def error(request):
-    return render(request, 'error.html')
+def showBanda(request, id):
+    banda = Banda.objects.filter(pk=id)
+    return render(request, "showBanda.html", {'banda': banda})
