@@ -270,7 +270,7 @@ def postSuperLikeBandaMusico(request, pkBanda, pkMusico):
         redirect(f"/listadoBandasMusicos/{pkBanda}")
     if not usuario.musico.isGold:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if request.user.musico.isGold and request.user.musico.superLikes <= 0:
+    if usuario.musico.isGold and request.user.musico.superLikes <= 0:
         return HttpResponse(f"/listadoProductos/", status=status.HTTP_405_METHOD_NOT_ALLOWED)
     if banda in musico.likesRecibidosBanda.all():
         musico.likesRecibidosBanda.remove(banda)
@@ -284,7 +284,7 @@ def postSuperLikeBandaMusico(request, pkBanda, pkMusico):
     banda.administrador.chat.add(chat)
     usuario.musico.chat.add(chat)            
     print(f"¡Eso fue un superlike!, te encantó {banda.nombre}")
-    return redirect(f'/listadoBandasMusicos/{pkBanda}')
+    return HttpResponse("Post correcto.")
 
 @login_required(login_url='/login/')
 def postSuperLikeBandaBanda(request, pkEmisor, pkReceptor):
@@ -315,7 +315,7 @@ def postSuperLikeBandaBanda(request, pkEmisor, pkReceptor):
     bandaEmisora.administrador.chat.add(chat)
     bandaReceptora.administrador.chat.add(chat)
     print(f"¡Eso fue un superlike!, os encantó {bandaReceptora.nombre}")
-    return redirect(f'/buscarBandas/{pkEmisor}')
+    return HttpResponse("Post correcto.")
 
 def datosMusico(musico):
     nombre = musico.usuario.first_name + "&;*"
@@ -369,146 +369,177 @@ def datosBanda(banda):
 @login_required(login_url='/login/')
 def postUndoDislikeMusicoMusico(request, pk):
     print(pk)
-    musico = get_object_or_404(Musico, id=pk)
-    usuario = request.user
-    if musico.usuario.id is usuario.id:
-        redirect("/listado")
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario in musico.noLikesRecibidos.all():
-        musico.noLikesRecibidos.remove(usuario)
-        usuario.musico.save()
+    try:
+        musico = Musico.objects.get(id=pk)
+        usuario = request.user
+        if musico.usuario.id is usuario.id:
+            redirect("/listado")
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if usuario in musico.noLikesRecibidos.all():
+            musico.noLikesRecibidos.remove(usuario)
+            usuario.musico.save()
 
-        response = datosMusico(musico)
+            response = datosMusico(musico)
+            return HttpResponse(response)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoDislikeMusicoBanda(request, pk):
     print(pk)
-    banda = get_object_or_404(Banda, id=pk)
-    usuario = request.user
-    if banda.administrador.usuario_id is usuario.id:
-        redirect("/listado")
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario in banda.noLikesRecibidosMusico.all():
-        banda.noLikesRecibidosMusico.remove(usuario)
-        usuario.musico.save()
+    try:
+        banda = Banda.objects.get(id=pk)
+        usuario = request.user
+        if banda.administrador.usuario_id is usuario.id:
+            redirect("/listado")
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if usuario in banda.noLikesRecibidosMusico.all():
+            banda.noLikesRecibidosMusico.remove(usuario)
+            usuario.musico.save()
 
-        response = datosBanda(banda)
+            response = datosBanda(banda)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoDislikeBandaMusico(request, pkBanda, pkMusico):
-    musico = get_object_or_404(Musico, id=pkMusico)
-    banda = get_object_or_404(Banda, id=pkBanda)
-    usuario = request.user
+    try:
+        musico = Musico.objects.get(id=pkMusico)
+        banda = get_object_or_404(Banda, id=pkBanda)
+        usuario = request.user
 
-    if banda.administrador.usuario_id != usuario.musico.id:
-        redirect("/misBandas")
-    if banda.administrador.id is musico.id or musico in banda.miembros.all():
-        redirect(f"/listadoBandasMusicos/{pkBanda}")
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario.id is banda.administrador.usuario_id and banda in musico.noLikesRecibidosBanda.all():
-        musico.noLikesRecibidosBanda.remove(banda.id)
-        usuario.musico.save()
+        if banda.administrador.usuario_id != usuario.musico.id:
+            redirect("/misBandas")
+        if banda.administrador.id is musico.id or musico in banda.miembros.all():
+            redirect(f"/listadoBandasMusicos/{pkBanda}")
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if usuario.id is banda.administrador.usuario_id and banda in musico.noLikesRecibidosBanda.all():
+            musico.noLikesRecibidosBanda.remove(banda.id)
+            usuario.musico.save()
 
-        response = datosMusico(musico)
+            response = datosMusico(musico)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoDislikeBandaBanda(request, pkEmisor, pkReceptor):
-    bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
-    bandaReceptora = get_object_or_404(Banda, id=pkReceptor)
-    usuario = request.user
+    try:
+        bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
+        bandaReceptora = Banda.objects.get(id=pkReceptor)
+        usuario = request.user
 
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if bandaEmisora.administrador.id != usuario.id:
-        redirect("/misBandas")
-    if bandaEmisora.administrador.id is bandaReceptora.administrador.id:
-        redirect(f"/buscarBandas/{pkEmisor}")
-    if bandaEmisora.id is bandaReceptora.id:
-        redirect(f"/buscarBandas/{pkEmisor}")
-    if bandaEmisora.administrador.id is not bandaReceptora.administrador.id and bandaEmisora in bandaReceptora.noLikesRecibidosBanda.all():
-        bandaReceptora.noLikesRecibidosBanda.remove(bandaEmisora)
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if bandaEmisora.administrador.id != usuario.id:
+            redirect("/misBandas")
+        if bandaEmisora.administrador.id is bandaReceptora.administrador.id:
+            redirect(f"/buscarBandas/{pkEmisor}")
+        if bandaEmisora.id is bandaReceptora.id:
+            redirect(f"/buscarBandas/{pkEmisor}")
+        if bandaEmisora.administrador.id is not bandaReceptora.administrador.id and bandaEmisora in bandaReceptora.noLikesRecibidosBanda.all():
+            bandaReceptora.noLikesRecibidosBanda.remove(bandaEmisora)
 
-        response = datosBanda(bandaReceptora)
+            response = datosBanda(bandaReceptora)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoLikeMusicoMusico(request, pk):
-    musico = get_object_or_404(Musico, id=pk)
-    usuario = request.user
-    if musico.usuario.id is usuario.id:
-        redirect("/listado")
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario in musico.likesRecibidos.all():
-        musico.likesRecibidos.remove(usuario)
-        usuario.musico.save()
+    try:
+        musico = Musico.objects.get(id=pk)
+        usuario = request.user
+        if musico.usuario.id is usuario.id:
+            redirect("/listado")
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if usuario in musico.likesRecibidos.all():
+            musico.likesRecibidos.remove(usuario)
+            usuario.musico.save()
 
-        response = datosMusico(musico)
+            response = datosMusico(musico)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoLikeMusicoBanda(request, pk):
     print(pk)
-    banda = get_object_or_404(Banda, id=pk)
-    usuario = request.user
-    if banda.administrador.usuario_id is usuario.id:
-        redirect("/listado")
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario in banda.likesRecibidosMusico.all():
-        banda.likesRecibidosMusico.remove(usuario)
-        usuario.musico.save()
+    try:
+        banda = Banda.objects.get(id=pk)
+        usuario = request.user
+        if banda.administrador.usuario_id is usuario.id:
+            redirect("/listado")
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if usuario in banda.likesRecibidosMusico.all():
+            banda.likesRecibidosMusico.remove(usuario)
+            usuario.musico.save()
 
-        response = datosBanda(banda)
+            response = datosBanda(banda)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoLikeBandaMusico(request, pkBanda, pkMusico):
-    musico = get_object_or_404(Musico, id=pkMusico)
-    banda = get_object_or_404(Banda, id=pkBanda)
-    usuario = request.user
-    if banda.administrador.usuario_id != usuario.musico.id:
-        redirect("/misBandas")
-    if banda.administrador.id is musico.id or musico in banda.miembros.all():
-        redirect(f"/listadoBandasMusicos/{pkBanda}")
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if usuario.id is banda.administrador.usuario_id and banda in musico.likesRecibidosBanda.all():
-        musico.likesRecibidosBanda.remove(banda)
-        usuario.musico.save()
+    try:
+        musico = Musico.objects.get(id=pkMusico)
+        banda = get_object_or_404(Banda, id=pkBanda)
+        usuario = request.user
+        if banda.administrador.usuario_id != usuario.musico.id:
+            redirect("/misBandas")
+        if banda.administrador.id is musico.id or musico in banda.miembros.all():
+            redirect(f"/listadoBandasMusicos/{pkBanda}")
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if usuario.id is banda.administrador.usuario_id and banda in musico.likesRecibidosBanda.all():
+            musico.likesRecibidosBanda.remove(banda)
+            usuario.musico.save()
 
-        response = datosMusico(musico)
+            response = datosMusico(musico)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/login/')
 def postUndoLikeBandaBanda(request, pkEmisor, pkReceptor):
-    bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
-    bandaReceptora = get_object_or_404(Banda, id=pkReceptor)
-    usuario = request.user
-    if not usuario.musico.isGold:
-        return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
-    if bandaEmisora.administrador.id != usuario.id:
-        redirect("/misBandas")
-    if bandaEmisora.administrador.id is bandaReceptora.administrador.id:
-        redirect(f"/buscarBandas/{pkEmisor}")
-    if bandaEmisora.id is bandaReceptora.id:
-        redirect(f"/buscarBandas/{pkEmisor}")
-    if bandaEmisora.administrador.id is not bandaReceptora.administrador.id and bandaEmisora in bandaReceptora.likesRecibidosBanda.all():
-        bandaReceptora.likesRecibidosBanda.remove(bandaEmisora)
+    try:
+        bandaEmisora = get_object_or_404(Banda, id=pkEmisor)
+        bandaReceptora = Banda.objects.get(id=pkReceptor)
+        usuario = request.user
+        if not usuario.musico.isGold:
+            return HttpResponse(f"/listadoProductos/", status=status.HTTP_402_PAYMENT_REQUIRED)
+        if bandaEmisora.administrador.id != usuario.id:
+            redirect("/misBandas")
+        if bandaEmisora.administrador.id is bandaReceptora.administrador.id:
+            redirect(f"/buscarBandas/{pkEmisor}")
+        if bandaEmisora.id is bandaReceptora.id:
+            redirect(f"/buscarBandas/{pkEmisor}")
+        if bandaEmisora.administrador.id is not bandaReceptora.administrador.id and bandaEmisora in bandaReceptora.likesRecibidosBanda.all():
+            bandaReceptora.likesRecibidosBanda.remove(bandaEmisora)
 
-        response = datosBanda(bandaReceptora)
+            response = datosBanda(bandaReceptora)
+            return HttpResponse(response)
+        return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
         return HttpResponse(response)
-    return HttpResponse("Post incorrecto.", status=status.HTTP_400_BAD_REQUEST)

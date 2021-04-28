@@ -141,53 +141,70 @@ def datosBanda(banda):
 
 @login_required(login_url='/login/')
 def getMusico(request):
-    musicos = Musico.objects.all().order_by('-isBoosted', '-usuario__last_login')
-    result = []
-    usuario = request.user
+    try:
+        musicos = Musico.objects.all().order_by('-isBoosted', '-usuario__last_login')
+        result = []
+        usuario = request.user
 
-    for musico in musicos:
-        if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
-            result.append(musico)
+        for musico in musicos:
+            if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
+                result.append(musico)
 
-    response = datosMusico(result[0])
+        response = datosMusico(result[0])
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
 def getMusico2(request, pkBanda):
-    musicos = Musico.objects.all()
-    result = []
-    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
-    for musico in musicos:
-        if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
-            result.append(musico)
+    try:
+        musicos = Musico.objects.all()
+        result = []
+        banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+        for musico in musicos:
+            if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
+                result.append(musico)
 
-    response = datosMusico(result[0])
+        response = datosMusico(result[0])
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
 def getBanda(request):
-    bandas = Banda.objects.all()
-    result = []
-    user = request.user
-    musico = Musico.objects.get(usuario=user)
-    for banda in bandas:
-        if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
-            result.append(banda)
+    try:
+        bandas = Banda.objects.all()
+        result = []
+        user = request.user
+        musico = Musico.objects.get(usuario=user)
+        for banda in bandas:
+            if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
+                result.append(banda)
 
-    response = datosBanda(result[0])
+        response = datosBanda(result[0])
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
 def getBanda2(request, pkBanda):
-    bandas = Banda.objects.all()
-    result = []
-    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
-    usuario = request.user
-    for b in bandas:
-        if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
-            result.append(b)
+    try:
+        bandas = Banda.objects.all()
+        result = []
+        banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+        usuario = request.user
+        for b in bandas:
+            if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
+                result.append(b)
 
-    response = datosBanda(result[0])
+        response = datosBanda(result[0])
+        return HttpResponse(response)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
