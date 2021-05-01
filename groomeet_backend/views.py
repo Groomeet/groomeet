@@ -207,6 +207,7 @@ def getBanda2(request, pkBanda):
 
     return HttpResponse(response)
 
+
 @login_required(login_url='/login/')
 def listadoMusicos(request):
     musicos = Musico.objects.all().order_by('-isBoosted')
@@ -278,6 +279,11 @@ def listadoMisBandas(request):
     return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro})
 
 @login_required(login_url='/login/')
+def listadoMisBandas2(request):
+    misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
+    return misBandas
+
+@login_required(login_url='/login/')
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
     return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
@@ -306,7 +312,8 @@ def listadoChats(request):
 
 @login_required(login_url='/login/')
 def chat_room(request, room_name):
-    print(room_name)
+    misBandas = listadoMisBandas2(request)
+    print(misBandas)
     if room_name == "listado":
         aux = ""
     else:
@@ -346,7 +353,7 @@ def chat_room(request, room_name):
         elif lista[0] != str(request.user.id):
             aux = User.objects.get(id=int(lista[0]))
         return render(request, 'chat_room.html', {
-        'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),'other': mark_safe(json.dumps(aux.username)),
+        'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),'other': mark_safe(json.dumps(aux.username)), 'other_id': other_user,  'misBandas': misBandas,
 })
     
     

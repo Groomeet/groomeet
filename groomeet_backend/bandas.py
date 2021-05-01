@@ -1,4 +1,4 @@
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from groomeet_backend.form import *
 from django.contrib.auth.decorators import login_required
@@ -159,6 +159,7 @@ def rechazarInvitacionBanda(request, invitacion_id):
 
     return redirect("/misInvitaciones")
 
+# Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 
 @login_required(login_url='/login/')
 def eliminarMiembroBanda(request, pkBanda, pkMusico):
@@ -182,9 +183,14 @@ def eliminarMiembroNoRegistrado(request, pkBanda, pkMiembro):
 #Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 '''
 @login_required(login_url='/login/')
-def enviarInvitacionBanda(request, receptor_id, banda_id):
+def enviarInvitacionBanda2(request, receptor_id, banda_id):
+    print('metodo')
     emisor = get_object_or_404(Musico, usuario=request.user)
-    receptor = get_object_or_404(Musico, id=receptor_id)
+    print(emisor.usuario)
+    print(receptor_id)
+    recepto = get_object_or_404(User, id=receptor_id)
+    print(recepto)
+    receptor = get_object_or_404(Musico, usuario_id=receptor_id)
     banda = get_object_or_404(Banda, id=banda_id)
     estado = EstadoInvitacion.Pendiente
 
@@ -213,5 +219,4 @@ def enviarInvitacionBanda(request, receptor_id, banda_id):
         except:
             messages.error = (request, f"La invitación no se pudo enviar")
         
-    return redirect("/listado")
-'''
+    return redirect(request.META['HTTP_REFERER'])
