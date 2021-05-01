@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.defaults import page_not_found
 
 from groomeet_backend.models import *
 from django.contrib.auth import logout,authenticate
@@ -9,6 +10,7 @@ from django.utils.safestring import mark_safe
 import json
 from groomeet_backend.models import Message
 from django.db.models import Q
+from django.views.defaults import page_not_found 
 
 # Create your views here.
 def base(request):
@@ -33,6 +35,20 @@ def musico(request):
             request.user.musico.likesDisponibles = 10
             request.user.musico.ultimaRenovacionLikes = today
             request.user.musico.save()
+    goldConBonificacionTrasCompraExpirada = False
+    try:
+        bonificacion = Bonificacion.objects.filter(musico=request.user.musico).order_by('-fechaBonificacion').first()
+        today = date.today()
+        dias = days_between(bonificacion.fechaBonificacion, today)
+        if(dias>30):
+            request.user.musico.isGold=False
+            request.user.musico.save()
+        else:
+            goldConBonificacionTrasCompraExpirada = True
+            request.user.musico.isGold=True
+            request.user.musico.save()
+    except:
+        pass
     try:
         compra = Compra.objects.filter(usuario=request.user).order_by('-fecha_compra').first()
         today = date.today()
@@ -41,8 +57,19 @@ def musico(request):
             request.user.musico.isGold=False
             request.user.musico.isSilver=False
             request.user.musico.save()
+        else:
+            if compra.producto.producto=="Silver Groomeet":
+                request.user.musico.isSilver=True
+            else:
+                request.user.musico.isGold=True
+            request.user.musico.save()
     except:
         pass
+    #Esto soluciona el problema de que un usuario haya tenido el Gold comprado, haya expirado, y ahora haya conseguido la bonificación
+    #Sin esto, la comprobación de los 30 días de la compra saltaría y se le quitaría el Gold, aún teniendo la bonificación vigente.
+    if goldConBonificacionTrasCompraExpirada:
+        request.user.musico.isGold=True
+        request.user.musico.save()
     return render(request, '../templates/index.html')
 
 @login_required(login_url='/login/')
@@ -63,83 +90,121 @@ def logout_view(request):
 def chat(request):
     return render(request, 'chat.html')
 
-@login_required(login_url='/login/')
-def getMusico(request):
-    musicos = Musico.objects.all().order_by('-isBoosted', '-usuario__last_login')
-    result = []
-    usuario = request.user
+def datosMusico(musico):
+    nombre = musico.usuario.first_name + "&;*"
+    descripcion = musico.descripcion + "&;*"
 
-    for musico in musicos:
-        if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
-            result.append(musico)
+    fechaNac = musico.fechaNacimiento
+    today = date.today()
+    edad = today.year - fechaNac.year - ((today.month, today.day) < (fechaNac.month, fechaNac.day))
+    edad = str(edad) + "&;*"
 
-    musico = result[0]
-    nombre = musico.usuario.username + ";"
     generosList = musico.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideoFormateado + ";"
+    generos = ", ".join(generosList) + "&;*"
+    instrumentosList = musico.instrumentos.values_list("nombre", flat=True)
+    instrumentos = ", ".join(instrumentosList) + "&;*"
+
+    print(musico.avatar)
+    if (musico.avatar == ""):
+        avatar = 'https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1' + "&;*"
+    else:
+        avatar = musico.avatar.url + "&;*"
+
+    video = musico.enlaceVideoFormateado + "&;*"
     id = str(musico.id)
 
-    response = nombre + generos + video + id
+    response = nombre + descripcion + edad + generos + instrumentos + avatar + video + id
     print(response)
+    return response
+
+def datosBanda(banda):
+    nombre = banda.nombre + "&;*"
+    descripcion = banda.descripcion + "&;*"
+    edad = "&;*"
+    generosList = banda.generos.values_list("nombre", flat=True)
+    generos = ", ".join(generosList) + "&;*"
+    instrumentosList = banda.instrumentos.values_list("nombre", flat=True)
+    instrumentos = ", ".join(instrumentosList) + "&;*"
+
+    print(banda.imagen)
+    if (banda.imagen == ""):
+        avatar = 'https://i2.wp.com/assets.codepen.io/internal/avatars/users/default.png?ssl=1' + "&;*"
+    else:
+        avatar = banda.imagen.url + "&;*"
+
+    video = banda.enlaceVideoFormateado + "&;*"
+    id = str(banda.id)
+
+    response = nombre + descripcion + edad + generos + instrumentos + avatar + video + id
+    print(response)
+    return response
+
+@login_required(login_url='/login/')
+def getMusico(request):
+    try:
+        musicos = Musico.objects.all().order_by('-isBoosted', '-usuario__last_login')
+        result = []
+        usuario = request.user
+
+        for musico in musicos:
+            if usuario.id is not musico.usuario.id and usuario not in musico.likesRecibidos.all() and usuario not in musico.noLikesRecibidos.all():
+                result.append(musico)
+
+        response = datosMusico(result[0])
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
 def getMusico2(request, pkBanda):
-    musicos = Musico.objects.all()
-    result = []
-    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
-    for musico in musicos:
-        if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
-            result.append(musico)
+    try:
+        musicos = Musico.objects.all()
+        result = []
+        banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+        for musico in musicos:
+            if banda.administrador.id is not musico.id and musico not in banda.miembros.all() and banda not in musico.likesRecibidosBanda.all() and banda not in musico.noLikesRecibidosBanda.all():
+                result.append(musico)
 
-    musico = result[0]
-    nombre = musico.usuario.username + ";"
-    generosList = musico.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = musico.enlaceVideoFormateado + ";"
-    id = str(musico.id)
+        response = datosMusico(result[0])
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
 
-    response = nombre + generos + video + id
-    print(response)
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
 def getBanda(request):
-    bandas = Banda.objects.all()
-    result = []
-    user = request.user
-    musico = Musico.objects.get(usuario=user)
-    for banda in bandas:
-        if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
-            result.append(banda)
-    banda = result[0]
-    nombre = banda.nombre + ";"
-    generosList = banda.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = banda.enlaceVideoFormateado + ";"
-    id = str(banda.id)
+    try:
+        bandas = Banda.objects.all()
+        result = []
+        user = request.user
+        musico = Musico.objects.get(usuario=user)
+        for banda in bandas:
+            if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
+                result.append(banda)
 
-    response = nombre + generos + video + id
+        response = datosBanda(result[0])
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 @login_required(login_url='/login/')
 def getBanda2(request, pkBanda):
-    bandas = Banda.objects.all()
-    result = []
-    banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
-    usuario = request.user
-    for b in bandas:
-        if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
-            result.append(b)
-    banda = result[0]
-    nombre = banda.nombre + ";"
-    generosList = banda.generos.values_list("nombre", flat=True)
-    generos = ", ".join(generosList) + ";"
-    video = banda.enlaceVideoFormateado + ";"
-    id = str(banda.id)
+    try:
+        bandas = Banda.objects.all()
+        result = []
+        banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
+        usuario = request.user
+        for b in bandas:
+            if usuario.id is not b.administrador.usuario.id and banda not in b.likesRecibidosBanda.all() and banda not in b.noLikesRecibidosBanda.all():
+                result.append(b)
 
-    response = nombre + generos + video + id
+        response = datosBanda(result[0])
+        return HttpResponse(response)
+    except:
+        response = "¡Vaya, ya no queda nadie por tu zona!"
+
     return HttpResponse(response)
 
 
@@ -210,7 +275,8 @@ def listadoBandasBandas(request, pkBanda):
 @login_required(login_url='/login/')
 def listadoMisBandas(request):
     misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
-    return render(request, "misBandas.html", {'misBandas': misBandas})
+    bandasMiembro = Banda.objects.all().filter(miembros__id__contains=request.user.musico.id).order_by('-nombre')
+    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro})
 
 @login_required(login_url='/login/')
 def listadoMisBandas2(request):
@@ -291,10 +357,13 @@ def chat_room(request, room_name):
 })
     
     
-
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
+def handler404(request, *args, **argv):
+    return render(request, "error.html")
+    
 @login_required(login_url='/login/')
-def error(request):
-    return render(request, 'error.html')
+def showBanda(request, id):
+    banda = Banda.objects.filter(pk=id)
+    return render(request, "showBanda.html", {'banda': banda})

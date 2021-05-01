@@ -14,10 +14,13 @@
             </div>
             <div class="row">
                 <div class="col-md-3 offset-sm-3 offset-md-4">
+                    <img class="rounded-circle" height="40px" id="avatar"></img>
                     <p class="" id="nombre"></p>
+                    <p class="" id="descripcion"></p>
                 </div>
                 <div class="col-md-3">
                     <p class="" id="generos"></p>
+                    <p class="" id="instrumentos"></p>
                 </div>
             </div>
 
@@ -71,11 +74,11 @@
     </div>
 
     <script>
-        var id = -1;
+        var id = 99999999;
         var currentURL = window.location.href;
         var oldVideo = document.getElementById("video");
-        var lastAction = "";
-        var lastEntityId = -1;
+        var lastAction = "dislike";
+        var lastEntityId = 99999999;
 
         function getCookie(name) {
             var cookieValue = null;
@@ -98,33 +101,49 @@
             xhttp.onreadystatechange = function () {
                 if (xhttp.readyState == XMLHttpRequest.DONE) {
                     if (xhttp.status == "200") {
-                        datos = xhttp.responseText.split(";");
-                        var nombre = datos[0];
-                        var generos = datos[1];
-                        var video = datos[2];
-                        id = datos[3];
+                        if (datos = xhttp.responseText == "¡Vaya, ya no queda nadie por tu zona!") {
+                            document.getElementById("nombre").innerHTML = xhttp.responseText;
+                            document.getElementById("descripcion").innerHTML = "";
+                            document.getElementById("generos").innerHTML = "";
+                            document.getElementById("instrumentos").innerHTML = "";
+                            document.getElementById("avatar").src = "";
 
-                        document.getElementById("nombre").innerHTML = nombre;
-                        document.getElementById("generos").innerHTML = generos;
-                        document.getElementById("video").src = video;
-                    } else {
-                        document.getElementById("nombre").innerHTML = "¡Vaya, ya no queda nadie por tu zona!";
-                        document.getElementById("generos").innerHTML = "";
+                            var old = document.getElementById("video");
+                            var img = document.createElement('img');
+                            img.id = "end-image";
+                            img.src = "/static/img/logo_para_fondo_blanco.png";
+                            img.width = "240";
+                            img.height = "240";
+                            $(old.parentNode).removeClass("video-responsive");
+                            $(old.parentNode).addClass("offset-2");
+                            $(old.parentNode).addClass("offset-md-4");
+                            $(old.parentNode).addClass("offset-lg-5");
+                            old.parentNode.replaceChild(img, old);
+                            document.getElementById("dislike").disabled = true;
+                            document.getElementById("like").disabled = true;
+                            document.getElementById("superlike").disabled = true;
+                        } else {
+                            datos = xhttp.responseText.split("&;*");
+                            var nombre = datos[0];
+                            var descripcion = datos[1];
+                            var edad = datos[2];
+                            var generos = datos[3];
+                            var instrumentos = datos[4];
+                            var avatar = datos[5];
+                            var video = datos[6];
+                            id = datos[7];
 
-                        var old = document.getElementById("video");
-                        var img = document.createElement('img');
-                        img.id = "end-image";
-                        img.src = "/static/img/logo_para_fondo_blanco.png";
-                        img.width = "240";
-                        img.height = "240";
-                        $(old.parentNode).removeClass("video-responsive");
-                        $(old.parentNode).addClass("offset-2");
-                        $(old.parentNode).addClass("offset-md-4");
-                        $(old.parentNode).addClass("offset-lg-5");
-                        old.parentNode.replaceChild(img, old);
-                        document.getElementById("dislike").disabled = true;
-                        document.getElementById("like").disabled = true;
-                        document.getElementById("superlike").disabled = true;
+                            if (edad != "") {
+                                edad = ", " + edad + " años"
+                            }
+
+                            document.getElementById("nombre").innerHTML = nombre + edad;
+                            document.getElementById("descripcion").innerHTML = descripcion;
+                            document.getElementById("generos").innerHTML = generos;
+                            document.getElementById("instrumentos").innerHTML = instrumentos;
+                            document.getElementById("avatar").src = avatar;
+                            document.getElementById("video").src = video;
+                        }
                     }
                 }
             }
@@ -214,7 +233,7 @@
                 asyncRequest();
             }).fail(function (xhr) {
                 if (xhr.status == 402) {
-                    if(link.includes("/like")) {
+                    if (link.includes("/like")) {
                         alert('¡Parece que se han agotado tus likes! ¿Has pensado en unirte a alguna de nuestras membresías?');
                     } else {
                         alert('Esta función es exclusiva de usuarios Gold, ¿por qué no te unes?');
@@ -230,47 +249,67 @@
             console.log(id)
             console.log(lastEntityId)
             console.log(lastAction)
-            if(lastAction == "like") {
+
+            if (lastEntityId === 99999999) {
+                alert("No puedes deshacer una acción que aún no has hecho...");
+                return;
+            }
+
+            if (lastAction == "like") {
                 link = "/undoLike";
-            } else if(lastAction == "dislike") {
+            } else if (lastAction == "dislike") {
                 link = "/undoDislike";
-            } else if(lastAction == "superlike") {
-                link = "noValid";
+            } else if (lastAction == "superlike") {
                 alert("No se pueden deshacer superlikes.")
+                return;
             }
             if (currentURL.includes("buscarBandas")) {
-                        link = link + "MusicoBanda/" + lastEntityId;
-                    } else if (currentURL.includes("buscarIntegrantes")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = link + "BandaMusico/" + idBanda + "/" + lastEntityId;
-                    } else if (currentURL.includes("colabora")) {
-                        splitURL = currentURL.split("/");
-                        idBanda = splitURL[splitURL.length - 1];
-                        link = link + "BandaBanda/" + idBanda + "/" + lastEntityId;
-                    } else {
-                        link = link + "MusicoMusico/" + lastEntityId;
+                link = link + "MusicoBanda/" + lastEntityId;
+            } else if (currentURL.includes("buscarIntegrantes")) {
+                splitURL = currentURL.split("/");
+                idBanda = splitURL[splitURL.length - 1];
+                link = link + "BandaMusico/" + idBanda + "/" + lastEntityId;
+            } else if (currentURL.includes("colabora")) {
+                splitURL = currentURL.split("/");
+                idBanda = splitURL[splitURL.length - 1];
+                link = link + "BandaBanda/" + idBanda + "/" + lastEntityId;
+            } else {
+                link = link + "MusicoMusico/" + lastEntityId;
+            }
+
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                url: link,
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: csrftoken,
+                },
+            }).done(function (data) {
+                if (datos == "¡Vaya, ya no queda nadie por tu zona!") {
+                    alert("No puedes deshacer una acción que aún no has hecho...")
+                } else {
+                    datos = data.split("&;*");
+                    var nombre = datos[0];
+                    var descripcion = datos[1];
+                    var edad = datos[2];
+                    var generos = datos[3];
+                    var instrumentos = datos[4];
+                    var avatar = datos[5];
+                    var video = datos[6];
+                    id = datos[7];
+
+                    if (edad != "") {
+                        edad = ", " + edad + " años"
                     }
 
-                var csrftoken = getCookie('csrftoken');
-                $.ajax({
-                    url: link,
-                    type: "POST",
-                    data: {
-                        csrfmiddlewaretoken: csrftoken,
-                    },
-                }).done( function(data) {
-                    datos = data.split(";");
-                    var nombre = datos[0];
-                    var generos = datos[1];
-                    var video = datos[2];
-                    id = datos[3];
-
-                    document.getElementById("nombre").innerHTML = nombre;
+                    document.getElementById("nombre").innerHTML = nombre + edad;
+                    document.getElementById("descripcion").innerHTML = descripcion;
                     document.getElementById("generos").innerHTML = generos;
+                    document.getElementById("instrumentos").innerHTML = instrumentos;
+                    document.getElementById("avatar").src = avatar;
 
                     var old = document.getElementById("end-image");
-                    if(old != null) {
+                    if (old != null) {
                         $(old.parentNode).addClass("video-responsive");
                         $(old.parentNode).removeClass("offset-2");
                         $(old.parentNode).removeClass("offset-md-4");
@@ -282,12 +321,12 @@
                     }
 
                     document.getElementById("video").src = video;
-
-                }).fail(function (xhr) {
-                    if (xhr.status == 402) {
-                        alert('Esta función es exclusiva de usuarios Gold, ¿por qué no te unes?');
-                    }
-                })
+                }
+            }).fail(function (xhr) {
+                if (xhr.status == 402) {
+                    alert('Esta función es exclusiva de usuarios Gold, ¿por qué no te unes?');
+                }
+            })
         }
     </script>
 {% endblock %}

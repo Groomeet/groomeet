@@ -1,0 +1,22 @@
+.error-msg{
+	font-size: x-large;
+}
+
+.return {
+	margin: 0 !important;
+	color: rgb(46, 143, 255);
+}
+
+.return:hover {
+	color: rgb(0, 92, 197);
+}
+
+.ret-msg {
+	margin-top: 3%;
+}
+
+.marco-video{
+	box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.200);
+	margin-top: 7px;
+	height: 300px !important;
+}
