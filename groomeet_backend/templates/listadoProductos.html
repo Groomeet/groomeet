@@ -9,6 +9,7 @@
 {% block title %} - Productos{% endblock %}
 
 {% block body %}
+   {% if request.user.is_authenticated %}
    <div class="container text-center">
       <div class="row">
          <h3>Productos de Groomeet</h3>
@@ -60,7 +61,10 @@
             </div>
          {% endfor %}
       </div>
-
-
     </div>
+   {% else %}
+      <script type="text/javascript">
+            window.location.replace("/login/");
+      </script>
+   {% endif %}
 {% endblock %}
