@@ -220,3 +220,4 @@ def enviarInvitacionBanda2(request, receptor_id, banda_id):
             messages.error = (request, f"La invitación no se pudo enviar")
         
     return redirect(request.META['HTTP_REFERER'])
+    '''

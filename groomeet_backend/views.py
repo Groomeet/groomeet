@@ -11,6 +11,7 @@ import json
 from groomeet_backend.models import Message
 from django.db.models import Q
 from django.views.defaults import page_not_found 
+import random
 
 # Create your views here.
 def base(request):
@@ -21,12 +22,14 @@ def days_between(d1, d2):
 
 @login_required(login_url='/login/')
 def index(request):
-
     context = listadoMusicos(request)
-    return render(request, '../templates/index.html', context)
+    return render(request, '../templates/index.html', context + getAnuncio())
 
 @login_required(login_url='/login/')
 def musico(request):
+    allAnuncios = Anuncio.objects.all()
+    rAnuncio = random.choice(allAnuncios)
+
     if request.user.musico.isGold==False and request.user.musico.isSilver==False:
         fechaUltimaRenovacion = request.user.musico.ultimaRenovacionLikes
         today = date.today()
@@ -70,14 +73,14 @@ def musico(request):
     if goldConBonificacionTrasCompraExpirada:
         request.user.musico.isGold=True
         request.user.musico.save()
-    return render(request, '../templates/index.html')
+    return render(request, '../templates/index.html', getAnuncio())
 
 @login_required(login_url='/login/')
 def banda(request, pkBanda):
     banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
     usuario = request.user
     if (banda.administrador.usuario.id == usuario.id):
-        return render(request, '../templates/index.html')
+        return render(request, '../templates/index.html', getAnuncio())
     else:
         return redirect("/")
 
@@ -88,7 +91,7 @@ def logout_view(request):
 
 @login_required(login_url='/login/')
 def chat(request):
-    return render(request, 'chat.html')
+    return render(request, 'chat.html', getAnuncio())
 
 def datosMusico(musico):
     nombre = musico.usuario.first_name + "&;*"
@@ -236,7 +239,7 @@ def listadoBandas(request):
         'bandas': result,
         'usuario': usuario,
     }
-    return render(request, "../templates/listadoBandas.html", context)
+    return render(request, "../templates/listadoBandas.html", context + getAnuncio())
 
 @login_required(login_url='/login/')
 def listadoBandasMusicos(request, pkBanda):
@@ -253,7 +256,7 @@ def listadoBandasMusicos(request, pkBanda):
             'usuario': usuario,
             'pkBanda': pkBanda,
         }
-        return render(request, "../templates/listadoBandasMusicos.html", context)
+        return render(request, "../templates/listadoBandasMusicos.html", context + getAnuncio())
     else:
         return redirect("/")
 @login_required(login_url='/login/')
@@ -270,13 +273,13 @@ def listadoBandasBandas(request, pkBanda):
         'usuario': usuario,
         'pkBanda': pkBanda,
     }
-    return render(request, "../templates/listadoBandasBandas.html", context)
+    return render(request, "../templates/listadoBandasBandas.html", context + getAnuncio())
 
 @login_required(login_url='/login/')
 def listadoMisBandas(request):
     misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
     bandasMiembro = Banda.objects.all().filter(miembros__id__contains=request.user.musico.id).order_by('-nombre')
-    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro})
+    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro} + getAnuncio())
 
 @login_required(login_url='/login/')
 def listadoMisBandas2(request):
@@ -286,19 +289,19 @@ def listadoMisBandas2(request):
 @login_required(login_url='/login/')
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
-    return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
+    return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados} + getAnuncio())
 
 @login_required(login_url='/login/')
 def listadoGeneros(request):
     currentUser = Musico.objects.get(id=request.user.pk)
     generos = Genero.objects.all()
     context = {'generos': generos}
-    return render(request, '../templates/generos.html', context)
+    return render(request, '../templates/generos.html', context + getAnuncio())
 
 @login_required(login_url='/login/')
 def listadoMisInvitaciones(request):
     misInvitaciones = Invitacion.objects.all().filter(receptor=request.user.musico)
-    return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
+    return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones} + getAnuncio())
 
 @login_required(login_url='/login/')
 def listadoChats(request):
@@ -345,7 +348,7 @@ def chat_room(request, room_name):
         aux = ""
         return render(request, 'chat_room.html', {
         'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),
-})
+} + getAnuncio())
     else:
         lista = room_name.split("-")
         if lista[0] == str(request.user.id):
@@ -354,16 +357,20 @@ def chat_room(request, room_name):
             aux = User.objects.get(id=int(lista[0]))
         return render(request, 'chat_room.html', {
         'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),'other': mark_safe(json.dumps(aux.username)), 'other_id': other_user,  'misBandas': misBandas,
-})
+} + getAnuncio())
     
-    
+def getAnuncio():
+    allAnuncios = Anuncio.objects.all()
+    rAnuncio = random.choice(allAnuncios)
+    return {'anuncio': rAnuncio}
+
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
 def handler404(request, *args, **argv):
-    return render(request, "error.html")
+    return render(request, "error.html", getAnuncio())
     
 @login_required(login_url='/login/')
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
-    return render(request, "showBanda.html", {'banda': banda})
+    return render(request, "showBanda.html", {'banda': banda} + getAnuncio())
