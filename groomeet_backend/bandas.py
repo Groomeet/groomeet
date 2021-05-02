@@ -181,8 +181,16 @@ def eliminarMiembroNoRegistrado(request, pkBanda, pkMiembro):
     miembroNoRegistrado.delete()
     return redirect("/showBanda/{{ pkBanda }}")
 
+@login_required(login_url='/login/')
+def showInvitacion(request, id):
+    invitacion = get_object_or_404(Invitacion, id=id)
 
-# Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
+    if invitacion.receptor == request.user.musico:
+        return render(request, 'showInvitacion.html', {'invitacion': invitacion})
+    else:
+        return redirect("/misInvitaciones")
+      
+#Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 @login_required(login_url='/login/')
 def enviarInvitacionBanda2(request, receptor_id, banda_id):
     print('metodo')
