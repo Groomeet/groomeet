@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'groomeet_backend',
     'channels',
     'paypalcheckoutsdk',
+    'storages'
 ]
 BASEURL = 'http://localhost:8000'
 APIS = {}
@@ -151,6 +152,17 @@ CHANNEL_LAYERS = {
 import dj_database_url
 prod_db  =  dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
+
+#S3 Buckets config - DESCOMENTAR EN DESPLIEGUE
+#AWS_ACCESS_KEY_ID = ''
+#AWS_SECRET_ACCESS_KEY = ''
+#AWS_STORAGE_BUCKET_NAME = ''
+
+#AWS_S3_FILE_OVERWRITE = False
+#AWS_DEFAULT_ACL = None
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+#S3_USE_SIGV4 = True
 
 #import django_heroku
 #django_heroku.settings(locals())

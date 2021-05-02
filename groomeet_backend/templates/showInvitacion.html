@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="card-body" style="margin-top:50px;">
+
+    <div>
+        <h2><strong>Banda: </strong>{{invitacion.banda.nombre}} </h2>
+        <p style="white-space: nowrap;"><i><strong>Invitacion recibida por: </strong>{{invitacion.banda.administrador}} </i></p>
+
+        <p style="white-space: nowrap; padding: 30px; background-color:rgb(234, 255, 211); border-radius: 20px;">
+            <strong></strong>{{invitacion.banda.descripcion}}
+        </p>
+    </div>
+    <br><br>
+    <h4><strong>Miembros registrados</strong></h4><br>
+    <table class="table table-striped">
+        <thead>
+            <tr align="center">
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Instrumentos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in invitacion.banda.miembros.all %}
+            <tr>
+                <td class="text-center">
+                    {{ m.usuario.username }}
+                </td>
+                <td class="text-center">
+                    {{ m.descripcion }}
+                </td>
+                <td class="text-center">{% for instrumento in m.instrumentos.all %}
+                    - {{ instrumento.nombre }} <br>
+                    {% endfor %}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table><br><br>
+
+    <h4><strong>Miembros no registrados</strong></h4><br>
+    <table class="table table-striped">
+        <thead>
+            <tr align="center">
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Instrumentos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in invitacion.banda.miembrosNoRegistrados.all %}
+            <tr>
+                <td class="text-center">
+                    {{ m.nombre }}
+                </td>
+                <td class="text-center">
+                    {{ m.descripcion }}
+                </td>
+                <td class="text-center">{% for instrumento in m.instrumentos.all %}
+                    - {{ instrumento.nombre }} <br>
+                    {% endfor %}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock body %}
