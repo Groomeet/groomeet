@@ -70,6 +70,7 @@ urlpatterns = [
     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
     path('invitacionBanda/<int:banda_id>/', bandas.enviarInvitacionBanda),
     path('showInvitacion/<int:id>', bandas.showInvitacion),
+    path('enviarInvitacionBanda/<int:receptor_id>/<int:banda_id>/', bandas.enviarInvitacionBanda2),
     path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
     path('eliminarMiembro/<int:pkBanda>/<int:pkMusico>',bandas.eliminarMiembroBanda),
