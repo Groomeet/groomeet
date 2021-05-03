@@ -20,6 +20,13 @@ from django.contrib.auth import views as auth_views
 from . import settings
 from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls import url
+#from groomeet_backend.views import error_404,error_500
+from django.views.static import serve
+
+handler404 = 'groomeet_backend.views.handler404'
+handler500 = 'groomeet_backend.views.handler404'
+handler503 = 'groomeet_backend.views.handler404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -58,20 +65,27 @@ urlpatterns = [
     path('createBanda/',bandas.bandaCreate),
     path('createMiembroNoRegistrado/<int:pk>',bandas.miembroNoRegistradoCreate),
     path('misBandas/',views.listadoMisBandas),
+    path('showBanda/<int:id>/',views.showBanda),
     path('updateBanda/<int:id>', bandas.bandaUpdate, name='updateBanda'),
     path('deleteBanda/<int:id>', bandas.bandaDelete, name='deleteBanda'),
     path('invitacionBanda/<int:banda_id>/', bandas.enviarInvitacionBanda),
+    path('showInvitacion/<int:id>', bandas.showInvitacion),
+    path('enviarInvitacionBanda/<int:receptor_id>/<int:banda_id>/', bandas.enviarInvitacionBanda2),
     path('aceptarInvitacion/<int:invitacion_id>/', bandas.aceptarInvitacionBanda),
     path('rechazarInvitacion/<int:invitacion_id>/',bandas.rechazarInvitacionBanda),
+    path('eliminarMiembro/<int:pkBanda>/<int:pkMusico>',bandas.eliminarMiembroBanda),
+    path('eliminarMiembroNoRegistrado/<int:pkBanda>/<int:pkMiembro>',bandas.eliminarMiembroNoRegistrado),
     path('misInvitaciones/',views.listadoMisInvitaciones),
     path('pago/<int:id>', pagos.pago, name= 'pago'),
     path('listadoProductos/', pagos.listadoProductos, name= 'listadoProductos'),
     path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
     path('chat/', include('groomeet_backend.urls')),
     path('chat/<str:room_name>/', views.chat_room, name='chat_room'),
-    path('error/', views.error, name="error")
+    path('error/', views.error, name="error"),
+    path('privacyPolicy/', views.privacyPolicy, name="privacyPolicy"),
+    path('termsAndConditions/', views.termsAndConditions, name="termsAndConditions"),
+    url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
