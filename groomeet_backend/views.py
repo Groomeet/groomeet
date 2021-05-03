@@ -11,6 +11,7 @@ import json
 from groomeet_backend.models import Message
 from django.db.models import Q
 from django.views.defaults import page_not_found 
+import random
 
 # Create your views here.
 def base(request):
@@ -21,12 +22,12 @@ def days_between(d1, d2):
 
 @login_required(login_url='/login/')
 def index(request):
-
     context = listadoMusicos(request)
-    return render(request, '../templates/index.html', context)
+    return render(request, '../templates/index.html', context + getAnuncio())
 
 @login_required(login_url='/login/')
 def musico(request):
+
     if request.user.musico.isGold==False and request.user.musico.isSilver==False:
         fechaUltimaRenovacion = request.user.musico.ultimaRenovacionLikes
         today = date.today()
@@ -70,14 +71,14 @@ def musico(request):
     if goldConBonificacionTrasCompraExpirada:
         request.user.musico.isGold=True
         request.user.musico.save()
-    return render(request, '../templates/index.html')
+    return render(request, '../templates/index.html', getAnuncio())
 
 @login_required(login_url='/login/')
 def banda(request, pkBanda):
     banda = get_object_or_404(Banda, id=pkBanda) #ESTO HAY QUE DARLE UN REPASO
     usuario = request.user
     if (banda.administrador.usuario.id == usuario.id):
-        return render(request, '../templates/index.html')
+        return render(request, '../templates/index.html', getAnuncio())
     else:
         return redirect("/")
 
@@ -356,12 +357,17 @@ def chat_room(request, room_name):
         'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),'other': mark_safe(json.dumps(aux.username)), 'other_id': other_user,  'misBandas': misBandas,
 })
     
-    
+def getAnuncio():
+    allAnuncios = Anuncio.objects.all()
+    if allAnuncios.exist():
+        rAnuncio = random.choice(allAnuncios)
+    return {'anuncio': rAnuncio}
+
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
 def handler404(request, *args, **argv):
-    return render(request, "error.html")
+    return render(request, "error.html",)
     
 @login_required(login_url='/login/')
 def error(request):
@@ -375,5 +381,8 @@ def termsAndConditions(request):
 
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
-    return render(request, "showBanda.html", {'banda': banda})
+    return render(request, "showBanda.html", {'banda': banda} + ge)
 
+@login_required(login_url='/eliminarCuenta/')
+def eliminarCuenta(request):
+    return render(request, "eliminarCuenta.html")
