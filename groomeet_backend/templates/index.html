@@ -88,6 +88,10 @@
                     </div>
                 </div>
             </div>
+            <div class="row align-items-end">
+
+                <a href="{{ anuncio.destino }}"><img src="{{ anuncio.imagen }}"  title="{{ anuncio.nombre }}" alt="{{ anuncio.nombre }}" class="col-12" style="height: 140px; margin-top: 40px;"></a>
+            </div>
         {% else %}
             <script type="text/javascript">
                 window.location.replace("login/");
