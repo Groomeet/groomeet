@@ -359,8 +359,10 @@ def chat_room(request, room_name):
     
 def getAnuncio():
     allAnuncios = Anuncio.objects.all()
-    if allAnuncios.exist():
+    if allAnuncios.exists():
         rAnuncio = random.choice(allAnuncios)
+    else:
+        rAnuncio = None
     return {'anuncio': rAnuncio}
 
 def last_30_messages(sender, receiver):
