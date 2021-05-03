@@ -27,8 +27,6 @@ def index(request):
 
 @login_required(login_url='/login/')
 def musico(request):
-    allAnuncios = Anuncio.objects.all()
-    rAnuncio = random.choice(allAnuncios)
 
     if request.user.musico.isGold==False and request.user.musico.isSilver==False:
         fechaUltimaRenovacion = request.user.musico.ultimaRenovacionLikes
@@ -91,7 +89,7 @@ def logout_view(request):
 
 @login_required(login_url='/login/')
 def chat(request):
-    return render(request, 'chat.html', getAnuncio())
+    return render(request, 'chat.html')
 
 def datosMusico(musico):
     nombre = musico.usuario.first_name + "&;*"
@@ -239,7 +237,7 @@ def listadoBandas(request):
         'bandas': result,
         'usuario': usuario,
     }
-    return render(request, "../templates/listadoBandas.html", context + getAnuncio())
+    return render(request, "../templates/listadoBandas.html", context)
 
 @login_required(login_url='/login/')
 def listadoBandasMusicos(request, pkBanda):
@@ -256,7 +254,7 @@ def listadoBandasMusicos(request, pkBanda):
             'usuario': usuario,
             'pkBanda': pkBanda,
         }
-        return render(request, "../templates/listadoBandasMusicos.html", context + getAnuncio())
+        return render(request, "../templates/listadoBandasMusicos.html", context)
     else:
         return redirect("/")
 @login_required(login_url='/login/')
@@ -273,13 +271,13 @@ def listadoBandasBandas(request, pkBanda):
         'usuario': usuario,
         'pkBanda': pkBanda,
     }
-    return render(request, "../templates/listadoBandasBandas.html", context + getAnuncio())
+    return render(request, "../templates/listadoBandasBandas.html", context)
 
 @login_required(login_url='/login/')
 def listadoMisBandas(request):
     misBandas = Banda.objects.all().filter(administrador=request.user.musico).order_by('-nombre')
     bandasMiembro = Banda.objects.all().filter(miembros__id__contains=request.user.musico.id).order_by('-nombre')
-    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro} + getAnuncio())
+    return render(request, "misBandas.html", {'misBandas': misBandas, 'bandasMiembro':bandasMiembro})
 
 @login_required(login_url='/login/')
 def listadoMisBandas2(request):
@@ -289,19 +287,19 @@ def listadoMisBandas2(request):
 @login_required(login_url='/login/')
 def listadoMiembrosNoRegistrados(request):
     misMiembrosNoRegistrados = MiembroNoRegistrado.objects.all().filter(banda=request.user.pk).order_by('-nombre')
-    return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados} + getAnuncio())
+    return render(request, "misBandas.html", {'misMiembrosNoRegistrados': misMiembrosNoRegistrados})
 
 @login_required(login_url='/login/')
 def listadoGeneros(request):
     currentUser = Musico.objects.get(id=request.user.pk)
     generos = Genero.objects.all()
     context = {'generos': generos}
-    return render(request, '../templates/generos.html', context + getAnuncio())
+    return render(request, '../templates/generos.html', context)
 
 @login_required(login_url='/login/')
 def listadoMisInvitaciones(request):
     misInvitaciones = Invitacion.objects.all().filter(receptor=request.user.musico)
-    return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones} + getAnuncio())
+    return render(request, "misInvitaciones.html", {'misInvitaciones': misInvitaciones})
 
 @login_required(login_url='/login/')
 def listadoChats(request):
@@ -348,7 +346,7 @@ def chat_room(request, room_name):
         aux = ""
         return render(request, 'chat_room.html', {
         'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),
-} + getAnuncio())
+})
     else:
         lista = room_name.split("-")
         if lista[0] == str(request.user.id):
@@ -357,18 +355,19 @@ def chat_room(request, room_name):
             aux = User.objects.get(id=int(lista[0]))
         return render(request, 'chat_room.html', {
         'room_name': room_name, 'chat_list': result, 'path': request.path, 'username': mark_safe(json.dumps(request.user.username)),'other': mark_safe(json.dumps(aux.username)), 'other_id': other_user,  'misBandas': misBandas,
-} + getAnuncio())
+})
     
 def getAnuncio():
     allAnuncios = Anuncio.objects.all()
-    rAnuncio = random.choice(allAnuncios)
+    if allAnuncios.exist():
+        rAnuncio = random.choice(allAnuncios)
     return {'anuncio': rAnuncio}
 
 def last_30_messages(sender, receiver):
         return Message.objects.filter(Q(author=sender) | Q(author=receiver)).filter(Q(receptor=sender) | Q(receptor=receiver)).order_by('timestamp').all()[:30]
 
 def handler404(request, *args, **argv):
-    return render(request, "error.html", getAnuncio())
+    return render(request, "error.html",)
     
 @login_required(login_url='/login/')
 def error(request):
@@ -382,7 +381,7 @@ def termsAndConditions(request):
 
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
-    return render(request, "showBanda.html", {'banda': banda} + getAnuncio())
+    return render(request, "showBanda.html", {'banda': banda} + ge)
 
 @login_required(login_url='/eliminarCuenta/')
 def eliminarCuenta(request):
