@@ -179,7 +179,7 @@ def eliminarMiembroNoRegistrado(request, pkBanda, pkMiembro):
     if (banda.administrador.usuario.id != usuario.id):
         return redirect("/misBandas")
     miembroNoRegistrado.delete()
-    return redirect(f"/showBanda/{pkBanda}")
+    return redirect("/showBanda/{{ pkBanda }}")
 
 @login_required(login_url='/login/')
 def showInvitacion(request, id):
