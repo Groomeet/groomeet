@@ -81,6 +81,9 @@ urlpatterns = [
     path('comprarProducto/<int:pk>', pagos.comprarProducto, name= 'comprarProducto'),
     path('chat/', include('groomeet_backend.urls')),
     path('chat/<str:room_name>/', views.chat_room, name='chat_room'),
+    path('error/', views.error, name="error"),
+    path('privacyPolicy/', views.privacyPolicy, name="privacyPolicy"),
+    path('termsAndConditions/', views.termsAndConditions, name="termsAndConditions"),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
 ]
 

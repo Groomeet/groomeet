@@ -364,6 +364,16 @@ def handler404(request, *args, **argv):
     return render(request, "error.html")
     
 @login_required(login_url='/login/')
+def error(request):
+    return render(request, 'error.html')
+
+def privacyPolicy(request):
+    return render(request, 'privacy-policy.html')
+
+def termsAndConditions(request):
+    return render(request, 'terms-condictions.html')
+
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
     return render(request, "showBanda.html", {'banda': banda})
+
