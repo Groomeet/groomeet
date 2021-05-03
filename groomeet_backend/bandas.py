@@ -179,7 +179,7 @@ def eliminarMiembroNoRegistrado(request, pkBanda, pkMiembro):
     if (banda.administrador.usuario.id != usuario.id):
         return redirect("/misBandas")
     miembroNoRegistrado.delete()
-    return redirect("/showBanda/{{ pkBanda }}")
+    return redirect(f"/showBanda/{pkBanda}")
 #Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
 '''
 @login_required(login_url='/login/')

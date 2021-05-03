@@ -374,3 +374,7 @@ def handler404(request, *args, **argv):
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
     return render(request, "showBanda.html", {'banda': banda} + getAnuncio())
+
+@login_required(login_url='/eliminarCuenta/')
+def eliminarCuenta(request):
+    return render(request, "eliminarCuenta.html")

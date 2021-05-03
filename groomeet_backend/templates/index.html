@@ -66,8 +66,9 @@
                 <i class="glyphicon glyphicon-envelope"></i>
                 <i class="glyphicon glyphicon-thumbs-up"></i>
             </div>
-            <div>
-                <a href="{{ anuncio.destino }}"><img src="{{ anuncio.imagen }}"  title="{{ anuncio.nombre }}" alt="{{ anuncio.nombre }}"></a>
+            <div class="row align-items-end">
+
+                <a href="{{ anuncio.destino }}"><img src="{{ anuncio.imagen }}"  title="{{ anuncio.nombre }}" alt="{{ anuncio.nombre }}" class="col-12" style="height: 140px; margin-top: 40px;"></a>
             </div>
         {% else %}
             <script type="text/javascript">
