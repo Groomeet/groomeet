@@ -1,5 +1,5 @@
 from django.contrib import admin
-from groomeet_backend.models import Musico, Banda, Chat, Invitacion, MiembroDe, Genero, Instrumento, Compra, Producto, Message, Bonificacion, Anuncio
+from groomeet_backend.models import Musico, Banda, Chat, Invitacion, MiembroDe, Genero, Instrumento, Compra, Producto, Message, Bonificacion
 # Register your models here.
 
 admin.site.register(Musico)
@@ -13,4 +13,3 @@ admin.site.register(Producto)
 admin.site.register(Compra)
 admin.site.register(Message)
 admin.site.register(Bonificacion)
-admin.site.register(Anuncio)

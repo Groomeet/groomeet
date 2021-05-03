@@ -8,15 +8,6 @@ import re
 
 
 # Create your models here.
-class Anuncio(models.Model):
-    nombre = models.TextField()
-    imagen = models.URLField(verbose_name="Enlace a la foto", blank=False)
-    destino = models.URLField(verbose_name="Enlace de destino", blank=False)
-
-    def __str__(self):
-        return self.nombre
-    
-
 class Message(models.Model):
     author = models.ForeignKey(
         User, related_name='author_messages', on_delete=models.CASCADE, null=True)
