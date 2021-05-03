@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/error.css' %}">
+{% endblock %}
+
+{% block body %}
+<h2><strong>Protección de datos</strong></h2>
+<br>
+<p><strong>DERECHO AL OLVIDO Y DERECHO A RECOGER INFORMACIÓN PROPIA</strong></p>
+<p>
+    Si desea eliminar para siempre todos sus datos personales de <i>Groomeet</i> o si desea recogerlos, póngase en contacto con 
+    nosotros
+    <a class="text-primary" href="mailto:groomeet.ispp@gmail.com?Subject=Proteccion%20de%20datos">clicando aquí.</a>
+</p>
+<p>
+    Si prefiere hacerlo de manera manual, nuestro correo electrónico de contacto es: groomeet.ispp@gmail.com
+ </p>
+ <p>
+    <a class="text-primary" href="/">Volver</a>
+ </p>
+
+
+    
+{% endblock %}
