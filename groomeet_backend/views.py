@@ -183,7 +183,7 @@ def getBanda(request):
         user = request.user
         musico = Musico.objects.get(usuario=user)
         for banda in bandas:
-            if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
+            if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all() and musico not in banda.miembros.all():
                 result.append(banda)
 
         response = datosBanda(result[0])
@@ -371,6 +371,15 @@ def handler404(request, *args, **argv):
     return render(request, "error.html", getAnuncio())
     
 @login_required(login_url='/login/')
+def error(request):
+    return render(request, 'error.html')
+
+def privacyPolicy(request):
+    return render(request, 'privacy-policy.html')
+
+def termsAndConditions(request):
+    return render(request, 'terms-condictions.html')
+
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
     return render(request, "showBanda.html", {'banda': banda} + getAnuncio())

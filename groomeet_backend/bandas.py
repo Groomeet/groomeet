@@ -180,8 +180,17 @@ def eliminarMiembroNoRegistrado(request, pkBanda, pkMiembro):
         return redirect("/misBandas")
     miembroNoRegistrado.delete()
     return redirect(f"/showBanda/{pkBanda}")
+
+@login_required(login_url='/login/')
+def showInvitacion(request, id):
+    invitacion = get_object_or_404(Invitacion, id=id)
+
+    if invitacion.receptor == request.user.musico:
+        return render(request, 'showInvitacion.html', {'invitacion': invitacion})
+    else:
+        return redirect("/misInvitaciones")
+      
 #Este sera el método utilizado para cuando se implemente las invitaciones en el propio chat
-'''
 @login_required(login_url='/login/')
 def enviarInvitacionBanda2(request, receptor_id, banda_id):
     print('metodo')
@@ -194,30 +203,31 @@ def enviarInvitacionBanda2(request, receptor_id, banda_id):
     banda = get_object_or_404(Banda, id=banda_id)
     estado = EstadoInvitacion.Pendiente
 
-    #Comprobando que el usuario no pertenece ya a la banda
+    # Comprobando que el usuario no pertenece ya a la banda
     try:
-        invitacion_aceptada = Invitacion.objects.get(receptor = receptor, 
-                                            banda = banda, estado = EstadoInvitacion.Aceptada)
+        invitacion_aceptada = Invitacion.objects.get(receptor=receptor,
+                                                     banda=banda, estado=EstadoInvitacion.Aceptada)
         messages.error = (request, f"El usuario {receptor.usuario.username} ya pertenece a la banda {banda.nombre}")
     except:
         invitacion_aceptada = None
 
-    #Comprobando que el usuario no tiene ya una invitación pendiente para esa banda
+    # Comprobando que el usuario no tiene ya una invitación pendiente para esa banda
     try:
-        invitacion_pendiente = Invitacion.objects.get(receptor = receptor, 
-                                            banda = banda, estado = EstadoInvitacion.Pendiente)
-        messages.error = (request, f"El usuario {receptor.usuario.username} ya tiene una invitación pendiente para la banda {banda.nombre}")
+        invitacion_pendiente = Invitacion.objects.get(receptor=receptor,
+                                                      banda=banda, estado=EstadoInvitacion.Pendiente)
+        messages.error = (request,
+                          f"El usuario {receptor.usuario.username} ya tiene una invitación pendiente para la banda {banda.nombre}")
     except:
         invitacion_pendiente = None
 
-    #Creando la invitacion
+    # Creando la invitacion
     if invitacion_aceptada == None and invitacion_pendiente == None:
         try:
-            invitacion = Invitacion.objects.create(emisor = emisor, receptor = receptor, 
-                                                banda = banda, estado = estado)
-            messages.success = (request, f"¡La invitación a {receptor.usuario.username} para la banda {banda.nombre} fue enviada!")
+            invitacion = Invitacion.objects.create(emisor=emisor, receptor=receptor,
+                                                   banda=banda, estado=estado)
+            messages.success = (
+            request, f"¡La invitación a {receptor.usuario.username} para la banda {banda.nombre} fue enviada!")
         except:
             messages.error = (request, f"La invitación no se pudo enviar")
-        
+
     return redirect(request.META['HTTP_REFERER'])
-    '''
