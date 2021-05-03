@@ -9,6 +9,7 @@
                 <th scope="col">Recibida de</th>
                 <th scope="col">Banda</th>
                 <th scope="col">Estado</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -16,11 +17,23 @@
             <tr>
                 <td>{{ row.emisor.usuario.username }}</td>
                 <td>{{ row.banda.nombre }}</td>
-                <td>{{ row.estado }}</td>
+                <td>{% if row.estado == 'EstadoInvitacion.Pendiente' %}
+                        Pendiente
+                    {% elif row.estado == 'EstadoInvitacion.Aceptada' %}
+                        Aceptada
+                    {% elif row.estado == 'EstadoInvitacion.Rechazada' %}
+                        Rechazada
+                    {% endif %}
+                    </td>
                 {% if row.estado == 'EstadoInvitacion.Pendiente' %}
                 <td>
-                    <a href="/aceptarInvitacion/{{ row.id }}">Aceptar</a>
-                    <a href="/rechazarInvitacion/{{ row.id }}">Rechazar</a>
+                    <a href="/aceptarInvitacion/{{ row.id }}" class="btn btn-success">Aceptar</a>
+                    <a href="/rechazarInvitacion/{{ row.id }}" class="btn btn-danger">Rechazar</a>
+                    <a href="/showInvitacion/{{ row.id }}" class="btn btn-info">Ver</a>
+                </td>
+                {% else %}
+                <td>
+                    
                 </td>
                 {% endif %}
             </tr>

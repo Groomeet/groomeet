@@ -34,6 +34,22 @@
 
           </div>
         </div>
+        <div id="banda">
+            <tbody>
+                {% for band in misBandas %}
+                <p>Invitar a
+                <tr>
+                    <td class="text-center">
+                        {{ band.nombre }}
+                    </td>
+                    <a href="/enviarInvitacionBanda/{{ other_id.id }}/{{ band.id }}/" onClick="window.alert('Has invitado a {{ other_id }} a {{ band.nombre }}')"><img class="icon" src="{% static 'img/icons/adduser.png' %}"  title="Invitar músico" alt="Invitar músico" style="height: 20px;"/></a>
+                </tr>
+                </p>
+                {% endfor %}
+            </tbody>
+
+
+          </div>
     </div>
     {{ room_name|json_script:"room-name" }}
     <script>
