@@ -180,7 +180,7 @@ def getBanda(request):
         user = request.user
         musico = Musico.objects.get(usuario=user)
         for banda in bandas:
-            if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all():
+            if musico.id is not banda.administrador.id and user not in banda.likesRecibidosMusico.all() and user not in banda.noLikesRecibidosMusico.all() and musico not in banda.miembros.all():
                 result.append(banda)
 
         response = datosBanda(result[0])
