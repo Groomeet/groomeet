@@ -1,6 +1,7 @@
 .card-gold{
     margin-bottom: 30px;
     box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.1);
+    min-height: 440px;
 }
 
 .card-silver {
@@ -29,8 +30,12 @@
 .btn-gold {
     background-color: #a88339 !important;
     color: #fff !important;
-    margin-bottom: 4%;
     margin-left: 30px;
+}
+
+.card-img-top {
+    padding-left: 7%;
+    padding-right: 7%;
 }
 
 .btn-gold:hover {
@@ -38,7 +43,6 @@
 }
 
 .btn-silver {
-    margin-bottom: 4%;
     margin-left: 30px;
 }
 
@@ -53,3 +57,13 @@
 .ctb {
     padding-bottom: 15px;
 }
+
+.img-card {
+    padding: 5%;
+}
+
+.container-img {
+    min-height: 285px;
+}
+
+

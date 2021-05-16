@@ -3,38 +3,6 @@ from django import forms
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 
-class BandaForm(forms.ModelForm):
-    class Meta:
-        model = Banda
-        exclude =('miembros', 'administrador','likesRecibidosMusico','noLikesRecibidosMusico'
-        ,'likesRecibidosBanda','noLikesRecibidosBanda' )
-
-class MiembroNoRegistradoForm(forms.ModelForm):
-    instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
-    class Meta:
-        model = MiembroNoRegistrado
-        exclude =('banda',)
-
-class InvitarBandaForm(forms.Form):
-    receptor = forms.CharField(required=True)
-
-    def clean(self):
-        receptor = self.cleaned_data['receptor']
-        try:
-            usuario = User.objects.get(username=receptor)
-        except:
-            usuario = None
-
-        if usuario is None:
-            raise forms.ValidationError("El usuario que quiere invitar a la banda no existe")
-
-
-class BandaForm(forms.ModelForm):
-    class Meta:
-        model = Banda
-        exclude =('miembros', 'administrador','likesRecibidosMusico','noLikesRecibidosMusico'
-        ,'likesRecibidosBanda','noLikesRecibidosBanda' )
-
 class MiembroNoRegistradoForm(forms.ModelForm):
     instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(), widget=forms.SelectMultiple(attrs={'class':'selectpicker'}))
     class Meta:
@@ -114,3 +82,11 @@ class MusicoUpdateForm(forms.ModelForm):
         if relativedelta(date.today(), fechaNacimiento).years < 14:
             self._errors["fechaNacimiento"] = ["La edad mínima es de 14 años"]
             
+class BandaForm(forms.ModelForm):
+    instrumentos = forms.ModelMultipleChoiceField(label="Instrumentos:", queryset=Instrumento.objects.all(),widget=forms.SelectMultiple(attrs={'class': 'selectpicker'}))
+    generos = forms.ModelMultipleChoiceField(label="Géneros:", queryset=Genero.objects.all(),widget=forms.SelectMultiple(attrs={'class': 'selectpicker'}))
+
+    class Meta:
+        model = Banda
+        exclude = ('miembros', 'administrador', 'likesRecibidosMusico', 'noLikesRecibidosMusico'
+                   , 'likesRecibidosBanda', 'noLikesRecibidosBanda')

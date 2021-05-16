@@ -19,7 +19,7 @@ header .navbar{
     margin-bottom: 30px;
 }
 
-a, a:hover {
+.nav-link, .nav-link:hover {
     color: #00140C;
     margin-right: 30px;
 }
