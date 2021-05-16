@@ -4,12 +4,17 @@
 {% block style %}
    <link rel="stylesheet" href="{% static 'css/compras.css' %}">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 {% endblock %}
 
 {% block title %} - Productos{% endblock %}
 
 {% block body %}
-   {% if request.user.is_authenticated %}
+
+{% if request.user.is_authenticated %}
    <div class="container text-center">
       <div class="row">
          <h3>Productos de Groomeet</h3>
@@ -18,50 +23,113 @@
          {% for row in productos %}
             <div class="col-sm-6">
             {% if row.producto|stringformat:"s" == "Gold Groomeet"  %}
-               <div class="card card-gold">
-                  <div class="card-header card-gold-header"><br><br></div>
-                  <span class="card-title card-title-g font-xl"><strong>{{row.producto}}</strong></span>
-                  <p class="card-text">
-                     <span class="font-xxl">{{row.precio}}€/</span>mes
-                  </p>
-                  <p class="card-text">
-                        Sin anuncios <br>
-                        Likes ilimitados <br>
-                        50 superlikes <br>
-                        Boosteo en tu zona <br>
-                        Retrocede los swaps <br>
-                  </p>
+            <div id="card-g" class="card card-gold">
+               <div id="carousel-g" class="carousel slide" data-ride="carousel" data-interval="false" >
+                  <div class="carousel-inner container-img d-flex align-items-center">
+                    <div class="carousel-item active">
+                        <img src="{% static 'img/gold.jpg' %}" class="d-block w-100 img-card" alt="Gold Groomet">
+                    </div>
+                    <div class="carousel-item">
+                        <p id="text-g" class="card-text font-xl">
+                           Sin anuncios <br>
+                           Likes ilimitados <br>
+                           50 superlikes <br>
+                           Boosteo en tu zona <br>
+                           Retrocede los swaps <br>
+                        </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <a id="espacio-blanco-g" class="btn btn-transparente" disabled>&nbsp</a>
+                
+                <div id="div-buy-g-btn">
                   {% if request.user.musico.isGold or request.user.musico.isSilver %}
+                     <h3>Ya disfrutas de una suscripción</h3>
+                  {% else %}
+                     <a id="buy-g-btn" href="/comprarProducto/{{row.id}}" class="btn btn-gold"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
+                  {% endif %}
+               </div>
+
+               <span class="card-title card-title-g font-xl"><strong>{{row.producto}}</strong></span>
+               <p class="card-text">
+                  <span class="font-xxl">{{row.precio}}€/</span>mes
+               </p>
+            </div>
+            {% elif row.producto|stringformat:"s" == "Silver Groomeet" %}
+               <div id="card-s" class="card card-silver">
+                  <div id="carousel-s" class="carousel slide" data-ride="carousel" data-interval="false" >
+                     <div class="carousel-inner container-img d-flex align-items-center">
+                       <div class="carousel-item active">
+                           <img src="{% static 'img/silver.jpg' %}" class="d-block w-100 img-card" alt="Silver Groomet">
+                       </div>
+                       <div class="carousel-item">
+                           <p id="text-s" class="card-text font-xl">
+                              <br>
+                              Likes ilimitados <br>
+                              Boosteo en tu zona <br>
+                              <br>
+                     <br>
+                           </p>
+                       </div>
+                     </div>
+                   </div>
+                   
+                   <a id="espacio-blanco-s" class="btn btn-transparente" disabled>&nbsp</a>
+                   
+                   <div id="div-buy-s-btn">
+                     {% if request.user.musico.isGold or request.user.musico.isSilver %}
                         <h3>Ya disfrutas de una suscripción</h3>
                      {% else %}
-                        <a href="/comprarProducto/{{row.id}}" class="btn btn-gold"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
+                        <a id="buy-s-btn" href="/comprarProducto/{{row.id}}" class="btn btn-secondary btn-silver"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
                      {% endif %}
-               </div>
-            {% elif row.producto|stringformat:"s" == "Silver Groomeet" %}
-               <div class="card card-silver">
-                  <div class="card-header card-silver-header"><br><br></div>
+                  </div>
+   
                   <span class="card-title card-title-s font-xl"><strong>{{row.producto}}</strong></span>
                   <p class="card-text">
                      <span class="font-xxl">{{row.precio}}€/</span>mes
                   </p>
-                  <p class="card-text">
-                     <br>
-                     Likes ilimitados <br>
-                     Boosteo en tu zona <br>
-                     <br>
-                     <br>
-                  </p>
-                  {% if request.user.musico.isGold or request.user.musico.isSilver %}
-                        <h3>Ya disfrutas de una suscripción</h3>
-                     {% else %}
-                        <a href="/comprarProducto/{{row.id}}" class="btn btn-secondary btn-silver"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
-                     {% endif %}
                </div>
             {% endif %}
             </div>
          {% endfor %}
       </div>
     </div>
+
+
+    <script>
+
+      document.getElementById('buy-g-btn').style.display = 'none';
+
+         $( "#card-g" ).hover(
+            function() {
+               $("#carousel-g").carousel(1);
+               document.getElementById('buy-g-btn').style.display = 'block';
+               document.getElementById('espacio-blanco-g').style.display = 'none';
+            }, function() {
+               $("#carousel-g").carousel(0);
+               document.getElementById('buy-g-btn').style.display = 'none';
+               document.getElementById('espacio-blanco-g').style.display = 'block';
+            }   
+         );
+
+         document.getElementById('buy-s-btn').style.display = 'none';
+
+         $( "#card-s" ).hover(
+            function() {
+               $("#carousel-s").carousel(1);
+               document.getElementById('buy-s-btn').style.display = 'block';
+               document.getElementById('espacio-blanco-s').style.display = 'none';
+            }, function() {
+               $("#carousel-s").carousel(0);
+               document.getElementById('buy-s-btn').style.display = 'none';
+               document.getElementById('espacio-blanco-s').style.display = 'block';
+            }   
+         );
+
+</script>
+
+
    {% else %}
       <script type="text/javascript">
             window.location.replace("/login/");
