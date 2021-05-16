@@ -383,7 +383,7 @@ def termsAndConditions(request):
 
 def showBanda(request, id):
     banda = Banda.objects.filter(pk=id)
-    return render(request, "showBanda.html", {'banda': banda} + ge)
+    return render(request, "showBanda.html", {'banda': banda})
 
 @login_required(login_url='/eliminarCuenta/')
 def eliminarCuenta(request):
