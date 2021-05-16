@@ -1,6 +1,7 @@
 from groomeet_backend.models import *
 from django import forms
-from datetime import datetime
+from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
 
 class BandaForm(forms.ModelForm):
     class Meta:
@@ -88,7 +89,11 @@ class MusicoForm(forms.ModelForm):
                 referido = User.objects.get(username=referido)
             except:
                 referido = None
-                raise forms.ValidationError("El usuario referido no existe")            
+                self._errors["referido"] = ["El usuario referido no existe"]
+
+        fechaNacimiento = self.cleaned_data['fechaNacimiento']
+        if relativedelta(date.today(), fechaNacimiento).years < 14:
+            self._errors["fechaNacimiento"] = ["La edad mínima es de 14 años"]
 
     class Meta:
         model = Musico
@@ -103,3 +108,8 @@ class MusicoUpdateForm(forms.ModelForm):
     class Meta:
         model = Musico
         fields = ('fechaNacimiento','descripcion','avatar','instrumentos','generos','enlaceVideo')
+
+    def clean(self):
+        fechaNacimiento = self.cleaned_data['fechaNacimiento']
+        if relativedelta(date.today(), fechaNacimiento).years < 14:
+            self._errors["fechaNacimiento"] = ["La edad mínima es de 14 años"]
