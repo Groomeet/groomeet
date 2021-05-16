@@ -113,3 +113,4 @@ class MusicoUpdateForm(forms.ModelForm):
         fechaNacimiento = self.cleaned_data['fechaNacimiento']
         if relativedelta(date.today(), fechaNacimiento).years < 14:
             self._errors["fechaNacimiento"] = ["La edad mínima es de 14 años"]
+            
