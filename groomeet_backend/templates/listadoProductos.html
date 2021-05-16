@@ -44,8 +44,9 @@
                 <a id="espacio-blanco-g" class="btn btn-transparente" disabled>&nbsp</a>
                 
                 <div id="div-buy-g-btn">
-                  {% if request.user.musico.isGold or request.user.musico.isSilver %}
-                     <h3>Ya disfrutas de una suscripción</h3>
+                  {% if request.user.musico.isGold %}
+                     <h3>Ya disfrutas de una suscripción</h3> 
+                     <a id="buy-g-btn"></a>
                   {% else %}
                      <a id="buy-g-btn" href="/comprarProducto/{{row.id}}" class="btn btn-gold"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
                   {% endif %}
@@ -78,8 +79,9 @@
                    <a id="espacio-blanco-s" class="btn btn-transparente" disabled>&nbsp</a>
                    
                    <div id="div-buy-s-btn">
-                     {% if request.user.musico.isGold or request.user.musico.isSilver %}
-                        <h3>Ya disfrutas de una suscripción</h3>
+                     {% if request.user.musico.isSilver %}
+                        <h3>Ya disfrutas de una suscripción</h3> 
+                        <a id="buy-s-btn"></a>
                      {% else %}
                         <a id="buy-s-btn" href="/comprarProducto/{{row.id}}" class="btn btn-secondary btn-silver"><i class="fa fa-shopping-cart mr-1"></i>Comprar ahora</a>
                      {% endif %}
