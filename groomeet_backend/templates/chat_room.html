@@ -1,38 +1,40 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-</head>
-<div class="row">
-    <div class="col-3">
-        {% for chat_url in chat_list %}
-            {% if path == chat_url.0 %}
-                <a href="{{ chat_url.0 }}" class="btn btn-success" style="padding-right: 235px; color: #212529;
-                   background-color: #19ce43; border-color: #000000;">{{ chat_url.1 }}</a>
-            {% else %}
-                <a href="{{ chat_url.0 }}" class="btn btn-success" style="padding-right: 235px; color: #212529;
-                   background-color: #00ff9d; border-color: #000000;">{{ chat_url.1 }}</a>
-            {% endif %}
-        {% endfor %}
-    </div>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Chat Room</title>
+    </head>
+    <div class="row" onload="hideChat()">
+        <div class="col-3">
+            {% for chat_url in chat_list %}
+                {% if path == chat_url.0 %}
+                    <a href="{{ chat_url.0 }}" class="btn btn-success" style="padding-right: 235px; color: #212529;
+                   background-color: #19ce43; border-color: #000000;" onclick="showChat()">{{ chat_url.1 }}</a>
+                {% else %}
+                    <a href="{{ chat_url.0 }}" class="btn btn-success" style="padding-right: 235px; color: #212529;
+                   background-color: #00ff9d; border-color: #000000;" onclick="showChat()">{{ chat_url.1 }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
 
-    <div class="col-9">
-          <div class="form-row align-items-center">
-          <script src="{% static 'reconnecting-websocket.js' %}"></script>
-          <div class="col-12 card overflow-auto" style="height: 480px;">
-              <ul id="chat-log" cols="100" rows="20" class="list-unstyled"></ul><br>
-          </div>
-            <div class="col-sm-11 col-10">
-              <input id="chat-message-input" type="text" class="form-control" size="100"><br>
-            </div>
+        <div id="chat-body" class="col-9">
+            <div class="form-row align-items-center">
+                <script src="{% static 'reconnecting-websocket.js' %}"></script>
+                <div class="col-12 card overflow-auto" style="height: 480px;">
+                    <ul id="chat-log" cols="100" rows="20" class="list-unstyled"></ul>
+                    <br>
+                </div>
+                <div class="col-sm-11 col-10">
+                    <input id="chat-message-input" type="text" class="form-control" size="100"><br>
+                </div>
 
-                <button id="chat-message-submit" class="btn btn-success col-sm-1 col-2" type="button" style="bottom: 12px;">
+                <button id="chat-message-submit" class="btn btn-success col-sm-1 col-2" type="button"
+                        style="bottom: 12px;">
                     <i class="bi bi-cursor"></i>
                 </button>
 
-          </div>
+            </div>
         </div>
         <div id="banda">
             <tbody>
@@ -45,13 +47,19 @@
                     <a href="/enviarInvitacionBanda/{{ other_id.id }}/{{ band.id }}/" class="btn btn-success" onClick="window.alert('Has invitado a {{ other_id }} a {{ band.nombre }}')">{{ band.nombre }}</a>
                 </tr>
                 </p>
-                {% endfor %}
+            {% endfor %}
             </tbody>
 
 
-          </div>
+        </div>
     </div>
     {{ room_name|json_script:"room-name" }}
+    <script>
+        if (window.location.pathname.includes("chat/listado/")) {
+            document.getElementById("chat-body").style = "display: none"
+            document.getElementById("banda").style = "display: none"
+        }
+    </script>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         var username = {{ username }};
@@ -69,38 +77,38 @@
             + '/'
         );
 
-        chatSocket.onopen = function(e) {
+        chatSocket.onopen = function (e) {
             console.log('hola q')
             fetchMessages();
         }
 
-        chatSocket.onmessage = function(e) {
+        chatSocket.onmessage = function (e) {
             console.log('on message')
             var data = JSON.parse(e.data);
             console.log(data)
             if (data['command'] === 'messages') {
-            console.log(data['messages'])
-              for (let i=0; i<data['messages'].length; i++) {
-                console.log('bucle')
-                createMessage(data['messages'][i]);
-              }
-            } else if (data['command'] === 'new_message'){
-              createMessage(data['message']);
+                console.log(data['messages'])
+                for (let i = 0; i < data['messages'].length; i++) {
+                    console.log('bucle')
+                    createMessage(data['messages'][i]);
+                }
+            } else if (data['command'] === 'new_message') {
+                createMessage(data['message']);
             }
-    };
+        };
 
-        chatSocket.onclose = function(e) {
+        chatSocket.onclose = function (e) {
             console.error('Chat socket closed unexpectedly');
         };
 
         document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
+        document.querySelector('#chat-message-input').onkeyup = function (e) {
             if (e.keyCode === 13) {  // enter, return
                 document.querySelector('#chat-message-submit').click();
             }
         };
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
+        document.querySelector('#chat-message-submit').onclick = function (e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
@@ -112,44 +120,48 @@
             messageInputDom.value = '';
         };
 
-    function fetchMessages() {
-      chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'from': username, 'to': other }));
-    }
+        function fetchMessages() {
+            chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'from': username, 'to': other}));
+        }
 
-    function createMessage(data) {
-      var author = data['author'];
-      var msgListTag = document.createElement('li');
-      var imgTag = document.createElement('img');
-      var pTag = document.createElement('p');
-      pTag.textContent = data.content;
-      console.log(author)
-      if (author === username) {
-        msgListTag.className = 'sent';
-      } else {
-        msgListTag.className = 'replies';
-      }
-      msgListTag.appendChild(imgTag);
-      msgListTag.appendChild(pTag);
-      document.querySelector('#chat-log').appendChild(msgListTag);
-    }
+        function createMessage(data) {
+            var author = data['author'];
+            var msgListTag = document.createElement('li');
+            var imgTag = document.createElement('img');
+            var pTag = document.createElement('p');
+            pTag.textContent = data.content;
+            console.log(author)
+            if (author === username) {
+                msgListTag.className = 'sent';
+            } else {
+                msgListTag.className = 'replies';
+            }
+            msgListTag.appendChild(imgTag);
+            msgListTag.appendChild(pTag);
+            document.querySelector('#chat-log').appendChild(msgListTag);
+        }
+
     </script>
     <style>
-        .sent{
-        text-align: right;
-        border-right: solid;
-        border-color: #19ce43;
+        .sent {
+            text-align: right;
+            border-right: solid;
+            border-color: #19ce43;
         }
+
         .sent p {
             padding-right: 3px;
             padding-left: 90px;
         }
+
         .replies p {
             padding-left: 3px;
             padding-right: 90px;
         }
-        .replies{
-        border-left: solid;
-        border-color: #00ff9d;
+
+        .replies {
+            border-left: solid;
+            border-color: #00ff9d;
         }
     </style>
 {% endblock %}
