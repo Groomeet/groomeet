@@ -4,19 +4,15 @@ li {
     list-style: none;
     padding: 0;
     margin: 0;
-        }
+}
 
 .errorlist li {
     color: red;
 }
 
-
-
-
 .container:after {
     content: '';
     display: block;
-
 }
 
 .container .post-form {
@@ -43,8 +39,8 @@ li {
 }
 
 .panel-heading h2 {
-text-align: center;
-color: #fff;
+    text-align: center;
+    color: #fff;
 }
 
 .panel-heading input,
@@ -88,7 +84,7 @@ textarea {
     width: 400px !important;
 }
 
-.btn.btn-success{
+.btn.btn-success {
     float: none;
     margin-left: 42%;
     background: none;
@@ -284,7 +280,7 @@ textarea {
 
 .calendar .calendar-views .now {
     color: #fff;
-    background: #66be8c!important;
+    background: #66be8c !important;
 }
 
 .calendar .calendar-views .selected {
@@ -343,4 +339,19 @@ textarea {
 .calendar-m {
     left: auto !important;
     top: 368px !important;
+}
+
+@media (max-width: 485px) {
+
+    .panel-heading {
+        width: 100%;
+    }
+
+    .panel-heading input, textarea {
+        width: 100%;
+    }
+
+    .dropdown.bootstrap-select.show-tick {
+        width: 100% !important;
+    }
 }
