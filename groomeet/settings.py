@@ -29,7 +29,7 @@ SECRET_KEY = 'jxa+$x*3u&7&gxdjyf@b5+qp&k9%*fybgt+y_ejwh&$!&19^_('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['groomeet2.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['groomeet.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 
@@ -155,15 +155,15 @@ prod_db  =  dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
 
 #S3 Buckets config - DESCOMENTAR EN DESPLIEGUE
-#AWS_ACCESS_KEY_ID = ''
-#AWS_SECRET_ACCESS_KEY = ''
-#AWS_STORAGE_BUCKET_NAME = ''
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+AWS_STORAGE_BUCKET_NAME = ''
 
-#AWS_S3_FILE_OVERWRITE = False
-#AWS_DEFAULT_ACL = None
-#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-#S3_USE_SIGV4 = True
+S3_USE_SIGV4 = True
 
-#import django_heroku
-#django_heroku.settings(locals())
+import django_heroku
+django_heroku.settings(locals())
