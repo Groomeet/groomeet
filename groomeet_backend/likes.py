@@ -121,13 +121,12 @@ def postLikeBandaMusico(request, pkBanda, pkMusico):
         usuario.musico.save()
         if musico in banda.likesRecibidosMusico.all():
             #Aquí se uniría la creación del chat
+            print("Dentro")
             messages.success(request, f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
             url = "/chat/" + str(usuario.id) + "-" + str(musico.usuario.id)
-            print(url)
             chat = Chat.objects.create(nombre = url)
-            print(chat)
             musico.chat.add(chat)
-            usuario.musico.chat.add(chat)
+            banda.administrador.chat.add(chat)
             print(f"¡Eso fue un match!, a {musico.usuario.username} también le gustasteis")
     return HttpResponse("Post correcto.")
 
@@ -282,7 +281,7 @@ def postSuperLikeBandaMusico(request, pkBanda, pkMusico):
     url = "/chat/" + str(banda.administrador.usuario.id) + "-" + str(musico.usuario.id)
     chat = Chat.objects.create(nombre = url)
     banda.administrador.chat.add(chat)
-    usuario.musico.chat.add(chat)            
+    musico.chat.add(chat)            
     print(f"¡Eso fue un superlike!, te encantó {banda.nombre}")
     return HttpResponse("Post correcto.")
 
